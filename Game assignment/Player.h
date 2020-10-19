@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <stdlib.h>
+#include <iostream>
 enum PlAYER_ANIMATION_STATES { IDLE = 0,MOVING_LEFT,MOVING_RIGHT,MOVING_TOP,MOVING_DOWN}; //for check player direction 
 class Player
 {
@@ -18,6 +19,14 @@ private:
 	int RandomX;
 	int RandomY;
 
+	float attackcooldown_top;
+	float attackcooldownmax_top;
+	float attackcooldown_left;
+	float attackcooldownmax_left;
+	float attackcooldown_down;
+	float attackcooldownmax_down;
+	float attackcooldown_right;
+	float attackcooldownmax_right;
 	//Animation 
 	sf::Clock animatetimer; //to set animation time 
 	short animState; 
@@ -43,11 +52,18 @@ public:
 	Player();
 	virtual ~Player();
 
+	const sf::Vector2f& getPos() const;
+
 	//Movement Update
 	void updatemovement();
 	void updateAnimations();
+	const bool canAttack_top();
+	const bool canAttack_left();
+	const bool canAttack_right();
+	const bool canAttack_down();
 
 	//Player update and render
+	void updateAttack();
 	void updated();
 	void render(sf::RenderTarget&target);
 };

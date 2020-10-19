@@ -1,8 +1,16 @@
 #include "Player.h"
-//for check direction
+//for variables
 void Player::initVariables()
 {
 	this->animState = PlAYER_ANIMATION_STATES::IDLE;
+	this->attackcooldownmax_top = 30.f;
+	this->attackcooldown_top = this->attackcooldownmax_top;
+	this->attackcooldownmax_left = 30.f;
+	this->attackcooldown_left = this->attackcooldownmax_left;
+	this->attackcooldownmax_down = 30.f;
+	this->attackcooldown_down = this->attackcooldownmax_down;
+	this->attackcooldownmax_right = 30.f;
+	this->attackcooldown_right = this->attackcooldownmax_right;
 }
 
 //include picture from files
@@ -49,7 +57,7 @@ Player::Player()
 	//random spawn
 	srand(time(NULL));
 	this->RandomX = rand() % 1012;
-	this->RandomY = rand() % 625;
+	this->RandomY = 500+(rand() % (625-500));
 	
 	//variables
 	this->initVariables();
@@ -70,6 +78,12 @@ Player::~Player()
 {
 }
 
+//get position player
+const sf::Vector2f& Player::getPos() const
+{
+	return this->playersprite.getPosition();
+}
+
 //Movement functions
 void Player::updatemovement()
 {
@@ -84,7 +98,7 @@ void Player::updatemovement()
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		if (this->playerposition.x >= 0) {
+		if (this->playerposition.x >= 0.f) {
 			this->playersprite.move(-2.f, 0.f);
 			this->playerposition.x -= 2.f;
 		}
@@ -158,11 +172,59 @@ void Player::updateAnimations()
 	}
 }
 
+//check can attack functions
+const bool Player::canAttack_top()
+{
+	if (this->attackcooldown_top >= this->attackcooldownmax_top) {
+		this->attackcooldown_top = 0.f;
+		return true;
+	}
+	return false;
+}
+const bool Player::canAttack_left()
+{
+	if (this->attackcooldown_left >= this->attackcooldownmax_left) {
+		this->attackcooldown_left = 0.f;
+		return true;
+	}
+	return false;
+}
+const bool Player::canAttack_right()
+{
+	if (this->attackcooldown_right >= this->attackcooldownmax_right) {
+		this->attackcooldown_right = 0.f;
+		return true;
+	}
+	return false;
+}
+const bool Player::canAttack_down()
+{
+	if (this->attackcooldown_down >= this->attackcooldownmax_down) {
+		this->attackcooldown_down = 0.f;
+		return true;
+	}
+	return false;
+}
+
+//update attack functions
+void Player::updateAttack()
+{
+	if(this->attackcooldown_top<this->attackcooldownmax_top)
+		this->attackcooldown_top += 0.5f;
+	if (this->attackcooldown_left < this->attackcooldownmax_left)
+		this->attackcooldown_left += 0.5f;
+	if (this->attackcooldown_right < this->attackcooldownmax_right)
+		this->attackcooldown_right += 0.5f;
+	if (this->attackcooldown_down < this->attackcooldownmax_down)
+		this->attackcooldown_down += 0.5f;
+}
+
 //player update
 void Player::updated()
 {
 	this->updatemovement();
 	this->updateAnimations();
+	this->updateAttack();
 }
 
 //player render
