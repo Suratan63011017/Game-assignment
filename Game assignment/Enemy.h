@@ -13,6 +13,12 @@ private:
 	sf::IntRect currentFrame; 
 	sf::Vector2f enemyposition;
 
+	int hp;
+	int hpMax;
+	int damage;
+	int points;
+	int type;
+
 	int RandomX;
 	int RandomY;
 	void initenemyTexture();
@@ -21,9 +27,10 @@ private:
 	void initAnimations();
 
 public:
-	Enemy();
+	Enemy(float pos_x, float pos_y);
 	virtual ~Enemy();
 
+	const sf::FloatRect getBounds() const;
 	void updatemovement(int pos_x, int pos_y);
 	void updateAnimations(int pos_x, int pos_y);
 	void updated(int pos_x, int pos_y);

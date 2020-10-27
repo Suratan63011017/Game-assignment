@@ -2,7 +2,7 @@
 //start window
 void Game::initwindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Game", sf::Style::Close | sf::Style::Titlebar);
+	this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Game", sf::Style::Close |sf::Style::Resize| sf::Style::Titlebar);
 	this->window->setFramerateLimit(144);
 }
 
@@ -14,7 +14,9 @@ void Game::initplayer()
 
 void Game::initenemy()
 {
-	this->enemy = new Enemy();
+	//this->enemy = new Enemy();
+	this->spawnTimerMax = 100.f;
+	this->spawnTimer = this->spawnTimerMax;
 }
 
 //start BG
@@ -53,6 +55,9 @@ Game::~Game()
 	for (auto *i : this->bullets) {
 		delete i;
 	}
+	for (auto* i : this->enemies) {
+		delete i;
+	}
 }
 
 //run your game
@@ -73,7 +78,25 @@ void Game::updatePlayer()
 
 void Game::updateenemy()
 {
-	this->enemy->updated(this->player->getPos().x-8, this->player->getPos().y-5);
+	this->spawnTimer += 0.5f;
+	if (this->spawnTimer >= this->spawnTimerMax)
+	{
+		this->enemies.push_back(new Enemy(rand() %this->window->getSize().x, -100.f));
+		this->spawnTimer = 0.f;
+	}
+	for (int i = 0; i < this->enemies.size();++i) {
+		bool enemy_removed = false;
+		for (size_t k = 0; k < this->bullets.size()&&!enemy_removed; k++) {
+			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
+				this->bullets.erase(this->bullets.begin() + k);
+				this->enemies.erase(this->enemies.begin() + i);
+				enemy_removed = true;
+			}
+			std::cout << k << "\n";
+		}
+		this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5);
+	}
+	//this->enemy->updated(this->player->getPos().x-8, this->player->getPos().y-5);
 }
 
 //update input
@@ -162,10 +185,10 @@ void Game::renderPlayer()
 	this->player->render(*this->window);
 }
 
-void Game::renderenemy()
-{
-	this->enemy->render(*this->window);
-}
+//void Game::renderenemy()
+//{
+//	this->enemy->render(*this->window);
+//}
 
 //render window
 void Game::render()
@@ -173,9 +196,12 @@ void Game::render()
 	this->window->clear(); //for clear old frame
 	this->renderBackground(); //for made background
 	this->renderPlayer(); //for made player
-	this->renderenemy();
 	for (auto* bullet : this->bullets) {
 		bullet->render(this->window);
 	}
+	for (auto* enemy : this->enemies) {
+		enemy->render(*this->window);
+	}
+	//this->renderenemy();
 	this->window->display(); //for update new frame
 }

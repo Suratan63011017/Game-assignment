@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <stdlib.h>
 #include <iostream>
 enum PlAYER_ANIMATION_STATES { IDLE = 0,MOVING_LEFT,MOVING_RIGHT,MOVING_TOP,MOVING_DOWN}; //for check player direction 
 class Player
@@ -53,6 +52,7 @@ public:
 	virtual ~Player();
 
 	const sf::Vector2f& getPos() const;
+	const sf::FloatRect getBounds() const;
 
 	//Movement Update
 	void updatemovement();

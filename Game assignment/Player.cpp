@@ -55,7 +55,6 @@ void Player::initAnimations()
 Player::Player()
 {
 	//random spawn
-	srand(time(NULL));
 	this->RandomX = rand() % 1012;
 	this->RandomY = 500+(rand() % (625-500));
 	
@@ -82,6 +81,11 @@ Player::~Player()
 const sf::Vector2f& Player::getPos() const
 {
 	return this->playersprite.getPosition();
+}
+
+const sf::FloatRect Player::getBounds() const
+{
+	return this->playersprite.getGlobalBounds();
 }
 
 //Movement functions

@@ -10,11 +10,14 @@ private:
 	//Variables
 	sf::RenderWindow* window;
 	Player* player;
-	Enemy* enemy;
+	//Enemy* enemy;
 	Background* bg;
 	std::map<std::string, sf::Texture*> textures;
+	std::vector<Enemy*> enemies;
 	std::vector<Bullet*> bullets;
 	int directioncheck;
+	float spawnTimer;
+	float spawnTimerMax;
 
 	//Function
 	void initwindow();
@@ -41,7 +44,6 @@ public:
 	//render function
 	void renderBackground();
 	void renderPlayer();
-	void renderenemy();
 	void render();
 };
 

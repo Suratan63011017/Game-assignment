@@ -2,6 +2,11 @@
 
 void Enemy::initvariables()
 {
+	this->hpMax   = 10;
+	this->hp	  = 0;
+	this->damage  = 1;
+	this->type    = 0;
+	this->points  = 5;
 
 }
 
@@ -16,8 +21,6 @@ void Enemy::initenemySprite()
 	this->currentFrame = sf::IntRect(0, 0, 80, 80);
 	this->enemysprite.setTextureRect(sf::IntRect(this->currentFrame));
 	this->enemysprite.setScale(1.2f, 1.2f);
-	this->enemyposition = sf::Vector2f(RandomX, RandomY);
-	this->enemysprite.setPosition(sf::Vector2f(this->enemyposition));
 }
 
 void Enemy::initAnimations()
@@ -25,11 +28,10 @@ void Enemy::initAnimations()
 	this->animatetimer.restart();
 }
 
-Enemy::Enemy()
+Enemy::Enemy(float pos_x,float pos_y)
 {
-	srand(time(NULL));
-	this->RandomX = rand() % 1000;
-	this->RandomY = rand()%420;
+	this->enemyposition = sf::Vector2f(pos_x, pos_y);
+	this->enemysprite.setPosition(sf::Vector2f(this->enemyposition));
 
 	this->initenemyTexture();
 	this->initenemySprite();
@@ -39,6 +41,11 @@ Enemy::Enemy()
 
 Enemy::~Enemy()
 {
+}
+
+const sf::FloatRect Enemy::getBounds() const
+{
+	return this->enemysprite.getGlobalBounds();
 }
 
 void Enemy::updatemovement(int pos_x,int pos_y)
