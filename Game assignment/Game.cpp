@@ -86,15 +86,16 @@ void Game::updateenemy()
 	}
 	for (int i = 0; i < this->enemies.size();++i) {
 		bool enemy_removed = false;
+		this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5);
+
 		for (size_t k = 0; k < this->bullets.size()&&!enemy_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
 				this->bullets.erase(this->bullets.begin() + k);
 				this->enemies.erase(this->enemies.begin() + i);
 				enemy_removed = true;
+				std::cout << k << "\n";
 			}
-			std::cout << k << "\n";
 		}
-		this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5);
 	}
 	//this->enemy->updated(this->player->getPos().x-8, this->player->getPos().y-5);
 }
