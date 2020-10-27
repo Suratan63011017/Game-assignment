@@ -9,8 +9,9 @@ class Game
 private:
 	//Variables
 	sf::RenderWindow* window;
+	sf::Font font;
+	sf::Text pointText;
 	Player* player;
-	//Enemy* enemy;
 	Background* bg;
 	std::map<std::string, sf::Texture*> textures;
 	std::vector<Enemy*> enemies;
@@ -19,12 +20,14 @@ private:
 	float spawnTimer;
 	float spawnTimerMax;
 
+
 	//Function
 	void initwindow();
 	void initplayer();
 	void initenemy();
 	void initBackground();
 	void initBulletTextures();
+	void initGUI();
 
 public:
 	//Game
@@ -40,10 +43,12 @@ public:
 	void updateInput();
 	void updateBullets();
 	void update();
+	void updateGUI();
 
 	//render function
 	void renderBackground();
 	void renderPlayer();
+	void renderGUI();
 	void render();
 };
 

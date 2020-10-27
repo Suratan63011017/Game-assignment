@@ -32,6 +32,15 @@ void Game::initBulletTextures()
 	this->textures["BULLET"]->loadFromFile("Sprite/bullet.png");
 }
 
+void Game::initGUI()
+{
+	this->font.loadFromFile("Font/sd cartoon 2.ttf");
+	this->pointText.setFont(this->font);
+	this->pointText.setCharacterSize(36);
+	this->pointText.setFillColor(sf::Color::White);
+	this->pointText.setString("Score : ");
+}
+
 //Main starter functions
 Game::Game()
 {
@@ -39,6 +48,7 @@ Game::Game()
 	this->initBackground();
 	this->directioncheck = 0;
 	this->initBulletTextures();
+	this->initGUI();
 	this->initplayer();
 	this->initenemy();
 }
@@ -167,9 +177,14 @@ void Game::update()
 			this->window->close();
 	}
 	this->updatePlayer(); //for update player in window 
-	this->updateenemy();
 	this->updateInput();
 	this->updateBullets();
+	this->updateenemy();
+	this->updateGUI();
+}
+
+void Game::updateGUI()
+{
 }
 
 //render BG
@@ -184,6 +199,11 @@ void Game::renderPlayer()
 	this->player->render(*this->window);
 }
 
+void Game::renderGUI()
+{
+	this->window->draw(this->pointText);
+}
+
 //render window
 void Game::render()
 {
@@ -196,5 +216,6 @@ void Game::render()
 	for (auto* enemy : this->enemies) {
 		enemy->render(*this->window);
 	}
+	this->renderGUI();
 	this->window->display(); //for update new frame
 }
