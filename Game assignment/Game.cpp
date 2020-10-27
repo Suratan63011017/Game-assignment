@@ -93,11 +93,9 @@ void Game::updateenemy()
 				this->bullets.erase(this->bullets.begin() + k);
 				this->enemies.erase(this->enemies.begin() + i);
 				enemy_removed = true;
-				std::cout << k << "\n";
 			}
 		}
 	}
-	//this->enemy->updated(this->player->getPos().x-8, this->player->getPos().y-5);
 }
 
 //update input
@@ -186,11 +184,6 @@ void Game::renderPlayer()
 	this->player->render(*this->window);
 }
 
-//void Game::renderenemy()
-//{
-//	this->enemy->render(*this->window);
-//}
-
 //render window
 void Game::render()
 {
@@ -203,6 +196,5 @@ void Game::render()
 	for (auto* enemy : this->enemies) {
 		enemy->render(*this->window);
 	}
-	//this->renderenemy();
 	this->window->display(); //for update new frame
 }
