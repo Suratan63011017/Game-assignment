@@ -15,7 +15,7 @@ void Game::initplayer()
 void Game::initenemy()
 {
 	//this->enemy = new Enemy();
-	this->spawnTimerMax = 100.f;
+	this->spawnTimerMax = 1000.f;
 	this->spawnTimer = this->spawnTimerMax;
 }
 
@@ -39,6 +39,19 @@ void Game::initGUI()
 	this->pointText.setCharacterSize(36);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setString("Score : ");
+	this->pointText.setPosition(sf::Vector2f(900.f,10.f));
+
+	this->playerHpBar.setSize(sf::Vector2f(300.f, 25.f));
+	this->playerHpBar.setFillColor(sf::Color::Red);
+	this->playerHpBar.setPosition(sf::Vector2f(20.f, 20.f));
+
+	this->playerHpBarBack = this->playerHpBar;
+	this->playerHpBarBack.setFillColor(sf::Color(25, 25, 25, 200));
+}
+
+void Game::initSystems()
+{
+	this->points = 0;
 }
 
 //Main starter functions
@@ -49,6 +62,7 @@ Game::Game()
 	this->directioncheck = 0;
 	this->initBulletTextures();
 	this->initGUI();
+	this->initSystems();
 	this->initplayer();
 	this->initenemy();
 }
@@ -97,11 +111,11 @@ void Game::updateenemy()
 	for (int i = 0; i < this->enemies.size();++i) {
 		bool enemy_removed = false;
 		this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5);
-
 		for (size_t k = 0; k < this->bullets.size()&&!enemy_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
-				this->bullets.erase(this->bullets.begin() + k);
+				this->points +=5;
 				this->enemies.erase(this->enemies.begin() + i);
+				this->bullets.erase(this->bullets.begin() + k);
 				enemy_removed = true;
 			}
 		}
@@ -180,11 +194,35 @@ void Game::update()
 	this->updateInput();
 	this->updateBullets();
 	this->updateenemy();
+	this->updateCollision();
 	this->updateGUI();
 }
 
 void Game::updateGUI()
 {
+	std::stringstream ss;
+	ss <<"Scores : "<< this->points;
+	this->pointText.setString(ss.str());
+
+
+	float hpPercent = static_cast<float>(this->player->getHp())/this->player->getHpMax();
+	this->playerHpBar.setSize(sf::Vector2f(300.f*hpPercent, this->playerHpBar.getSize().y));
+}
+
+void Game::updateCollision()
+{
+	int count = 0;
+	for (int i = 0; i < this->enemies.size(); ++i) {
+		if (this->player->getBounds().intersects(this->enemies[i]->getBounds())) {
+			count++;
+		}
+	}
+	std::cout << count << "\n";
+	if (this->clock.getElapsedTime().asSeconds() >= 1.f) {
+		this->player->loseHp(5 * count);
+		this->clock.restart();
+	}
+	count = 0;
 }
 
 //render BG
@@ -202,6 +240,8 @@ void Game::renderPlayer()
 void Game::renderGUI()
 {
 	this->window->draw(this->pointText);
+	this->window->draw(this->playerHpBarBack);
+	this->window->draw(this->playerHpBar);
 }
 
 //render window

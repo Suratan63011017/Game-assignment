@@ -26,6 +26,9 @@ private:
 	float attackcooldownmax_down;
 	float attackcooldown_right;
 	float attackcooldownmax_right;
+
+	int hp;
+	int hpMax;
 	//Animation 
 	sf::Clock animatetimer; //to set animation time 
 	short animState; 
@@ -53,7 +56,11 @@ public:
 
 	const sf::Vector2f& getPos() const;
 	const sf::FloatRect getBounds() const;
+	const int& getHp() const;
+	const int& getHpMax() const;
 
+	void setHp(const int hp);
+	void loseHp(const int value);
 	//Movement Update
 	void updatemovement();
 	void updateAnimations();

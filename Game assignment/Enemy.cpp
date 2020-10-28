@@ -48,6 +48,8 @@ const sf::FloatRect Enemy::getBounds() const
 	return this->enemysprite.getGlobalBounds();
 }
 
+
+
 void Enemy::updatemovement(int pos_x,int pos_y)
 {
 	if (this->enemyposition.y <= 640.f&&enemyposition.y<=pos_y) { //down

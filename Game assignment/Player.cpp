@@ -11,6 +11,8 @@ void Player::initVariables()
 	this->attackcooldown_down = this->attackcooldownmax_down;
 	this->attackcooldownmax_right = 30.f;
 	this->attackcooldown_right = this->attackcooldownmax_right;
+	this->hpMax = 100;
+	this->hp = this->hpMax;
 }
 
 //include picture from files
@@ -51,6 +53,8 @@ void Player::initAnimations()
 	this->animatetimer.restart();
 }
 
+
+
 //all funtion about player
 Player::Player()
 {
@@ -86,6 +90,28 @@ const sf::Vector2f& Player::getPos() const
 const sf::FloatRect Player::getBounds() const
 {
 	return this->playersprite.getGlobalBounds();
+}
+
+const int& Player::getHp() const
+{
+	return this->hp;
+}
+
+const int& Player::getHpMax() const
+{
+	return this->hpMax;
+}
+
+void Player::setHp(const int hp)
+{
+	this->hp = hp;
+}
+
+void Player::loseHp(const int value)
+{
+	this->hp -= value;
+	if (this->hp < 0)
+		this->hp = 0;
 }
 
 //Movement functions

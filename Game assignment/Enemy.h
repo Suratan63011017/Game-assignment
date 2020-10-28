@@ -19,6 +19,10 @@ private:
 	int points;
 	int type;
 
+	float attackcooldown;
+	float attackcooldownMax;
+
+
 	int RandomX;
 	int RandomY;
 	void initenemyTexture();
