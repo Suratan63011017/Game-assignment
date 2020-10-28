@@ -217,7 +217,6 @@ void Game::updateCollision()
 			count++;
 		}
 	}
-	std::cout << count << "\n";
 	if (this->clock.getElapsedTime().asSeconds() >= 1.f) {
 		this->player->loseHp(5 * count);
 		this->clock.restart();
