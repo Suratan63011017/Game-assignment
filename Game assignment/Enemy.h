@@ -13,11 +13,11 @@ private:
 	sf::IntRect currentFrame; 
 	sf::Vector2f enemyposition;
 
+	sf::RectangleShape EnemyHpBar;
+	sf::RectangleShape EnemyHpBarBack;
+
 	int hp;
 	int hpMax;
-	int damage;
-	int points;
-	int type;
 
 	float attackcooldown;
 	float attackcooldownMax;
@@ -35,9 +35,17 @@ public:
 	virtual ~Enemy();
 
 	const sf::FloatRect getBounds() const;
+
+	const int& getHp() const;
+	const int& getHpMax() const;
+
+	void setHp(const int hp);
+	void loseHp(const int value);
+
 	void updatemovement(int pos_x, int pos_y);
 	void updateAnimations(int pos_x, int pos_y);
 	void updated(int pos_x, int pos_y);
+	void updateHpBar();
 	void render(sf::RenderTarget& target);
 };
 #endif //!ENEMY_H

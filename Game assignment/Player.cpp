@@ -2,7 +2,9 @@
 //for variables
 void Player::initVariables()
 {
-	this->animState = PlAYER_ANIMATION_STATES::IDLE;
+	this->animState = PlAYER_ANIMATION_STATES::IDLE; //direct status
+
+	//attacking 
 	this->attackcooldownmax_top = 30.f;
 	this->attackcooldown_top = this->attackcooldownmax_top;
 	this->attackcooldownmax_left = 30.f;
@@ -11,6 +13,8 @@ void Player::initVariables()
 	this->attackcooldown_down = this->attackcooldownmax_down;
 	this->attackcooldownmax_right = 30.f;
 	this->attackcooldown_right = this->attackcooldownmax_right;
+
+	//player hp
 	this->hpMax = 100;
 	this->hp = this->hpMax;
 }
@@ -53,8 +57,6 @@ void Player::initAnimations()
 	this->animatetimer.restart();
 }
 
-
-
 //all funtion about player
 Player::Player()
 {
@@ -87,26 +89,31 @@ const sf::Vector2f& Player::getPos() const
 	return this->playersprite.getPosition();
 }
 
+//get colision player
 const sf::FloatRect Player::getBounds() const
 {
 	return this->playersprite.getGlobalBounds();
 }
 
+//get HP of player
 const int& Player::getHp() const
 {
 	return this->hp;
 }
 
+//get HPMax of player
 const int& Player::getHpMax() const
 {
 	return this->hpMax;
 }
 
+//setting player HP
 void Player::setHp(const int hp)
 {
 	this->hp = hp;
 }
 
+//lose Hp function
 void Player::loseHp(const int value)
 {
 	this->hp -= value;

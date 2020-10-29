@@ -18,6 +18,7 @@ private:
 	int RandomX;
 	int RandomY;
 
+	//attackvariables
 	float attackcooldown_top;
 	float attackcooldownmax_top;
 	float attackcooldown_left;
@@ -27,8 +28,10 @@ private:
 	float attackcooldown_right;
 	float attackcooldownmax_right;
 
+	//hp variables
 	int hp;
 	int hpMax;
+
 	//Animation 
 	sf::Clock animatetimer; //to set animation time 
 	short animState; 
@@ -54,13 +57,18 @@ public:
 	Player();
 	virtual ~Player();
 
+	//get position of player
 	const sf::Vector2f& getPos() const;
+
+	//get collision
 	const sf::FloatRect getBounds() const;
+
+	//Hp functions
 	const int& getHp() const;
 	const int& getHpMax() const;
-
 	void setHp(const int hp);
 	void loseHp(const int value);
+
 	//Movement Update
 	void updatemovement();
 	void updateAnimations();

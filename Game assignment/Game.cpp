@@ -32,6 +32,7 @@ void Game::initBulletTextures()
 	this->textures["BULLET"]->loadFromFile("Sprite/bullet.png");
 }
 
+//GUI
 void Game::initGUI()
 {
 	this->font.loadFromFile("Font/sd cartoon 2.ttf");
@@ -49,6 +50,7 @@ void Game::initGUI()
 	this->playerHpBarBack.setFillColor(sf::Color(25, 25, 25, 200));
 }
 
+//System settings
 void Game::initSystems()
 {
 	this->points = 0;
@@ -100,23 +102,29 @@ void Game::updatePlayer()
 	this->player->updated();
 }
 
+//enemy updated
 void Game::updateenemy()
 {
+	//spawn
 	this->spawnTimer += 0.5f;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
 		this->enemies.push_back(new Enemy(rand() %this->window->getSize().x, -100.f));
 		this->spawnTimer = 0.f;
 	}
+	//updated
 	for (int i = 0; i < this->enemies.size();++i) {
 		bool enemy_removed = false;
 		this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5);
 		for (size_t k = 0; k < this->bullets.size()&&!enemy_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
-				this->points +=5;
-				this->enemies.erase(this->enemies.begin() + i);
+				this->enemies[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
-				enemy_removed = true;
+				if (this->enemies[i]->getHp() == 0) {
+					this->points += 5;
+					this->enemies.erase(this->enemies.begin() + i);
+					enemy_removed = true;
+				}
 			}
 		}
 	}
@@ -198,17 +206,20 @@ void Game::update()
 	this->updateGUI();
 }
 
+//update GUI
 void Game::updateGUI()
 {
+	//scores
 	std::stringstream ss;
 	ss <<"Scores : "<< this->points;
 	this->pointText.setString(ss.str());
 
-
+	//hp of player
 	float hpPercent = static_cast<float>(this->player->getHp())/this->player->getHpMax();
 	this->playerHpBar.setSize(sf::Vector2f(300.f*hpPercent, this->playerHpBar.getSize().y));
 }
 
+//updated collision
 void Game::updateCollision()
 {
 	int count = 0;
