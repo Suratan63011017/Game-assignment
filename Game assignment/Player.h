@@ -69,6 +69,8 @@ public:
 	void setHp(const int hp);
 	void loseHp(const int value);
 
+	void doubattack(const int check);
+
 	//Movement Update
 	void updatemovement();
 	void updateAnimations();

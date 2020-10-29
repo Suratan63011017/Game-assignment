@@ -17,6 +17,10 @@ void Player::initVariables()
 	//player hp
 	this->hpMax = 100;
 	this->hp = this->hpMax;
+
+	//random spawn
+	this->RandomX = rand() % 1012;
+	this->RandomY = rand() % 625;
 }
 
 //include picture from files
@@ -59,11 +63,7 @@ void Player::initAnimations()
 
 //all funtion about player
 Player::Player()
-{
-	//random spawn
-	this->RandomX = rand() % 1012;
-	this->RandomY = 500+(rand() % (625-500));
-	
+{	
 	//variables
 	this->initVariables();
 	
@@ -119,6 +119,22 @@ void Player::loseHp(const int value)
 	this->hp -= value;
 	if (this->hp < 0)
 		this->hp = 0;
+}
+
+void Player::doubattack(const int check)
+{
+	if (check == 1) {
+		this->attackcooldownmax_top = 15.f;
+		this->attackcooldownmax_down = 15.f;
+		this->attackcooldownmax_left = 15.f;
+		this->attackcooldownmax_right = 15.f;
+	}
+	else {
+		this->attackcooldownmax_top = 30.f;
+		this->attackcooldownmax_down = 30.f;
+		this->attackcooldownmax_left = 30.f;
+		this->attackcooldownmax_right = 30.f;
+	}
 }
 
 //Movement functions

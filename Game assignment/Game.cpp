@@ -15,8 +15,14 @@ void Game::initplayer()
 void Game::initenemy()
 {
 	//this->enemy = new Enemy();
-	this->spawnTimerMax = 1000.f;
+	this->spawnTimerMax = 200.f;
 	this->spawnTimer = this->spawnTimerMax;
+}
+
+void Game::initskill()
+{
+	this->skillTimerMax = 10000.f;
+	this->skillTimer = this->skillTimerMax;
 }
 
 //start BG
@@ -67,6 +73,7 @@ Game::Game()
 	this->initSystems();
 	this->initplayer();
 	this->initenemy();
+	this->initskill();
 }
 
 //delete main function anythings 
@@ -82,6 +89,9 @@ Game::~Game()
 		delete i;
 	}
 	for (auto* i : this->enemies) {
+		delete i;
+	}
+	for (auto* i : this->skills) {
 		delete i;
 	}
 }
@@ -125,6 +135,30 @@ void Game::updateenemy()
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
 				}
+			}
+		}
+	}
+}
+
+void Game::updateskill()
+{
+	//spawn
+	this->skillTimer += 0.5f;
+	if (this->skillTimer >= this->skillTimerMax)
+	{
+		this->skills.push_back(new Skill(rand() % this->window->getSize().x, rand() % this->window->getSize().y));
+		this->skillTimer = 0.f;
+	}
+	//update
+	for (int i = 0; i < this->skills.size(); ++i) {
+		bool skills_removed = false;
+		if (this->skills[i]->getBounds().intersects(this->player->getBounds())) {
+			this->skills.erase(this->skills.begin() + i);
+			this->skilltime.restart();
+			skills_removed = true;
+			if (this->skilltime.getElapsedTime().asSeconds() <= 15.f) {
+				this->player->doubattack(1);
+				this->textures["BULLET"]->loadFromFile("Sprite/doub ball.png");
 			}
 		}
 	}
@@ -202,6 +236,7 @@ void Game::update()
 	this->updateInput();
 	this->updateBullets();
 	this->updateenemy();
+	this->updateskill();
 	this->updateCollision();
 	this->updateGUI();
 }
@@ -227,6 +262,10 @@ void Game::updateCollision()
 		if (this->player->getBounds().intersects(this->enemies[i]->getBounds())) {
 			count++;
 		}
+	}
+	if (this->skilltime.getElapsedTime().asSeconds() > 15.f) {
+		this->player->doubattack(0);
+		this->textures["BULLET"]->loadFromFile("Sprite/bullet.png");
 	}
 	if (this->clock.getElapsedTime().asSeconds() >= 1.f) {
 		this->player->loseHp(5 * count);
@@ -265,6 +304,9 @@ void Game::render()
 	}
 	for (auto* enemy : this->enemies) {
 		enemy->render(*this->window);
+	}
+	for (auto* Skill : this->skills) {
+		Skill->render(this->window);
 	}
 	this->renderGUI();
 	this->window->display(); //for update new frame

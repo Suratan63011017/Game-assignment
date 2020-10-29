@@ -22,7 +22,6 @@ private:
 	float attackcooldown;
 	float attackcooldownMax;
 
-
 	int RandomX;
 	int RandomY;
 	void initenemyTexture();

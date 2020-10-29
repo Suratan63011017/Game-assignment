@@ -6,6 +6,7 @@
 #include<map>
 #include"Bullet.h"
 #include"Enemy.h"
+#include"Skill.h"
 class Game
 {
 private:
@@ -21,15 +22,20 @@ private:
 	std::map<std::string, sf::Texture*> textures;
 	std::vector<Enemy*> enemies;
 	std::vector<Bullet*> bullets;
+	std::vector<Skill*> skills;
 	int directioncheck;
 	float spawnTimer;
 	float spawnTimerMax;
 	sf::Clock clock;
+	sf::Clock skilltime;
+	float skillTimer;
+	float skillTimerMax;
 
 	//Function
 	void initwindow();
 	void initplayer();
 	void initenemy();
+	void initskill();
 	void initBackground();
 	void initBulletTextures();
 	void initGUI();
@@ -46,6 +52,7 @@ public:
 	//update function
 	void updatePlayer();
 	void updateenemy();
+	void updateskill();
 	void updateInput();
 	void updateBullets();
 	void update();
