@@ -143,7 +143,6 @@ void Enemy::updated(int pos_x, int pos_y)
 	this->updatemovement(pos_x,pos_y);
 	this->updateAnimations(pos_x,pos_y);
 	this->updateHpBar();
-
 }
 
 void Enemy::updateHpBar()

@@ -20,6 +20,7 @@ private:
 	Player* player;
 	Background* bg;
 	std::map<std::string, sf::Texture*> textures;
+	std::map<std::string, sf::Texture*> skillpics;
 	std::vector<Enemy*> enemies;
 	std::vector<Bullet*> bullets;
 	std::vector<Skill*> skills;
@@ -28,8 +29,10 @@ private:
 	float spawnTimerMax;
 	sf::Clock clock;
 	sf::Clock skilltime;
+	sf::Clock skilltimecheck;
 	float skillTimer;
 	float skillTimerMax;
+	int type;
 
 	//Function
 	void initwindow();

@@ -6,22 +6,23 @@
 class Skill
 {
 private:
-	sf::Texture doubshottexture;
-	sf::Sprite doubshotsprite;
+	//texture and sprite skill
+	sf::Sprite shape;
+	sf::Texture* texture;
 
-	sf::Vector2f skillsposition;
-
-	void initvariables();
-
-	void initTexture();
-	void initSprite();
+	//skills status
+	sf::Vector2f direction;
+	float movementSpeed;
 
 public:
-	Skill(float pos_x, float pos_y);
+	//bullet functions
+	Skill(sf::Texture* texture, float pos_x, float pos_y);
 	virtual ~Skill();
 
+	//getBounds functions
 	const sf::FloatRect getBounds() const;
-	const int &doubshot() const;
+
+	//render and update functions
 	void update();
 	void render(sf::RenderTarget* target);
 };

@@ -21,8 +21,9 @@ void Game::initenemy()
 
 void Game::initskill()
 {
-	this->skillTimerMax = 10000.f;
+	this->skillTimerMax = 1000.f;
 	this->skillTimer = this->skillTimerMax;
+	this->skillpics["SKILL"] = new sf::Texture();
 }
 
 //start BG
@@ -146,13 +147,21 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->skills.push_back(new Skill(rand() % this->window->getSize().x, rand() % this->window->getSize().y));
+		this->type = 1+(rand()%2);
+		if (this->type == 1) {
+			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
+		}
+		else if (this->type == 2) {
+			this->skillpics["SKILL"]->loadFromFile("Sprite/fire skill.png");
+		}
+		this->skilltimecheck.restart();
+		this->skills.push_back(new Skill(this->skillpics["SKILL"],rand() % this->window->getSize().x, rand() % this->window->getSize().y));
 		this->skillTimer = 0.f;
 	}
 	//update
 	for (int i = 0; i < this->skills.size(); ++i) {
 		bool skills_removed = false;
-		if (this->skills[i]->getBounds().intersects(this->player->getBounds())) {
+		if (this->skills[i]->getBounds().intersects(this->player->getBounds())&&this->type==1) {
 			this->skills.erase(this->skills.begin() + i);
 			this->skilltime.restart();
 			skills_removed = true;
@@ -161,9 +170,11 @@ void Game::updateskill()
 				this->textures["BULLET"]->loadFromFile("Sprite/doub ball.png");
 			}
 		}
+		if (this->skilltimecheck.getElapsedTime().asSeconds() > 5.f) {
+			this->skills.erase(this->skills.begin() + i);
+		}
 	}
 }
-
 //update input
 void Game::updateInput()
 {
