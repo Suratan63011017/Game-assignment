@@ -27,6 +27,14 @@ private:
 	float attackcooldownmax_down;
 	float attackcooldown_right;
 	float attackcooldownmax_right;
+	float attackcooldown_top_trip;
+	float attackcooldownmax_top_trip;
+	float attackcooldown_left_trip;
+	float attackcooldownmax_left_trip;
+	float attackcooldown_down_trip;
+	float attackcooldownmax_down_trip;
+	float attackcooldown_right_trip;
+	float attackcooldownmax_right_trip;
 
 	//hp variables
 	int hp;
@@ -78,6 +86,10 @@ public:
 	const bool canAttack_left();
 	const bool canAttack_right();
 	const bool canAttack_down();
+	const bool canAttack_top_trip();
+	const bool canAttack_left_trip();
+	const bool canAttack_right_trip();
+	const bool canAttack_down_trip();
 
 	//Player update and render
 	void updateAttack();

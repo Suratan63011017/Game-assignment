@@ -13,6 +13,14 @@ void Player::initVariables()
 	this->attackcooldown_down = this->attackcooldownmax_down;
 	this->attackcooldownmax_right = 30.f;
 	this->attackcooldown_right = this->attackcooldownmax_right;
+	this->attackcooldownmax_top_trip = 30.f;
+	this->attackcooldown_top_trip = this->attackcooldownmax_top_trip;
+	this->attackcooldownmax_left_trip = 30.f;
+	this->attackcooldown_left_trip = this->attackcooldownmax_left_trip;
+	this->attackcooldownmax_down_trip = 30.f;
+	this->attackcooldown_down_trip = this->attackcooldownmax_down_trip;
+	this->attackcooldownmax_right_trip = 30.f;
+	this->attackcooldown_right_trip = this->attackcooldownmax_right_trip;
 
 	//player hp
 	this->hpMax = 100;
@@ -259,6 +267,42 @@ const bool Player::canAttack_down()
 	return false;
 }
 
+const bool Player::canAttack_top_trip()
+{
+	if (this->attackcooldown_top_trip >= this->attackcooldownmax_top_trip) {
+		this->attackcooldown_top_trip = 0.f;
+		return true;
+	}
+	return false;
+}
+
+const bool Player::canAttack_left_trip()
+{
+	if (this->attackcooldown_left_trip >= this->attackcooldownmax_left_trip) {
+		this->attackcooldown_left_trip = 0.f;
+		return true;
+	}
+	return false;
+}
+
+const bool Player::canAttack_right_trip()
+{
+	if (this->attackcooldown_right_trip >= this->attackcooldownmax_right_trip) {
+		this->attackcooldown_right_trip = 0.f;
+		return true;
+	}
+	return false;
+}
+
+const bool Player::canAttack_down_trip()
+{
+	if (this->attackcooldown_down_trip >= this->attackcooldownmax_down_trip) {
+		this->attackcooldown_down_trip = 0.f;
+		return true;
+	}
+	return false;
+}
+
 //update attack functions
 void Player::updateAttack()
 {
@@ -270,6 +314,14 @@ void Player::updateAttack()
 		this->attackcooldown_right += 0.5f;
 	if (this->attackcooldown_down < this->attackcooldownmax_down)
 		this->attackcooldown_down += 0.5f;
+	if (this->attackcooldown_top_trip < this->attackcooldownmax_top_trip)
+		this->attackcooldown_top_trip += 0.5f;
+	if (this->attackcooldown_left_trip < this->attackcooldownmax_left_trip)
+		this->attackcooldown_left_trip += 0.5f;
+	if (this->attackcooldown_right_trip < this->attackcooldownmax_right_trip)
+		this->attackcooldown_right_trip += 0.5f;
+	if (this->attackcooldown_down_trip < this->attackcooldownmax_down_trip)
+		this->attackcooldown_down_trip += 0.5f;
 }
 
 //player update
