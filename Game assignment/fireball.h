@@ -5,16 +5,16 @@
 class fireball
 {
 private:
-	//texture and sprite bullet
+	//texture and sprite fire
 	sf::Sprite shape;
 	sf::Texture* texture;
 
-	//bullet status
+	//fire status
 	sf::Vector2f direction;
 	float movementSpeed;
 
 public:
-	//bullet functions
+	//fire functions
 	fireball(sf::Texture* texture, float pos_x, float pos_y, float dir_X, float dir_Y, float movement_speed,int x,int y);
 	virtual ~fireball();
 

@@ -24,8 +24,10 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="fireball.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="ice.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Shield.cpp" />
     <ClCompile Include="Skill.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -34,7 +36,9 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="fireball.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="ice.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Shield.h" />
     <ClInclude Include="Skill.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

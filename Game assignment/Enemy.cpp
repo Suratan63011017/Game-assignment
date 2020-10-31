@@ -46,6 +46,11 @@ Enemy::~Enemy()
 {
 }
 
+const sf::Vector2f& Enemy::getPos() const
+{
+	return this->enemysprite.getPosition();
+}
+
 const sf::FloatRect Enemy::getBounds() const
 {
 	return this->enemysprite.getGlobalBounds();
@@ -138,11 +143,16 @@ void Enemy::updateAnimations(int pos_x, int pos_y)
 	}
 }
 
-void Enemy::updated(int pos_x, int pos_y)
+void Enemy::updated(int pos_x, int pos_y, int movementspeed)
 {
-	this->updatemovement(pos_x,pos_y);
-	this->updateAnimations(pos_x,pos_y);
-	this->updateHpBar();
+	if (movementspeed == 1) {
+		this->updatemovement(pos_x, pos_y);
+		this->updateAnimations(pos_x, pos_y);
+		this->updateHpBar();
+	}
+	else {
+		this->updateHpBar();
+	}
 }
 
 void Enemy::updateHpBar()

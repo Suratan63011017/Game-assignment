@@ -8,6 +8,8 @@
 #include"Enemy.h"
 #include"Skill.h"
 #include"fireball.h"
+#include"Shield.h"
+#include"ice.h"
 class Game
 {
 private:
@@ -23,10 +25,13 @@ private:
 	std::map<std::string, sf::Texture*> textures;
 	std::map<std::string, sf::Texture*> skillpics;
 	std::map<std::string, sf::Texture*> fireballs;
+	std::map<std::string, sf::Texture*> icepillar;
 	std::vector<Enemy*> enemies;
 	std::vector<Bullet*> bullets;
 	std::vector<fireball*> fire;
 	std::vector<Skill*> skills;
+	std::vector<Shield*> shield;
+	std::vector<ice*> ices;
 	int directioncheck;
 	float spawnTimer;
 	float spawnTimerMax;
@@ -35,11 +40,17 @@ private:
 	sf::Clock triptime;
 	sf::Clock skilltimecheck;
 	sf::Clock firetime;
+	sf::Clock shieldtime;
+	sf::Clock icetime;
 	float skillTimer;
 	float skillTimerMax;
 	int type;
 	int checktriple = 0;
 	int canfireball=0;
+	int checkshield = 0;
+	int checkice = 0;
+	int keepshield = 0;
+	int canicepillar = 0;
 
 	//Function
 	void initwindow();
@@ -49,6 +60,7 @@ private:
 	void initBackground();
 	void initBulletTextures();
 	void initfireball();
+	void initice();
 	void initGUI();
 	void initSystems();
 
@@ -64,9 +76,11 @@ public:
 	void updatePlayer();
 	void updateenemy();
 	void updateskill();
+	void updateshield();
 	void updateInput();
 	void updateBullets();
 	void updateFireball();
+	void updateice();
 	void update();
 	void updateGUI();
 	void updateCollision();

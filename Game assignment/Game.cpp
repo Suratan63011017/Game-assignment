@@ -15,7 +15,7 @@ void Game::initplayer()
 void Game::initenemy()
 {
 	//this->enemy = new Enemy();
-	this->spawnTimerMax = 200.f;
+	this->spawnTimerMax = 1000.f;
 	this->spawnTimer = this->spawnTimerMax;
 }
 
@@ -42,6 +42,12 @@ void Game::initBulletTextures()
 void Game::initfireball()
 {
 	this->fireballs["FIREBALL"] = new sf::Texture();
+}
+
+void Game::initice()
+{
+	this->icepillar["ICE"] = new sf::Texture();
+	this->icepillar["ICE"]->loadFromFile("Sprite/ice.png");
 }
 
 //GUI
@@ -76,6 +82,7 @@ Game::Game()
 	this->directioncheck = 0;
 	this->initBulletTextures();
 	this->initfireball();
+	this->initice();
 	this->initGUI();
 	this->initSystems();
 	this->initplayer();
@@ -102,6 +109,12 @@ Game::~Game()
 		delete i;
 	}
 	for (auto* i : this->fire) {
+		delete i;
+	}
+	for (auto* i : this->shield) {
+		delete i;
+	}
+	for (auto* i : this->ices) {
 		delete i;
 	}
 }
@@ -135,7 +148,13 @@ void Game::updateenemy()
 	//updated
 	for (int i = 0; i < this->enemies.size();++i) {
 		bool enemy_removed = false;
-		this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5);
+		if (this->checkice == 0) {
+			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
+		}
+		else if(this->checkice==1) {
+			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
+			this->ices.push_back(new ice(this->icepillar["ICE"],this->enemies[i]->getPos().x+10,this->enemies[i]->getPos().y+20));
+		}
 		for (size_t k = 0; k < this->bullets.size()&&!enemy_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
 				this->enemies[i]->loseHp(5);
@@ -166,7 +185,7 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->type = 1+(rand()%3);
+		this->type = 1 + (rand() % 5);
 		if (this->type == 1) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
 		}
@@ -176,6 +195,12 @@ void Game::updateskill()
 		else if (this->type == 3) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/triple skill.png");
 		}
+		else if (this->type == 4) {
+			this->skillpics["SKILL"]->loadFromFile("Sprite/shield skill.png");
+		}
+		else if (this->type == 5) {
+			this->skillpics["SKILL"]->loadFromFile("Sprite/ice skill.png");
+		}
 		this->skilltimecheck.restart();
 		this->skills.push_back(new Skill(this->skillpics["SKILL"],rand() % this->window->getSize().x-40, rand() % this->window->getSize().y-40));
 		this->skillTimer = 0.f;
@@ -183,6 +208,7 @@ void Game::updateskill()
 	//update
 	for (int i = 0; i < this->skills.size(); ++i) {
 		bool skills_removed = false;
+		//1 skill
 		if (this->skills[i]->getBounds().intersects(this->player->getBounds())&&this->type==1) {
 			this->skills.erase(this->skills.begin() + i);
 			this->skilltime.restart();
@@ -192,19 +218,53 @@ void Game::updateskill()
 				this->textures["BULLET"]->loadFromFile("Sprite/doub ball.png");
 			}
 		}
+		//2 skill
 		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 2) {
 			(this->canfireball)++;
 			this->skills.erase(this->skills.begin() + i);
 			skills_removed = true;
 		}
+		//3 skill
 		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 3) {
 			this->skills.erase(this->skills.begin() + i);
 			this->triptime.restart();
 			this->checktriple = 1;
 			skills_removed = true;
 		}
+		//4 skill
+		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 4) {
+			this->skills.erase(this->skills.begin() + i);
+			this->shieldtime.restart();
+			this->checkshield = 1; 
+			skills_removed = true;
+		}
+		//5 skill
+		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 5) {
+			(this->canicepillar)++;
+			this->skills.erase(this->skills.begin() + i);
+			skills_removed = true;
+		}
+		//remove skilled 
 		if (this->skilltimecheck.getElapsedTime().asSeconds() > 5.f) {
 			this->skills.erase(this->skills.begin() + i);
+		}
+	}
+}
+void Game::updateshield()
+{
+	if (this->checkshield==1)
+	{
+		this->shield.push_back(new Shield(this->player->getPos().x +28, this->player->getPos().y +50));
+		checkshield=0;
+	}
+	for (int i = 0; i < this->shield.size(); ++i) {
+		this->shield[i]->update(this->player->getPos().x +28, this->player->getPos().y +50);
+		if (this->shieldtime.getElapsedTime().asSeconds() > 5.f) {
+			this->shield.erase(this->shield.begin() + i);
+			this->keepshield = 0;
+		}
+		else {
+			this->keepshield = 1;
 		}
 	}
 }
@@ -278,6 +338,11 @@ void Game::updateInput()
 		(this->canfireball)--;
 		this->firetime.restart();
 	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && this->canicepillar>0) {
+		this->checkice=1;
+		(this->canicepillar)--;
+		this->icetime.restart();
+	}
 }
 
 //update bullets
@@ -339,6 +404,16 @@ void Game::updateFireball()
 	}
 }
 
+void Game::updateice()
+{
+	for (int i = 0; i < this->ices.size(); ++i) {
+		if (this->icetime.getElapsedTime().asSeconds() > 5.f) {
+			this->ices.erase(this->ices.begin() + i);
+			checkice = 0;
+		}
+	}
+}
+
 //window updated  
 void Game::update()
 {
@@ -352,9 +427,11 @@ void Game::update()
 	this->updateInput();
 	this->updateBullets();
 	this->updateFireball();
+	this->updateice();
 	this->updateenemy();
 	this->updateskill();
 	this->updateCollision();
+	this->updateshield();
 	this->updateGUI();
 }
 
@@ -375,6 +452,7 @@ void Game::updateGUI()
 void Game::updateCollision()
 {
 	int count = 0;
+	float skillshield = 0.4;
 	for (int i = 0; i < this->enemies.size(); ++i) {
 		if (this->player->getBounds().intersects(this->enemies[i]->getBounds())) {
 			count++;
@@ -387,9 +465,18 @@ void Game::updateCollision()
 	if (this->triptime.getElapsedTime().asSeconds() > 15.f) {
 		this->checktriple = 0;
 	}
+	if (this->shieldtime.getElapsedTime().asSeconds() > 5.f) {
+		this->checkshield = 0;
+	}
 	if (this->clock.getElapsedTime().asSeconds() >= 1.f) {
-		this->player->loseHp(5 * count);
-		this->clock.restart();
+		if (this->keepshield==1) {
+			this->player->loseHp(5 * count*skillshield);
+			this->clock.restart();
+		}
+		else {
+			this->player->loseHp(5 * count);
+			this->clock.restart();
+		}
 	}
 	count = 0;
 }
@@ -431,7 +518,12 @@ void Game::render()
 	for (auto* fireball : this->fire) {
 		fireball->render(this->window);
 	}
+	for (auto* Shield : this->shield) {
+		Shield->render(this->window);
+	}
+	for (auto* ice : this->ices) {
+		ice->render(this->window);
+	}
 	this->renderGUI();
-	std::cout << this->checktriple << "\n";
 	this->window->display(); //for update new frame
 }

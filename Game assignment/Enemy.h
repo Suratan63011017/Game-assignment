@@ -19,11 +19,6 @@ private:
 	int hp;
 	int hpMax;
 
-	float attackcooldown;
-	float attackcooldownMax;
-
-	int RandomX;
-	int RandomY;
 	void initenemyTexture();
 	void initenemySprite();
 	void initvariables();
@@ -32,6 +27,8 @@ private:
 public:
 	Enemy(float pos_x, float pos_y);
 	virtual ~Enemy();
+
+	const sf::Vector2f& getPos() const;
 
 	const sf::FloatRect getBounds() const;
 
@@ -43,7 +40,7 @@ public:
 
 	void updatemovement(int pos_x, int pos_y);
 	void updateAnimations(int pos_x, int pos_y);
-	void updated(int pos_x, int pos_y);
+	void updated(int pos_x, int pos_y, int movementspeed);
 	void updateHpBar();
 	void render(sf::RenderTarget& target);
 };
