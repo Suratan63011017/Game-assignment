@@ -2,7 +2,7 @@
 //start window
 void Game::initwindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Game", sf::Style::Close |sf::Style::Resize| sf::Style::Titlebar);
+	this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Game", sf::Style::Close | sf::Style::Resize | sf::Style::Titlebar);
 	this->window->setFramerateLimit(144);
 }
 
@@ -58,7 +58,7 @@ void Game::initGUI()
 	this->pointText.setCharacterSize(36);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setString("Score : ");
-	this->pointText.setPosition(sf::Vector2f(900.f,10.f));
+	this->pointText.setPosition(sf::Vector2f(900.f, 10.f));
 
 	this->playerHpBar.setSize(sf::Vector2f(300.f, 25.f));
 	this->playerHpBar.setFillColor(sf::Color::Red);
@@ -96,10 +96,10 @@ Game::~Game()
 	delete this->window;
 	delete this->bg;
 	delete this->player;
-	for (auto &i : this->textures) {
+	for (auto& i : this->textures) {
 		delete i.second;
 	}
-	for (auto *i : this->bullets) {
+	for (auto* i : this->bullets) {
 		delete i;
 	}
 	for (auto* i : this->enemies) {
@@ -122,7 +122,7 @@ Game::~Game()
 //run your game
 void Game::run()
 {
-	while (this->window->isOpen()) 
+	while (this->window->isOpen())
 	{
 		this->update();
 		this->render();
@@ -142,20 +142,20 @@ void Game::updateenemy()
 	this->spawnTimer += 0.5f;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
-		this->enemies.push_back(new Enemy(rand() %this->window->getSize().x, -100.f));
+		this->enemies.push_back(new Enemy(rand() % this->window->getSize().x, -100.f));
 		this->spawnTimer = 0.f;
 	}
 	//updated
-	for (int i = 0; i < this->enemies.size();++i) {
+	for (int i = 0; i < this->enemies.size(); ++i) {
 		bool enemy_removed = false;
 		if (this->checkice == 0) {
 			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
 		}
-		else if(this->checkice==1) {
+		else if (this->checkice == 1) {
 			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
-			this->ices.push_back(new ice(this->icepillar["ICE"],this->enemies[i]->getPos().x+10,this->enemies[i]->getPos().y+20));
+			this->ices.push_back(new ice(this->icepillar["ICE"], this->enemies[i]->getPos().x + 10, this->enemies[i]->getPos().y + 20));
 		}
-		for (size_t k = 0; k < this->bullets.size()&&!enemy_removed; k++) {
+		for (size_t k = 0; k < this->bullets.size() && !enemy_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
 				this->enemies[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
@@ -185,7 +185,7 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->type = 1 + (rand() % 5);
+		this->type = 5 /*1 + (rand() % 5)*/;
 		if (this->type == 1) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
 		}
@@ -202,14 +202,14 @@ void Game::updateskill()
 			this->skillpics["SKILL"]->loadFromFile("Sprite/ice skill.png");
 		}
 		this->skilltimecheck.restart();
-		this->skills.push_back(new Skill(this->skillpics["SKILL"],rand() % this->window->getSize().x-40, rand() % this->window->getSize().y-40));
+		this->skills.push_back(new Skill(this->skillpics["SKILL"], rand() % this->window->getSize().x - 40, rand() % this->window->getSize().y - 40));
 		this->skillTimer = 0.f;
 	}
 	//update
 	for (int i = 0; i < this->skills.size(); ++i) {
 		bool skills_removed = false;
 		//1 skill
-		if (this->skills[i]->getBounds().intersects(this->player->getBounds())&&this->type==1) {
+		if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 1) {
 			this->skills.erase(this->skills.begin() + i);
 			this->skilltime.restart();
 			skills_removed = true;
@@ -235,7 +235,7 @@ void Game::updateskill()
 		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 4) {
 			this->skills.erase(this->skills.begin() + i);
 			this->shieldtime.restart();
-			this->checkshield = 1; 
+			this->checkshield = 1;
 			skills_removed = true;
 		}
 		//5 skill
@@ -252,13 +252,13 @@ void Game::updateskill()
 }
 void Game::updateshield()
 {
-	if (this->checkshield==1)
+	if (this->checkshield == 1)
 	{
-		this->shield.push_back(new Shield(this->player->getPos().x +28, this->player->getPos().y +50));
-		checkshield=0;
+		this->shield.push_back(new Shield(this->player->getPos().x + 28, this->player->getPos().y + 50));
+		checkshield = 0;
 	}
 	for (int i = 0; i < this->shield.size(); ++i) {
-		this->shield[i]->update(this->player->getPos().x +28, this->player->getPos().y +50);
+		this->shield[i]->update(this->player->getPos().x + 28, this->player->getPos().y + 50);
 		if (this->shieldtime.getElapsedTime().asSeconds() > 5.f) {
 			this->shield.erase(this->shield.begin() + i);
 			this->keepshield = 0;
@@ -301,45 +301,45 @@ void Game::updateInput()
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y + 95, -1.f, 1.f, 5.f));
 	}
 	//normal shooting
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&this->player->canAttack_top()&&this->directioncheck==1) {
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x+25, this->player->getPos().y, 0.f, -1.f, 5.f));
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_top() && this->directioncheck == 1) {
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y, 0.f, -1.f, 5.f));
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&this->player->canAttack_left() && this->directioncheck==2) {
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y+28, -1.f, 0.f, 5.f));
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_left() && this->directioncheck == 2) {
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, 0.f, 5.f));
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_right() && this->directioncheck == 3) {
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x+68, this->player->getPos().y + 28, 1.f, 0.f, 5.f));
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, 0.f, 5.f));
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_down() && this->directioncheck == 0) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y + 95, 0.f, 1.f, 5.f));
 	}
 	//fire ball
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 1 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds()>=1.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 1 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireball.png");
-		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 0.f, -1.f, 5.f,1,-1));
+		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 0.f, -1.f, 5.f, 1, -1));
 		(this->canfireball)--;
 		this->firetime.restart();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 0 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireball.png");
-		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 0.f, 1.f, 5.f,1, 1));
+		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 0.f, 1.f, 5.f, 1, 1));
 		(this->canfireball)--;
 		this->firetime.restart();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 3 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireblass.png");
-		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 1.f, 0.f, 5.f,1, 1));
+		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 1.f, 0.f, 5.f, 1, 1));
 		(this->canfireball)--;
 		this->firetime.restart();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 2 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireblass.png");
-		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, -1.f, 0.f, 5.f,-1, 1));
+		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, -1.f, 0.f, 5.f, -1, 1));
 		(this->canfireball)--;
 		this->firetime.restart();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && this->canicepillar>0) {
-		this->checkice=1;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && this->canicepillar > 0) {
+		this->checkice = 1;
 		(this->canicepillar)--;
 		this->icetime.restart();
 	}
@@ -353,7 +353,7 @@ void Game::updateBullets()
 		bullet->update();
 		if (bullet->getBounds().top + bullet->getBounds().height < 0.f) {
 			delete this->bullets.at(counter);
-			this->bullets.erase(this->bullets.begin()+counter);
+			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
 		}
 		else if (bullet->getBounds().left + bullet->getBounds().width < 0.f) {
@@ -440,12 +440,12 @@ void Game::updateGUI()
 {
 	//scores
 	std::stringstream ss;
-	ss <<"Scores : "<< this->points;
+	ss << "Scores : " << this->points;
 	this->pointText.setString(ss.str());
 
 	//hp of player
-	float hpPercent = static_cast<float>(this->player->getHp())/this->player->getHpMax();
-	this->playerHpBar.setSize(sf::Vector2f(300.f*hpPercent, this->playerHpBar.getSize().y));
+	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
+	this->playerHpBar.setSize(sf::Vector2f(300.f * hpPercent, this->playerHpBar.getSize().y));
 }
 
 //updated collision
@@ -469,8 +469,8 @@ void Game::updateCollision()
 		this->checkshield = 0;
 	}
 	if (this->clock.getElapsedTime().asSeconds() >= 1.f) {
-		if (this->keepshield==1) {
-			this->player->loseHp(5 * count*skillshield);
+		if (this->keepshield == 1) {
+			this->player->loseHp(5 * count * skillshield);
 			this->clock.restart();
 		}
 		else {

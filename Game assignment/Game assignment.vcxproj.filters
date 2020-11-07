@@ -45,6 +45,9 @@
     <ClCompile Include="ice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BOX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BOX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

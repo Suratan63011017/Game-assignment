@@ -30,11 +30,12 @@ void Enemy::initAnimations()
 	this->animatetimer.restart();
 }
 
-Enemy::Enemy(float pos_x,float pos_y)
+Enemy::Enemy(float pos_x, float pos_y)
 {
 	this->enemyposition = sf::Vector2f(pos_x, pos_y);
 	this->enemysprite.setPosition(sf::Vector2f(this->enemyposition));
-	this->EnemyHpBar.setPosition(sf::Vector2f(this->enemyposition.x+10,this->enemyposition.y));
+	this->EnemyHpBar.setPosition(sf::Vector2f(this->enemyposition.x + 10, this->enemyposition.y));
+
 	this->initenemyTexture();
 	this->initenemySprite();
 
@@ -78,9 +79,9 @@ void Enemy::loseHp(const int value)
 		this->hp = 0;
 }
 
-void Enemy::updatemovement(int pos_x,int pos_y)
+void Enemy::updatemovement(int pos_x, int pos_y)
 {
-	if (this->enemyposition.y <= 640.f&&enemyposition.y<=pos_y) { //down
+	if (this->enemyposition.y <= 640.f && enemyposition.y <= pos_y) { //down
 		this->enemysprite.move(0.f, 1.f);
 		this->enemyposition.y += 1.f;
 		this->EnemyHpBar.move(0.f, 1.f);
