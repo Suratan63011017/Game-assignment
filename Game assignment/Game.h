@@ -42,15 +42,25 @@ private:
 	sf::Clock firetime;
 	sf::Clock shieldtime;
 	sf::Clock icetime;
+	sf::Clock inputcheck;
 	float skillTimer;
 	float skillTimerMax;
 	int type;
 	int checktriple = 0;
-	int canfireball=0;
+	int canfireball = 0;
 	int checkshield = 0;
 	int checkice = 0;
 	int keepshield = 0;
 	int canicepillar = 0;
+
+	sf::Texture tbox1;
+	sf::Sprite sbox1;
+	sf::Texture tbox2;
+	sf::Sprite sbox2;
+	sf::Texture tbox3;
+	sf::Sprite sbox3;
+	sf::Texture tbox4;
+	sf::Sprite sbox4;
 
 	//Function
 	void initwindow();
@@ -71,6 +81,7 @@ public:
 
 	//Update and render
 	void run();
+
 
 	//update function
 	void updatePlayer();

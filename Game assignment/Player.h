@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
-enum PlAYER_ANIMATION_STATES { IDLE = 0,MOVING_LEFT,MOVING_RIGHT,MOVING_TOP,MOVING_DOWN}; //for check player direction 
+enum PlAYER_ANIMATION_STATES { IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_TOP, MOVING_DOWN }; //for check player direction 
 class Player
 {
 private:
@@ -40,9 +40,10 @@ private:
 	int hp;
 	int hpMax;
 
+	sf::Clock dirinput;
 	//Animation 
 	sf::Clock animatetimer; //to set animation time 
-	short animState; 
+	short animState;
 	sf::IntRect currentFrame; //for show next sprite
 	sf::Vector2f playerposition;
 
@@ -93,7 +94,8 @@ public:
 
 	//Player update and render
 	void updateAttack();
+	void updateCollision(int dir);
 	void updated();
-	void render(sf::RenderTarget&target);
+	void render(sf::RenderTarget& target);
 };
 

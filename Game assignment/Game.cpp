@@ -2,7 +2,7 @@
 //start window
 void Game::initwindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Game", sf::Style::Close | sf::Style::Resize | sf::Style::Titlebar);
+	this->window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Game", sf::Style::Close | sf::Style::Resize | sf::Style::Titlebar);
 	this->window->setFramerateLimit(144);
 }
 
@@ -58,7 +58,7 @@ void Game::initGUI()
 	this->pointText.setCharacterSize(36);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setString("Score : ");
-	this->pointText.setPosition(sf::Vector2f(900.f, 10.f));
+	this->pointText.setPosition(sf::Vector2f(1100.f, 10.f));
 
 	this->playerHpBar.setSize(sf::Vector2f(300.f, 25.f));
 	this->playerHpBar.setFillColor(sf::Color::Red);
@@ -72,6 +72,18 @@ void Game::initGUI()
 void Game::initSystems()
 {
 	this->points = 0;
+	this->tbox1.loadFromFile("Sprite/Box.png");
+	this->sbox1.setTexture(this->tbox1);
+	this->sbox1.setPosition(490.f, 100.f);
+	this->tbox2.loadFromFile("Sprite/Box2.png");
+	this->sbox2.setTexture(this->tbox2);
+	this->sbox2.setPosition(100.f, 250.f);
+	this->tbox3.loadFromFile("Sprite/Box2.png");
+	this->sbox3.setTexture(this->tbox3);
+	this->sbox3.setPosition(1130.f, 250.f);
+	this->tbox4.loadFromFile("Sprite/Box.png");
+	this->sbox4.setTexture(this->tbox4);
+	this->sbox4.setPosition(490.f, 570.f);
 }
 
 //Main starter functions
@@ -132,7 +144,19 @@ void Game::run()
 //player updated
 void Game::updatePlayer()
 {
-	this->player->updated();
+	if (this->player->getBounds().intersects(this->sbox1.getGlobalBounds())) {
+		this->player->updateCollision(this->directioncheck);
+	}
+	else if (this->player->getBounds().intersects(this->sbox2.getGlobalBounds())) {
+		this->player->updateCollision(this->directioncheck);
+	}
+	else if (this->player->getBounds().intersects(this->sbox3.getGlobalBounds())) {
+		this->player->updateCollision(this->directioncheck);
+	}
+	else if (this->player->getBounds().intersects(this->sbox4.getGlobalBounds())) {
+		this->player->updateCollision(this->directioncheck);
+	}
+	else this->player->updated();
 }
 
 //enemy updated
@@ -185,7 +209,7 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->type = 5 /*1 + (rand() % 5)*/;
+		this->type = 1 + (rand() % 5);
 		if (this->type == 1) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
 		}
@@ -361,7 +385,7 @@ void Game::updateBullets()
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
 		}
-		else if (bullet->getBounds().left + bullet->getBounds().width > 1080.f) {
+		else if (bullet->getBounds().left + bullet->getBounds().width > 1280.f) {
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
@@ -390,7 +414,7 @@ void Game::updateFireball()
 			this->fire.erase(this->fire.begin() + counters);
 			--counters;
 		}
-		else if (fireball->getBounds().left + fireball->getBounds().width > 1080.f) {
+		else if (fireball->getBounds().left + fireball->getBounds().width > 1280.f) {
 			delete this->fire.at(counters);
 			this->fire.erase(this->fire.begin() + counters);
 			--counters;
@@ -498,6 +522,11 @@ void Game::renderGUI()
 	this->window->draw(this->pointText);
 	this->window->draw(this->playerHpBarBack);
 	this->window->draw(this->playerHpBar);
+
+	window->draw(this->sbox1);
+	window->draw(this->sbox2);
+	window->draw(this->sbox3);
+	window->draw(this->sbox4);
 }
 
 //render window

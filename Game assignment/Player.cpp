@@ -27,8 +27,8 @@ void Player::initVariables()
 	this->hp = this->hpMax;
 
 	//random spawn
-	this->RandomX = rand() % 1012;
-	this->RandomY = rand() % 625;
+	this->RandomX = 0/*rand() % 1012*/;
+	this->RandomY = 0/*rand() % 625*/;
 }
 
 //include picture from files
@@ -41,7 +41,7 @@ void Player::initTexture()
 void Player::initSprite()
 {
 	this->playersprite.setTexture(this->playertexture);
-	this->currentFrame = sf::IntRect(0, 0, 68,95 );
+	this->currentFrame = sf::IntRect(0, 0, 68, 95);
 	this->playersprite.setTextureRect(sf::IntRect(this->currentFrame));
 	this->playersprite.setScale(1.f, 1.f);
 	this->playerposition = sf::Vector2f(RandomX, RandomY);
@@ -60,7 +60,7 @@ void Player::initspawnsprite()
 	this->spawnpointsprite.setTexture(this->spawnpointtexture);
 	this->spawnpointsprite.setTextureRect(sf::IntRect(0, 0, 68, 68));
 	this->spawnpointsprite.setScale(1.f, 1.f);
-	this->spawnpointsprite.setPosition(sf::Vector2f(RandomX, RandomY+27));
+	this->spawnpointsprite.setPosition(sf::Vector2f(RandomX, RandomY + 27));
 }
 
 //settings animation timer 
@@ -71,10 +71,10 @@ void Player::initAnimations()
 
 //all funtion about player
 Player::Player()
-{	
+{
 	//variables
 	this->initVariables();
-	
+
 	//spawnpoint sprite and texture
 	this->initspawntexture();
 	this->initspawnsprite();
@@ -167,7 +167,7 @@ void Player::updatemovement()
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		if (this->playerposition.x <= 1012.f) {
+		if (this->playerposition.x <= 1212.f) {
 			this->playersprite.move(2.f, 0.f);
 			this->playerposition.x += 2.f;
 		}
@@ -306,7 +306,7 @@ const bool Player::canAttack_down_trip()
 //update attack functions
 void Player::updateAttack()
 {
-	if(this->attackcooldown_top<this->attackcooldownmax_top)
+	if (this->attackcooldown_top < this->attackcooldownmax_top)
 		this->attackcooldown_top += 0.5f;
 	if (this->attackcooldown_left < this->attackcooldownmax_left)
 		this->attackcooldown_left += 0.5f;
@@ -322,6 +322,26 @@ void Player::updateAttack()
 		this->attackcooldown_right_trip += 0.5f;
 	if (this->attackcooldown_down_trip < this->attackcooldownmax_down_trip)
 		this->attackcooldown_down_trip += 0.5f;
+}
+
+void Player::updateCollision(int dir)
+{
+	if (dir == 1) {
+		this->playersprite.move(0.f, 2.f);
+		this->playerposition.y += 2.f;
+	}
+	else if (dir == 2) {
+		this->playersprite.move(2.f, 0.f);
+		this->playerposition.x += 2.f;
+	}
+	else if (dir == 0) {
+		this->playersprite.move(0.f, -2.f);
+		this->playerposition.y -= 2.f;
+	}
+	else if (dir == 3) {
+		this->playersprite.move(-2.f, 0.f);
+		this->playerposition.x -= 2.f;
+	}
 }
 
 //player update
