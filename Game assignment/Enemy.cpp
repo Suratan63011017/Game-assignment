@@ -81,25 +81,25 @@ void Enemy::loseHp(const int value)
 
 void Enemy::updatemovement(int pos_x, int pos_y)
 {
-	if (this->enemyposition.y <= 640.f && enemyposition.y <= pos_y) { //down
+	if (enemyposition.y <= pos_y) { //down
 		this->enemysprite.move(0.f, 1.f);
 		this->enemyposition.y += 1.f;
 		this->EnemyHpBar.move(0.f, 1.f);
 		this->dircheck = 1;
 	}
-	if (this->enemyposition.x >= 0.f && enemyposition.x >= pos_x) { //left
+	if (enemyposition.x >= pos_x) { //left
 		this->enemysprite.move(-1.f, 0.f);
 		this->enemyposition.x -= 1.f;
 		this->EnemyHpBar.move(-1.f, 0.f);
 		this->dircheck = 2;
 	}
-	if (this->enemyposition.x <= 1000.f && enemyposition.x <= pos_x) { //right
+	if (enemyposition.x <= pos_x) { //right
 		this->enemysprite.move(1.f, 0.f);
 		this->enemyposition.x += 1.f;
 		this->EnemyHpBar.move(1.f, 0.f);
 		this->dircheck = 3;
 	}
-	if (this->enemyposition.y >= 0.f && enemyposition.y >= pos_y) { //top
+	if (enemyposition.y >= pos_y) { //top
 		this->enemysprite.move(0.f, -1.f);
 		this->enemyposition.y -= 1.f;
 		this->EnemyHpBar.move(0.f, -1.f);

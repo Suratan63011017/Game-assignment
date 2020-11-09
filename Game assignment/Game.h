@@ -10,6 +10,7 @@
 #include"fireball.h"
 #include"Shield.h"
 #include"ice.h"
+#include"Ghost.h"
 class Game
 {
 private:
@@ -31,6 +32,7 @@ private:
 	std::map<std::string, sf::Texture*> fireballs;
 	std::map<std::string, sf::Texture*> icepillar;
 	std::vector<Enemy*> enemies;
+	std::vector<Ghost*> ghost;
 	std::vector<Bullet*> bullets;
 	std::vector<fireball*> fire;
 	std::vector<Skill*> skills;
@@ -39,6 +41,7 @@ private:
 	int directioncheck;
 	float spawnTimer;
 	float spawnTimerMax;
+	int countkill = 0;
 	sf::Clock clock;
 	sf::Clock skilltime;
 	sf::Clock triptime;
@@ -76,6 +79,7 @@ private:
 	void initwindow();
 	void initplayer();
 	void initenemy();
+	void initghost();
 	void initskill();
 	void initBackground();
 	void initBulletTextures();
@@ -96,6 +100,7 @@ public:
 	//update function
 	void updatePlayer();
 	void updateenemy();
+	void updateghost();
 	void updateskill();
 	void updateshield();
 	void updateInput();

@@ -15,8 +15,11 @@ void Game::initplayer()
 void Game::initenemy()
 {
 	//this->enemy = new Enemy();
-	this->spawnTimerMax = 1000.f;
+	this->spawnTimerMax = 200.f;
 	this->spawnTimer = this->spawnTimerMax;
+}
+
+void Game::initghost() {
 }
 
 void Game::initskill()
@@ -130,6 +133,7 @@ Game::Game()
 	this->initSystems();
 	this->initplayer();
 	this->initenemy();
+	this->initghost();
 	this->initskill();
 }
 
@@ -146,6 +150,9 @@ Game::~Game()
 		delete i;
 	}
 	for (auto* i : this->enemies) {
+		delete i;
+	}
+	for (auto* i : this->ghost) {
 		delete i;
 	}
 	for (auto* i : this->skills) {
@@ -231,6 +238,7 @@ void Game::updateenemy()
 					this->points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
+					(this->countkill)++;
 				}
 			}
 		}
@@ -241,6 +249,51 @@ void Game::updateenemy()
 					this->points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
+					(this->countkill)++;
+				}
+			}
+		}
+	}
+}
+
+void Game::updateghost()
+{
+	//spawn
+	if (this->countkill % 5 == 0 && this->countkill != 0)
+	{
+		this->ghost.push_back(new Ghost(rand() % this->window->getSize().x, -100.f));
+		(this->countkill) -= 5;
+	}
+	//updated
+	for (int i = 0; i < this->ghost.size(); ++i) {
+		bool ghost_removed = false;
+		if (this->checkice == 0) {
+			this->ghost[i]->updated(this->player->getPos().x + 3, this->player->getPos().y + 10, 1);
+		}
+		else if (this->checkice == 1) {
+			this->ghost[i]->updated(this->player->getPos().x + 5, this->player->getPos().y + 13, 0);
+			this->ices.push_back(new ice(this->icepillar["ICE"], this->ghost[i]->getPos().x + 10, this->ghost[i]->getPos().y + 20));
+		}
+		for (size_t k = 0; k < this->bullets.size() && !ghost_removed; k++) {
+			if (this->bullets[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
+				this->ghost[i]->loseHp(5);
+				this->bullets.erase(this->bullets.begin() + k);
+				if (this->ghost[i]->getHp() == 0) {
+					this->points += 10;
+					this->ghost.erase(this->ghost.begin() + i);
+					ghost_removed = true;
+					(this->countkill)++;
+				}
+			}
+		}
+		for (size_t k = 0; k < this->fire.size() && !ghost_removed; k++) {
+			if (this->fire[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
+				this->ghost[i]->loseHp(1);
+				if (this->ghost[i]->getHp() == 0) {
+					this->points += 10;
+					this->ghost.erase(this->ghost.begin() + i);
+					ghost_removed = true;
+					(this->countkill)++;
 				}
 			}
 		}
@@ -537,6 +590,7 @@ void Game::update()
 	this->updateFireball();
 	this->updateice();
 	this->updateenemy();
+	this->updateghost();
 	this->updateskill();
 	this->updateCollision();
 	this->updateshield();
@@ -574,6 +628,11 @@ void Game::updateCollision()
 	for (int i = 0; i < this->enemies.size(); ++i) {
 		if (this->player->getBounds().intersects(this->enemies[i]->getBounds())) {
 			count++;
+		}
+	}
+	for (int i = 0; i < this->ghost.size(); ++i) {
+		if (this->player->getBounds().intersects(this->ghost[i]->getBounds())) {
+			count += 2;
 		}
 	}
 	if (this->skilltime.getElapsedTime().asSeconds() > 15.f) {
@@ -645,6 +704,9 @@ void Game::render()
 	}
 	for (auto* enemy : this->enemies) {
 		enemy->render(*this->window);
+	}
+	for (auto* ghosts : this->ghost) {
+		ghosts->render(*this->window);
 	}
 	for (auto* Skill : this->skills) {
 		Skill->render(this->window);
