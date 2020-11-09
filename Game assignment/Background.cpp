@@ -4,6 +4,8 @@
 void Background::initTextureBG()
 {
 	this->TextureBG.loadFromFile("Sprite/BG.png");
+	this->ColdBG.loadFromFile("Sprite/ColdBG.png");
+	this->FireBG.loadFromFile("Sprite/FireBG.png");
 }
 
 //Sprite BG
@@ -21,6 +23,19 @@ Background::Background()
 
 Background::~Background()
 {
+}
+
+void Background::update(int num)
+{
+	if (num == 0) {
+		this->SpriteBG.setTexture(this->TextureBG);
+	}
+	else if (num == 1) {
+		this->SpriteBG.setTexture(this->ColdBG);
+	}
+	else if (num == 2) {
+		this->SpriteBG.setTexture(this->FireBG);
+	}
 }
 
 //render BG

@@ -16,7 +16,11 @@ private:
 	//Variables
 	sf::RenderWindow* window;
 	sf::Font font;
+	sf::Font bit8;
 	sf::Text pointText;
+	sf::Text shadowpointtext;
+	sf::Text FIRETEXT;
+	sf::Text ICETEXT;
 	sf::RectangleShape playerHpBar;
 	sf::RectangleShape playerHpBarBack;
 	unsigned points;
@@ -61,6 +65,12 @@ private:
 	sf::Sprite sbox3;
 	sf::Texture tbox4;
 	sf::Sprite sbox4;
+
+	sf::Texture firepics;
+	sf::Sprite firepicx;
+
+	sf::Texture icepics;
+	sf::Sprite icepicx;
 
 	//Function
 	void initwindow();
