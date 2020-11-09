@@ -15,8 +15,8 @@ private:
 	sf::Texture spawnpointtexture;
 
 	//Random spawnpoint
-	int RandomX;
-	int RandomY;
+	int X;
+	int Y;
 
 	//attackvariables
 	float attackcooldown_top;

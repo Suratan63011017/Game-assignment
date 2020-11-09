@@ -27,8 +27,8 @@ void Player::initVariables()
 	this->hp = this->hpMax;
 
 	//random spawn
-	this->RandomX = 0/*rand() % 1012*/;
-	this->RandomY = 0/*rand() % 625*/;
+	this->X = 606;
+	this->Y = 292;
 }
 
 //include picture from files
@@ -44,7 +44,7 @@ void Player::initSprite()
 	this->currentFrame = sf::IntRect(0, 0, 68, 95);
 	this->playersprite.setTextureRect(sf::IntRect(this->currentFrame));
 	this->playersprite.setScale(1.f, 1.f);
-	this->playerposition = sf::Vector2f(RandomX, RandomY);
+	this->playerposition = sf::Vector2f(X, Y);
 	this->playersprite.setPosition(sf::Vector2f(this->playerposition));
 }
 
@@ -60,7 +60,7 @@ void Player::initspawnsprite()
 	this->spawnpointsprite.setTexture(this->spawnpointtexture);
 	this->spawnpointsprite.setTextureRect(sf::IntRect(0, 0, 68, 68));
 	this->spawnpointsprite.setScale(1.f, 1.f);
-	this->spawnpointsprite.setPosition(sf::Vector2f(RandomX, RandomY + 27));
+	this->spawnpointsprite.setPosition(sf::Vector2f(X, Y + 27));
 }
 
 //settings animation timer 

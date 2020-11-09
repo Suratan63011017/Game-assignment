@@ -85,21 +85,25 @@ void Enemy::updatemovement(int pos_x, int pos_y)
 		this->enemysprite.move(0.f, 1.f);
 		this->enemyposition.y += 1.f;
 		this->EnemyHpBar.move(0.f, 1.f);
+		this->dircheck = 1;
 	}
 	if (this->enemyposition.x >= 0.f && enemyposition.x >= pos_x) { //left
 		this->enemysprite.move(-1.f, 0.f);
 		this->enemyposition.x -= 1.f;
 		this->EnemyHpBar.move(-1.f, 0.f);
+		this->dircheck = 2;
 	}
 	if (this->enemyposition.x <= 1000.f && enemyposition.x <= pos_x) { //right
 		this->enemysprite.move(1.f, 0.f);
 		this->enemyposition.x += 1.f;
 		this->EnemyHpBar.move(1.f, 0.f);
+		this->dircheck = 3;
 	}
 	if (this->enemyposition.y >= 0.f && enemyposition.y >= pos_y) { //top
 		this->enemysprite.move(0.f, -1.f);
 		this->enemyposition.y -= 1.f;
 		this->EnemyHpBar.move(0.f, -1.f);
+		this->dircheck = 4;
 	}
 }
 
@@ -153,6 +157,30 @@ void Enemy::updated(int pos_x, int pos_y, int movementspeed)
 	}
 	else {
 		this->updateHpBar();
+	}
+}
+
+void Enemy::updateCollision()
+{
+	if (dircheck == 4) {
+		this->enemysprite.move(0.f, 1.f);
+		this->enemyposition.y += 1.f;
+		this->EnemyHpBar.move(0.f, 1.f);
+	}
+	else if (dircheck == 2) {
+		this->enemysprite.move(1.f, 0.f);
+		this->enemyposition.x += 1.f;
+		this->EnemyHpBar.move(1.f, 0.f);
+	}
+	else if (dircheck == 1) {
+		this->enemysprite.move(0.f, -1.f);
+		this->enemyposition.y -= 1.f;
+		this->EnemyHpBar.move(0.f, -1.f);
+	}
+	else if (dircheck == 3) {
+		this->enemysprite.move(-1.f, 0.f);
+		this->enemyposition.x -= 1.f;
+		this->EnemyHpBar.move(-1.f, 0.f);
 	}
 }
 

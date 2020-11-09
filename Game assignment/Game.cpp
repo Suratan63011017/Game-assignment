@@ -74,7 +74,7 @@ void Game::initSystems()
 	this->points = 0;
 	this->tbox1.loadFromFile("Sprite/Box.png");
 	this->sbox1.setTexture(this->tbox1);
-	this->sbox1.setPosition(490.f, 100.f);
+	this->sbox1.setPosition(490.f, 150.f);
 	this->tbox2.loadFromFile("Sprite/Box2.png");
 	this->sbox2.setTexture(this->tbox2);
 	this->sbox2.setPosition(100.f, 250.f);
@@ -83,7 +83,7 @@ void Game::initSystems()
 	this->sbox3.setPosition(1130.f, 250.f);
 	this->tbox4.loadFromFile("Sprite/Box.png");
 	this->sbox4.setTexture(this->tbox4);
-	this->sbox4.setPosition(490.f, 570.f);
+	this->sbox4.setPosition(490.f, 520.f);
 }
 
 //Main starter functions
@@ -173,7 +173,20 @@ void Game::updateenemy()
 	for (int i = 0; i < this->enemies.size(); ++i) {
 		bool enemy_removed = false;
 		if (this->checkice == 0) {
-			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
+			if (this->enemies[i]->getBounds().intersects(this->sbox1.getGlobalBounds())) {
+				this->enemies[i]->updateCollision();
+			}
+			else if (this->enemies[i]->getBounds().intersects(this->sbox2.getGlobalBounds())) {
+				this->enemies[i]->updateCollision();
+			}
+			else if (this->enemies[i]->getBounds().intersects(this->sbox3.getGlobalBounds())) {
+				this->enemies[i]->updateCollision();
+			}
+			else if (this->enemies[i]->getBounds().intersects(this->sbox4.getGlobalBounds())) {
+				this->enemies[i]->updateCollision();
+			}
+			else this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
+
 		}
 		else if (this->checkice == 1) {
 			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
@@ -395,6 +408,26 @@ void Game::updateBullets()
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
 		}
+		else if (bullet->getBounds().intersects(this->sbox1.getGlobalBounds())) {
+			delete this->bullets.at(counter);
+			this->bullets.erase(this->bullets.begin() + counter);
+			--counter;
+		}
+		else if (bullet->getBounds().intersects(this->sbox2.getGlobalBounds())) {
+			delete this->bullets.at(counter);
+			this->bullets.erase(this->bullets.begin() + counter);
+			--counter;
+		}
+		else if (bullet->getBounds().intersects(this->sbox3.getGlobalBounds())) {
+			delete this->bullets.at(counter);
+			this->bullets.erase(this->bullets.begin() + counter);
+			--counter;
+		}
+		else if (bullet->getBounds().intersects(this->sbox4.getGlobalBounds())) {
+			delete this->bullets.at(counter);
+			this->bullets.erase(this->bullets.begin() + counter);
+			--counter;
+		}
 		++counter;
 	}
 }
@@ -544,6 +577,7 @@ void Game::render()
 	for (auto* Skill : this->skills) {
 		Skill->render(this->window);
 	}
+	this->renderGUI();
 	for (auto* fireball : this->fire) {
 		fireball->render(this->window);
 	}
@@ -553,6 +587,5 @@ void Game::render()
 	for (auto* ice : this->ices) {
 		ice->render(this->window);
 	}
-	this->renderGUI();
 	this->window->display(); //for update new frame
 }
