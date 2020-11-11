@@ -109,7 +109,7 @@ void Enemy::updatemovement(int pos_x, int pos_y)
 
 void Enemy::updateAnimations(int pos_x, int pos_y)
 {
-	if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.x > pos_x) { //moving left
+	if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.x > pos_x && abs(enemyposition.x - pos_x) >= abs(enemyposition.y - pos_y)) { //moving left
 		this->currentFrame.top = 80.f;
 		this->currentFrame.left += 80.f;
 		if (this->currentFrame.left >= 240.f) {
@@ -118,7 +118,7 @@ void Enemy::updateAnimations(int pos_x, int pos_y)
 		this->animatetimer.restart();
 		this->enemysprite.setTextureRect(this->currentFrame);
 	}
-	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.x < pos_x) { //moving right
+	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.x < pos_x && abs(enemyposition.x - pos_x) >= abs(enemyposition.y - pos_y)) { //moving right
 		this->currentFrame.top = 160.f;
 		this->currentFrame.left += 80.f;
 		if (this->currentFrame.left >= 240.f) {
@@ -127,7 +127,7 @@ void Enemy::updateAnimations(int pos_x, int pos_y)
 		this->animatetimer.restart();
 		this->enemysprite.setTextureRect(this->currentFrame);
 	}
-	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.y < pos_y) { //moving down
+	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.y < pos_y && enemyposition.y < pos_y && abs(enemyposition.x - pos_x) <= abs(enemyposition.y - pos_y)) { //moving down
 		this->currentFrame.top = 0.f;
 		this->currentFrame.left += 80.f;
 		if (this->currentFrame.left >= 240.f) {
@@ -137,7 +137,7 @@ void Enemy::updateAnimations(int pos_x, int pos_y)
 		this->enemysprite.setTextureRect(this->currentFrame);
 	}
 
-	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.y > pos_y) { //moving top
+	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.y > pos_y && enemyposition.y < pos_y && abs(enemyposition.x - pos_x) <= abs(enemyposition.y - pos_y)) { //moving top
 		this->currentFrame.top = 240.f;
 		this->currentFrame.left += 80.f;
 		if (this->currentFrame.left >= 240.f) {
@@ -166,21 +166,25 @@ void Enemy::updateCollision()
 		this->enemysprite.move(0.f, 1.f);
 		this->enemyposition.y += 1.f;
 		this->EnemyHpBar.move(0.f, 1.f);
+		this->updateHpBar();
 	}
 	else if (dircheck == 2) {
 		this->enemysprite.move(1.f, 0.f);
 		this->enemyposition.x += 1.f;
 		this->EnemyHpBar.move(1.f, 0.f);
+		this->updateHpBar();
 	}
 	else if (dircheck == 1) {
 		this->enemysprite.move(0.f, -1.f);
 		this->enemyposition.y -= 1.f;
 		this->EnemyHpBar.move(0.f, -1.f);
+		this->updateHpBar();
 	}
 	else if (dircheck == 3) {
 		this->enemysprite.move(-1.f, 0.f);
 		this->enemyposition.x -= 1.f;
 		this->EnemyHpBar.move(-1.f, 0.f);
+		this->updateHpBar();
 	}
 }
 

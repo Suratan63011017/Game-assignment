@@ -22,6 +22,9 @@ void Game::initenemy()
 void Game::initghost() {
 }
 
+void Game::initdragon() {
+}
+
 void Game::initskill()
 {
 	this->skillTimerMax = 1000.f;
@@ -45,6 +48,12 @@ void Game::initBulletTextures()
 void Game::initfireball()
 {
 	this->fireballs["FIREBALL"] = new sf::Texture();
+}
+
+void Game::initdragonfire()
+{
+	this->dragontext["DRAGON"] = new sf::Texture();
+	this->dragontext["DRAGON"]->loadFromFile("Sprite/dragonblass.png");
 }
 
 void Game::initice()
@@ -128,6 +137,8 @@ Game::Game()
 	this->directioncheck = 0;
 	this->initBulletTextures();
 	this->initfireball();
+	this->initdragon();
+	this->initdragonfire();
 	this->initice();
 	this->initGUI();
 	this->initSystems();
@@ -146,10 +157,19 @@ Game::~Game()
 	for (auto& i : this->textures) {
 		delete i.second;
 	}
+	for (auto& i : this->dragontext) {
+		delete i.second;
+	}
 	for (auto* i : this->bullets) {
 		delete i;
 	}
 	for (auto* i : this->enemies) {
+		delete i;
+	}
+	for (auto* i : this->dragon) {
+		delete i;
+	}
+	for (auto* i : this->dragonshooting) {
 		delete i;
 	}
 	for (auto* i : this->ghost) {
@@ -239,6 +259,7 @@ void Game::updateenemy()
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
 					(this->countkill)++;
+					(this->countfordragon)++;
 				}
 			}
 		}
@@ -250,6 +271,7 @@ void Game::updateenemy()
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
 					(this->countkill)++;
+					(this->countfordragon)++;
 				}
 			}
 		}
@@ -283,6 +305,7 @@ void Game::updateghost()
 					this->ghost.erase(this->ghost.begin() + i);
 					ghost_removed = true;
 					(this->countkill)++;
+					(this->countfordragon)++;
 				}
 			}
 		}
@@ -293,6 +316,75 @@ void Game::updateghost()
 					this->points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
 					ghost_removed = true;
+					(this->countkill)++;
+					(this->countfordragon)++;
+				}
+			}
+		}
+	}
+}
+
+void Game::updatedragon()
+{
+	//spawn
+	if (this->countfordragon % 50 == 0 && this->countfordragon != 0)
+	{
+		this->dragon.push_back(new Dragon(rand() % this->window->getSize().x, -100.f));
+		(this->countfordragon) -= 50;
+	}
+	//updated
+	for (int i = 0; i < this->dragon.size(); ++i) {
+		bool dragon_removed = false;
+		if (this->dragon[i]->canAttack_top() && this->dragon[i]->getdir() == 4) {
+			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x + 50, this->dragon[i]->getPos().y - 50, 0.f, -1.f, 2.f));
+		}
+		else if (this->dragon[i]->canAttack_left() && this->dragon[i]->getdir() == 2) {
+			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x - 20, this->dragon[i]->getPos().y + 20, -1.f, 0.f, 2.f));
+		}
+		else if (this->dragon[i]->canAttack_down() && this->dragon[i]->getdir() == 1) {
+			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x + 50, this->dragon[i]->getPos().y + 70, 0.f, 1.f, 2.f));
+		}
+		else if (this->dragon[i]->canAttack_right() && this->dragon[i]->getdir() == 3) {
+			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x + 70, this->dragon[i]->getPos().y + 20, 1.f, 0.f, 2.f));
+		}
+		if (this->checkice == 0) {
+			if (this->dragon[i]->getBounds().intersects(this->sbox1.getGlobalBounds())) {
+				this->dragon[i]->updateCollision();
+			}
+			else if (this->dragon[i]->getBounds().intersects(this->sbox2.getGlobalBounds())) {
+				this->dragon[i]->updateCollision();
+			}
+			else if (this->dragon[i]->getBounds().intersects(this->sbox3.getGlobalBounds())) {
+				this->dragon[i]->updateCollision();
+			}
+			else if (this->dragon[i]->getBounds().intersects(this->sbox4.getGlobalBounds())) {
+				this->dragon[i]->updateCollision();
+			}
+			else this->dragon[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
+		}
+		else if (this->checkice == 1) {
+			this->dragon[i]->updated(this->player->getPos().x + 5, this->player->getPos().y + 13, 0);
+			this->ices.push_back(new ice(this->icepillar["ICE"], this->dragon[i]->getPos().x + 35, this->dragon[i]->getPos().y + 20));
+		}
+		for (size_t k = 0; k < this->bullets.size() && !dragon_removed; k++) {
+			if (this->bullets[k]->getBounds().intersects(this->dragon[i]->getBounds())) {
+				this->dragon[i]->loseHp(5);
+				this->bullets.erase(this->bullets.begin() + k);
+				if (this->dragon[i]->getHp() == 0) {
+					this->points += 1000;
+					this->dragon.erase(this->dragon.begin() + i);
+					dragon_removed = true;
+					(this->countkill)++;
+				}
+			}
+		}
+		for (size_t k = 0; k < this->fire.size() && !dragon_removed; k++) {
+			if (this->fire[k]->getBounds().intersects(this->dragon[i]->getBounds())) {
+				this->dragon[i]->loseHp(1);
+				if (this->dragon[i]->getHp() == 0) {
+					this->points += 1000;
+					this->dragon.erase(this->dragon.begin() + i);
+					dragon_removed = true;
 					(this->countkill)++;
 				}
 			}
@@ -306,7 +398,7 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->type = 1 + (rand() % 5);
+		this->type = 1 + rand() % 5;
 		if (this->type == 1) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
 		}
@@ -531,6 +623,61 @@ void Game::updateBullets()
 	}
 }
 
+void Game::updatedragonshooting()
+{
+	unsigned countered = 0;
+	for (auto* shoot : this->dragonshooting) {
+		shoot->update();
+		if (shoot->getBounds().top + shoot->getBounds().height < 0.f) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			--countered;
+		}
+		else if (shoot->getBounds().left + shoot->getBounds().width < 0.f) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			--countered;
+		}
+		else if (shoot->getBounds().left + shoot->getBounds().width > 1280.f) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			--countered;
+		}
+		else if (shoot->getBounds().top + shoot->getBounds().height > 720.f) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			--countered;
+		}
+		else if (shoot->getBounds().intersects(this->sbox1.getGlobalBounds())) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			--countered;
+		}
+		else if (shoot->getBounds().intersects(this->sbox2.getGlobalBounds())) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			--countered;
+		}
+		else if (shoot->getBounds().intersects(this->sbox3.getGlobalBounds())) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			--countered;
+		}
+		else if (shoot->getBounds().intersects(this->sbox4.getGlobalBounds())) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			--countered;
+		}
+		else if (shoot->getBounds().intersects(this->player->getBounds())) {
+			delete this->dragonshooting.at(countered);
+			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
+			this->player->loseHp(5);
+			--countered;
+		}
+		++countered;
+	}
+}
+
 void Game::updateFireball()
 {
 	unsigned counters = 0;
@@ -591,6 +738,8 @@ void Game::update()
 	this->updateice();
 	this->updateenemy();
 	this->updateghost();
+	this->updatedragon();
+	this->updatedragonshooting();
 	this->updateskill();
 	this->updateCollision();
 	this->updateshield();
@@ -707,6 +856,12 @@ void Game::render()
 	}
 	for (auto* ghosts : this->ghost) {
 		ghosts->render(*this->window);
+	}
+	for (auto* dragoon : this->dragon) {
+		dragoon->render(*this->window);
+	}
+	for (auto* dragonic : this->dragonshooting) {
+		dragonic->render(this->window);
 	}
 	for (auto* Skill : this->skills) {
 		Skill->render(this->window);

@@ -11,6 +11,7 @@
 #include"Shield.h"
 #include"ice.h"
 #include"Ghost.h"
+#include"Dragon.h"
 class Game
 {
 private:
@@ -31,9 +32,12 @@ private:
 	std::map<std::string, sf::Texture*> skillpics;
 	std::map<std::string, sf::Texture*> fireballs;
 	std::map<std::string, sf::Texture*> icepillar;
+	std::map<std::string, sf::Texture*> dragontext;
 	std::vector<Enemy*> enemies;
+	std::vector<Dragon*> dragon;
 	std::vector<Ghost*> ghost;
 	std::vector<Bullet*> bullets;
+	std::vector<Bullet*> dragonshooting;
 	std::vector<fireball*> fire;
 	std::vector<Skill*> skills;
 	std::vector<Shield*> shield;
@@ -42,6 +46,7 @@ private:
 	float spawnTimer;
 	float spawnTimerMax;
 	int countkill = 0;
+	int countfordragon = 0;
 	sf::Clock clock;
 	sf::Clock skilltime;
 	sf::Clock triptime;
@@ -80,10 +85,12 @@ private:
 	void initplayer();
 	void initenemy();
 	void initghost();
+	void initdragon();
 	void initskill();
 	void initBackground();
 	void initBulletTextures();
 	void initfireball();
+	void initdragonfire();
 	void initice();
 	void initGUI();
 	void initSystems();
@@ -101,10 +108,12 @@ public:
 	void updatePlayer();
 	void updateenemy();
 	void updateghost();
+	void updatedragon();
 	void updateskill();
 	void updateshield();
 	void updateInput();
 	void updateBullets();
+	void updatedragonshooting();
 	void updateFireball();
 	void updateice();
 	void update();
