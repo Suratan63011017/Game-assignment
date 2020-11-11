@@ -4,6 +4,7 @@ void Game::initwindow()
 {
 	this->window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Game", sf::Style::Close | sf::Style::Resize | sf::Style::Titlebar);
 	this->window->setFramerateLimit(144);
+	this->menu = new Mainmenu(this->window->getSize().x, window->getSize().y);
 }
 
 //get new player
@@ -70,13 +71,13 @@ void Game::initGUI()
 	this->pointText.setCharacterSize(36);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setString("Score : ");
-	this->pointText.setPosition(sf::Vector2f(1100.f, 10.f));
+	this->pointText.setPosition(sf::Vector2f(1050.f, 10.f));
 
 	this->shadowpointtext.setFont(this->font);
 	this->shadowpointtext.setCharacterSize(36);
 	this->shadowpointtext.setFillColor(sf::Color::Black);
 	this->shadowpointtext.setString("Score : ");
-	this->shadowpointtext.setPosition(sf::Vector2f(1105.f, 15.f));
+	this->shadowpointtext.setPosition(sf::Vector2f(1055.f, 15.f));
 
 	this->bit8.loadFromFile("Font/2005_iannnnnAMD.ttf");
 	this->FIRETEXT.setFont(this->bit8);
@@ -192,11 +193,81 @@ Game::~Game()
 //run your game
 void Game::run()
 {
+	sf::Event e;
+
 	while (this->window->isOpen())
 	{
-		this->update();
-		this->render();
+		while (this->window->pollEvent(e))
+		{
+			switch (e.type)
+			{
+			case sf::Event::KeyReleased:
+				switch (e.key.code)
+				{
+				case sf::Keyboard::Up:
+					this->menu->Moveup();
+					break;
+				case sf::Keyboard::Down:
+					this->menu->Movedown();
+					break;
+				case sf::Keyboard::Enter:
+					switch (this->menu->GetPressedItem())
+					{
+					case 0:
+						gamestate = 1;
+						break;
+					case 1:
+
+					case 2:
+						this->window->close();
+						break;
+					}
+					break;
+				case sf::Keyboard::Escape:
+					this->menu->update();
+					gamestate = 0;
+					break;
+				}
+				break;
+			case sf::Event::Closed:
+				this->window->close();
+				break;
+			}
+		}
+		this->window->clear(); //for clear old frame
+		if (gamestate == 0) {
+			this->updateMousePositions();
+			this->menu->draw(*this->window);
+			if (this->menu->getBounds_0().contains(this->mousePosview)) {
+				this->menu->buttoncheck(0);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					gamestate = 1;
+				}
+			}
+			if (this->menu->getBounds_1().contains(this->mousePosview)) {
+				this->menu->buttoncheck(1);
+			}
+			if (this->menu->getBounds_2().contains(this->mousePosview)) {
+				this->menu->buttoncheck(2);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					this->window->close();
+				}
+			}
+		}
+		else if (gamestate == 1) {
+			this->menu->getplay(1);
+			this->update();
+			this->render();
+		}
+		this->window->display(); //for update new frame
 	}
+}
+
+void Game::updateMousePositions()
+{
+	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+	this->mousePosview = this->window->mapPixelToCoords(this->mousePosWindow);
+
 }
 
 //player updated
@@ -725,12 +796,6 @@ void Game::updateice()
 //window updated  
 void Game::update()
 {
-	sf::Event e;
-	while (this->window->pollEvent(e))
-	{
-		if (e.Event::type == sf::Event::Closed)
-			this->window->close();
-	}
 	this->updatePlayer(); //for update player in window 
 	this->updateInput();
 	this->updateBullets();
@@ -842,7 +907,7 @@ void Game::renderGUI()
 //render window
 void Game::render()
 {
-	this->window->clear(); //for clear old frame
+
 	this->renderBackground(); //for made background
 	for (auto* Shield : this->shield) {
 		Shield->render(this->window);
@@ -873,5 +938,5 @@ void Game::render()
 	for (auto* ice : this->ices) {
 		ice->render(this->window);
 	}
-	this->window->display(); //for update new frame
+
 }

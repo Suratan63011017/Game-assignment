@@ -12,11 +12,18 @@
 #include"ice.h"
 #include"Ghost.h"
 #include"Dragon.h"
+#include"Mainmenu.h"
 class Game
 {
 private:
 	//Variables
 	sf::RenderWindow* window;
+	Mainmenu* menu;
+	sf::Vector2i mousePosWindow;
+	sf::Vector2f mousePosview;
+
+	int gamestate = 0;
+
 	sf::Font font;
 	sf::Font bit8;
 	sf::Text pointText;
@@ -105,6 +112,7 @@ public:
 
 
 	//update function
+	void updateMousePositions();
 	void updatePlayer();
 	void updateenemy();
 	void updateghost();
