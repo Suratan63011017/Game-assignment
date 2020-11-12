@@ -29,6 +29,8 @@ void Player::initVariables()
 	//random spawn
 	this->X = 606;
 	this->Y = 292;
+
+
 }
 
 //include picture from files
@@ -44,8 +46,17 @@ void Player::initSprite()
 	this->currentFrame = sf::IntRect(0, 0, 68, 95);
 	this->playersprite.setTextureRect(sf::IntRect(this->currentFrame));
 	this->playersprite.setScale(1.f, 1.f);
-	this->playerposition = sf::Vector2f(X, Y);
-	this->playersprite.setPosition(sf::Vector2f(this->playerposition));
+	this->playersprite.setPosition(sf::Vector2f(sf::Vector2f(X, Y)));
+
+	this->hitbox.setFillColor(sf::Color::Transparent);
+	this->hitbox.setSize(sf::Vector2f(50.f, 80.f));
+	this->hitbox.setPosition(sf::Vector2f(X + 10, Y + 10));
+
+	nextbox.setSize(sf::Vector2f(50.f, 80.f));
+	nextbox.setFillColor(sf::Color::Transparent);
+	nextbox.setOutlineColor(sf::Color::Transparent);
+	nextbox.setOutlineThickness(1.f);
+
 }
 
 //include spawn point pics from files
@@ -94,13 +105,13 @@ Player::~Player()
 //get position player
 const sf::Vector2f& Player::getPos() const
 {
-	return this->playersprite.getPosition();
+	return this->hitbox.getPosition();
 }
 
 //get colision player
 const sf::FloatRect Player::getBounds() const
 {
-	return this->playersprite.getGlobalBounds();
+	return this->nextpos;
 }
 
 //get HP of player
@@ -148,38 +159,55 @@ void Player::doubattack(const int check)
 //Movement functions
 void Player::updatemovement()
 {
+	velocity.x = 0.f;
+	velocity.y = 0.f;
 	this->animState = PlAYER_ANIMATION_STATES::IDLE; //not walk
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		if (this->playerposition.y <= 625.f) {
-			this->playersprite.move(0.f, 2.f);
-			this->playerposition.y += 2.f;
-		}
+		velocity.y += 2.f;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_DOWN; //go down
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		if (this->playerposition.x >= 0.f) {
-			this->playersprite.move(-2.f, 0.f);
-			this->playerposition.x -= 2.f;
-		}
+		velocity.x -= 2.f;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_LEFT; //go left
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		if (this->playerposition.x <= 1212.f) {
-			this->playersprite.move(2.f, 0.f);
-			this->playerposition.x += 2.f;
-		}
+		velocity.x += 2.f;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_RIGHT; //go right
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		if (this->playerposition.y >= 0.f) {
-			this->playersprite.move(0.f, -2.f);
-			this->playerposition.y -= 2.f;
-		}
+		velocity.y -= 2.f;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_TOP; //go top
+	}
+	playerbounds = hitbox.getGlobalBounds();
+	nextpos = playerbounds;
+	hitbox.move(velocity);
+	playersprite.move(velocity);
+	nextpos.left += velocity.x;
+	nextpos.top += velocity.y;
+	nextbox.setPosition(nextpos.left, nextpos.top);
+	//leftcheck
+	if (hitbox.getPosition().x < 0.f) {
+		hitbox.setPosition(0.f, hitbox.getPosition().y);
+		playersprite.setPosition(0.f - 10, hitbox.getPosition().y - 10);
+	}
+	//top check
+	if (hitbox.getPosition().y < 0.f) {
+		hitbox.setPosition(hitbox.getPosition().x, 0.f);
+		playersprite.setPosition(hitbox.getPosition().x - 10, 0.f - 10);
+	}
+	//right check
+	if (hitbox.getPosition().x + hitbox.getGlobalBounds().width > 1280.f) {
+		hitbox.setPosition(1280.f - hitbox.getGlobalBounds().width, hitbox.getPosition().y);
+		playersprite.setPosition(1280.f - hitbox.getGlobalBounds().width - 10, hitbox.getPosition().y - 10);
+	}
+	//bottom check
+	if (hitbox.getPosition().y + hitbox.getGlobalBounds().height > 720.f) {
+		hitbox.setPosition(hitbox.getPosition().x, 720.f - hitbox.getGlobalBounds().height);
+		playersprite.setPosition(hitbox.getPosition().x - 10, 720.f - hitbox.getGlobalBounds().height - 10);
 	}
 }
 
@@ -324,23 +352,47 @@ void Player::updateAttack()
 		this->attackcooldown_down_trip += 0.5f;
 }
 
-void Player::updateCollision(int dir)
+void Player::updateCollision(sf::FloatRect box)
 {
-	if (dir == 1) {
-		this->playersprite.move(0.f, 2.f);
-		this->playerposition.y += 2.f;
+	//bottom collision
+	if (playerbounds.top < box.top
+		&& playerbounds.top + playerbounds.height < box.top + box.height
+		&& playerbounds.left<box.left + box.width
+		&& playerbounds.left + playerbounds.width>box.left
+		) {
+		velocity.y = 0.f;
+		hitbox.setPosition(playerbounds.left, box.top - playerbounds.height);
+		playersprite.setPosition(playerbounds.left - 10, box.top - playerbounds.height - 10);
 	}
-	else if (dir == 2) {
-		this->playersprite.move(2.f, 0.f);
-		this->playerposition.x += 2.f;
+	//top collision
+	else if (playerbounds.top > box.top
+		&& playerbounds.top + playerbounds.height > box.top + box.height
+		&& playerbounds.left<box.left + box.width
+		&& playerbounds.left + playerbounds.width>box.left
+		) {
+		velocity.y = 0.f;
+		hitbox.setPosition(playerbounds.left, box.top + box.height);
+		playersprite.setPosition(playerbounds.left - 10, box.top + box.height - 10);
 	}
-	else if (dir == 0) {
-		this->playersprite.move(0.f, -2.f);
-		this->playerposition.y -= 2.f;
+	//right collision
+	else if (playerbounds.left < box.left
+		&& playerbounds.left + playerbounds.width < box.left + box.width
+		&& playerbounds.top<box.top + box.height
+		&& playerbounds.top + playerbounds.height>box.top
+		) {
+		velocity.x = 0.f;
+		hitbox.setPosition(box.left - playerbounds.width, playerbounds.top);
+		playersprite.setPosition(box.left - playerbounds.width - 10, playerbounds.top - 10);
 	}
-	else if (dir == 3) {
-		this->playersprite.move(-2.f, 0.f);
-		this->playerposition.x -= 2.f;
+	//left collision
+	else if (playerbounds.left > box.left
+		&& playerbounds.left + playerbounds.width > box.left + box.width
+		&& playerbounds.top<box.top + box.height
+		&& playerbounds.top + playerbounds.height>box.top
+		) {
+		velocity.x = 0.f;
+		hitbox.setPosition(box.left + box.width, playerbounds.top);
+		playersprite.setPosition(box.left + box.width - 10, playerbounds.top - 10);
 	}
 }
 
@@ -355,6 +407,8 @@ void Player::updated()
 //player render
 void Player::render(sf::RenderTarget& target)
 {
+	target.draw(this->hitbox);
+	target.draw(this->nextbox);
 	target.draw(this->spawnpointsprite);
 	target.draw(this->playersprite);
 }

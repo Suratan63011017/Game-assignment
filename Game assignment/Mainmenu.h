@@ -1,7 +1,7 @@
 #pragma once
 #include"player.h"
 
-#define MAX_NUMBER_OF_ITEMS 3
+#define MAX_NUMBER_OF_ITEMS 4
 class Mainmenu
 {
 private:
@@ -27,6 +27,7 @@ public:
 	const sf::FloatRect getBounds_0() const;
 	const sf::FloatRect getBounds_1() const;
 	const sf::FloatRect getBounds_2() const;
+	const sf::FloatRect getBounds_3() const;
 	void update();
 };
 

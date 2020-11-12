@@ -14,6 +14,12 @@ private:
 	sf::Sprite spawnpointsprite;
 	sf::Texture spawnpointtexture;
 
+	sf::RectangleShape hitbox;
+	sf::Vector2f velocity;
+	sf::FloatRect nextpos;
+	sf::RectangleShape nextbox;
+	sf::FloatRect playerbounds;
+
 	//Random spawnpoint
 	int X;
 	int Y;
@@ -45,7 +51,6 @@ private:
 	sf::Clock animatetimer; //to set animation time 
 	short animState;
 	sf::IntRect currentFrame; //for show next sprite
-	sf::Vector2f playerposition;
 
 	//Function
 	void initVariables();
@@ -94,7 +99,7 @@ public:
 
 	//Player update and render
 	void updateAttack();
-	void updateCollision(int dir);
+	void updateCollision(sf::FloatRect box);
 	void updated();
 	void render(sf::RenderTarget& target);
 };

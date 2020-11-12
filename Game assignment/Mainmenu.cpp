@@ -25,15 +25,24 @@ Mainmenu::Mainmenu(float width, float height)
 	button[1].setFillColor(sf::Color::Black);
 	button[1].setPosition(sf::Vector2f((width / 2) - 100.f, (height / (MAX_NUMBER_OF_ITEMS + 1) * 2) + 10.f));
 
-
 	menu[2].setFont(font);
 	menu[2].setFillColor(sf::Color::White);
-	menu[2].setString("Exit");
+	menu[2].setString("how to play");
 	menu[2].setCharacterSize(40);
-	menu[2].setPosition(sf::Vector2f((width / 2) - 15.f, height / (MAX_NUMBER_OF_ITEMS + 1) * 3));
+	menu[2].setPosition(sf::Vector2f((width / 2) - 50.f, height / (MAX_NUMBER_OF_ITEMS + 1) * 3));
 	button[2].setSize(sf::Vector2f(200.f, 50.f));
 	button[2].setFillColor(sf::Color::Black);
 	button[2].setPosition(sf::Vector2f((width / 2) - 100.f, (height / (MAX_NUMBER_OF_ITEMS + 1) * 3) + 10.f));
+
+
+	menu[3].setFont(font);
+	menu[3].setFillColor(sf::Color::White);
+	menu[3].setString("Exit");
+	menu[3].setCharacterSize(40);
+	menu[3].setPosition(sf::Vector2f((width / 2) - 15.f, height / (MAX_NUMBER_OF_ITEMS + 1) * 4));
+	button[3].setSize(sf::Vector2f(200.f, 50.f));
+	button[3].setFillColor(sf::Color::Black);
+	button[3].setPosition(sf::Vector2f((width / 2) - 100.f, (height / (MAX_NUMBER_OF_ITEMS + 1) * 4) + 10.f));
 
 	selectedITEMindex = 0;
 }
@@ -103,7 +112,10 @@ const sf::FloatRect Mainmenu::getBounds_2() const
 	return this->button[2].getGlobalBounds();
 }
 
-
+const sf::FloatRect Mainmenu::getBounds_3() const
+{
+	return this->button[3].getGlobalBounds();
+}
 
 void Mainmenu::update()
 {

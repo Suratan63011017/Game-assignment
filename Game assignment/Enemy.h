@@ -16,6 +16,12 @@ private:
 	sf::RectangleShape EnemyHpBar;
 	sf::RectangleShape EnemyHpBarBack;
 
+	sf::RectangleShape hitbox;
+	sf::Vector2f velocity;
+	sf::FloatRect nextpos;
+	sf::RectangleShape nextbox;
+	sf::FloatRect enemybounds;
+
 	int dircheck;
 
 	int hp;
@@ -43,7 +49,7 @@ public:
 	void updatemovement(int pos_x, int pos_y);
 	void updateAnimations(int pos_x, int pos_y);
 	void updated(int pos_x, int pos_y, int movementspeed);
-	void updateCollision();
+	void updateCollision(sf::FloatRect box);
 	void updateHpBar();
 	void render(sf::RenderTarget& target);
 };

@@ -114,20 +114,29 @@ void Game::initSystems()
 	this->points = 0;
 	//box1
 	this->tbox1.loadFromFile("Sprite/Box.png");
-	this->sbox1.setTexture(this->tbox1);
-	this->sbox1.setPosition(490.f, 150.f);
+	this->box_1.setTexture(&this->tbox1);
+	this->box_1.setSize(sf::Vector2f(300.f, 50.f));
+	this->box_1.setPosition(490.f, 150.f);
+	box_1Bounds = box_1.getGlobalBounds();
+
 	//box2
 	this->tbox2.loadFromFile("Sprite/Box2.png");
-	this->sbox2.setTexture(this->tbox2);
-	this->sbox2.setPosition(100.f, 250.f);
+	this->box_2.setTexture(&this->tbox2);
+	this->box_2.setSize(sf::Vector2f(50.f, 300.f));
+	this->box_2.setPosition(100.f, 250.f);
+	box_2Bounds = box_2.getGlobalBounds();
 	//box3
 	this->tbox3.loadFromFile("Sprite/Box2.png");
-	this->sbox3.setTexture(this->tbox3);
-	this->sbox3.setPosition(1130.f, 250.f);
+	this->box_3.setTexture(&this->tbox3);
+	this->box_3.setSize(sf::Vector2f(50.f, 300.f));
+	this->box_3.setPosition(1130.f, 250.f);
+	box_3Bounds = box_3.getGlobalBounds();
 	//box4
 	this->tbox4.loadFromFile("Sprite/Box.png");
-	this->sbox4.setTexture(this->tbox4);
-	this->sbox4.setPosition(490.f, 520.f);
+	this->box_4.setTexture(&this->tbox4);
+	this->box_4.setSize(sf::Vector2f(300.f, 50.f));
+	this->box_4.setPosition(490.f, 520.f);
+	box_4Bounds = box_4.getGlobalBounds();
 }
 
 //Main starter functions
@@ -249,6 +258,9 @@ void Game::run()
 			}
 			if (this->menu->getBounds_2().contains(this->mousePosview)) {
 				this->menu->buttoncheck(2);
+			}
+			if (this->menu->getBounds_3().contains(this->mousePosview)) {
+				this->menu->buttoncheck(3);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					this->window->close();
 				}
@@ -273,19 +285,19 @@ void Game::updateMousePositions()
 //player updated
 void Game::updatePlayer()
 {
-	if (this->player->getBounds().intersects(this->sbox1.getGlobalBounds())) {
-		this->player->updateCollision(this->directioncheck);
+	if (this->player->getBounds().intersects(this->box_1Bounds)) {
+		this->player->updateCollision(this->box_1Bounds);
 	}
-	else if (this->player->getBounds().intersects(this->sbox2.getGlobalBounds())) {
-		this->player->updateCollision(this->directioncheck);
+	if (this->player->getBounds().intersects(this->box_2Bounds)) {
+		this->player->updateCollision(this->box_2Bounds);
 	}
-	else if (this->player->getBounds().intersects(this->sbox3.getGlobalBounds())) {
-		this->player->updateCollision(this->directioncheck);
+	if (this->player->getBounds().intersects(this->box_3Bounds)) {
+		this->player->updateCollision(this->box_3Bounds);
 	}
-	else if (this->player->getBounds().intersects(this->sbox4.getGlobalBounds())) {
-		this->player->updateCollision(this->directioncheck);
+	if (this->player->getBounds().intersects(this->box_4Bounds)) {
+		this->player->updateCollision(this->box_4Bounds);
 	}
-	else this->player->updated();
+	this->player->updated();
 }
 
 //enemy updated
@@ -295,27 +307,38 @@ void Game::updateenemy()
 	this->spawnTimer += 0.5f;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
-		this->enemies.push_back(new Enemy(rand() % this->window->getSize().x, -100.f));
+		this->checkspawn = rand() % 4;
+		if (this->checkspawn == 0) {
+			this->enemies.push_back(new Enemy(rand() % this->window->getSize().x, -200.f));
+		}
+		else if (this->checkspawn == 1) {
+			this->enemies.push_back(new Enemy(rand() % this->window->getSize().x, 920.f));
+		}
+		else if (this->checkspawn == 2) {
+			this->enemies.push_back(new Enemy(-200.f, rand() % this->window->getSize().y));
+		}
+		else if (this->checkspawn == 3) {
+			this->enemies.push_back(new Enemy(1480.f, rand() % this->window->getSize().y));
+		}
 		this->spawnTimer = 0.f;
 	}
 	//updated
 	for (int i = 0; i < this->enemies.size(); ++i) {
 		bool enemy_removed = false;
 		if (this->checkice == 0) {
-			if (this->enemies[i]->getBounds().intersects(this->sbox1.getGlobalBounds())) {
-				this->enemies[i]->updateCollision();
+			if (this->enemies[i]->getBounds().intersects(this->box_1Bounds)) {
+				this->enemies[i]->updateCollision(this->box_1Bounds);
 			}
-			else if (this->enemies[i]->getBounds().intersects(this->sbox2.getGlobalBounds())) {
-				this->enemies[i]->updateCollision();
+			if (this->enemies[i]->getBounds().intersects(this->box_2Bounds)) {
+				this->enemies[i]->updateCollision(this->box_2Bounds);
 			}
-			else if (this->enemies[i]->getBounds().intersects(this->sbox3.getGlobalBounds())) {
-				this->enemies[i]->updateCollision();
+			if (this->enemies[i]->getBounds().intersects(this->box_3Bounds)) {
+				this->enemies[i]->updateCollision(this->box_3Bounds);
 			}
-			else if (this->enemies[i]->getBounds().intersects(this->sbox4.getGlobalBounds())) {
-				this->enemies[i]->updateCollision();
+			if (this->enemies[i]->getBounds().intersects(this->box_4Bounds)) {
+				this->enemies[i]->updateCollision(this->box_4Bounds);
 			}
-			else this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
-
+			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
 		}
 		else if (this->checkice == 1) {
 			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
@@ -354,7 +377,19 @@ void Game::updateghost()
 	//spawn
 	if (this->countkill % 5 == 0 && this->countkill != 0)
 	{
-		this->ghost.push_back(new Ghost(rand() % this->window->getSize().x, -100.f));
+		this->checkspawn = rand() % 4;
+		if (this->checkspawn == 0) {
+			this->ghost.push_back(new Ghost(rand() % this->window->getSize().x, -200.f));
+		}
+		else if (this->checkspawn == 1) {
+			this->ghost.push_back(new Ghost(rand() % this->window->getSize().x, 920.f));
+		}
+		else if (this->checkspawn == 2) {
+			this->ghost.push_back(new Ghost(-200.f, rand() % this->window->getSize().y));
+		}
+		else if (this->checkspawn == 3) {
+			this->ghost.push_back(new Ghost(1480.f, rand() % this->window->getSize().y));
+		}
 		(this->countkill) -= 5;
 	}
 	//updated
@@ -400,7 +435,19 @@ void Game::updatedragon()
 	//spawn
 	if (this->countfordragon % 50 == 0 && this->countfordragon != 0)
 	{
-		this->dragon.push_back(new Dragon(rand() % this->window->getSize().x, -100.f));
+		this->checkspawn = rand() % 4;
+		if (this->checkspawn == 0) {
+			this->dragon.push_back(new Dragon(rand() % this->window->getSize().x, -200.f));
+		}
+		else if (this->checkspawn == 1) {
+			this->dragon.push_back(new Dragon(rand() % this->window->getSize().x, 920.f));
+		}
+		else if (this->checkspawn == 2) {
+			this->dragon.push_back(new Dragon(-200.f, rand() % this->window->getSize().y));
+		}
+		else if (this->checkspawn == 3) {
+			this->dragon.push_back(new Dragon(1480.f, rand() % this->window->getSize().y));
+		}
 		(this->countfordragon) -= 50;
 	}
 	//updated
@@ -419,19 +466,19 @@ void Game::updatedragon()
 			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x + 70, this->dragon[i]->getPos().y + 20, 1.f, 0.f, 2.f));
 		}
 		if (this->checkice == 0) {
-			if (this->dragon[i]->getBounds().intersects(this->sbox1.getGlobalBounds())) {
-				this->dragon[i]->updateCollision();
+			if (this->dragon[i]->getBounds().intersects(this->box_1Bounds)) {
+				this->dragon[i]->updateCollision(this->box_1Bounds);
 			}
-			else if (this->dragon[i]->getBounds().intersects(this->sbox2.getGlobalBounds())) {
-				this->dragon[i]->updateCollision();
+			if (this->dragon[i]->getBounds().intersects(this->box_2Bounds)) {
+				this->dragon[i]->updateCollision(this->box_2Bounds);
 			}
-			else if (this->dragon[i]->getBounds().intersects(this->sbox3.getGlobalBounds())) {
-				this->dragon[i]->updateCollision();
+			if (this->dragon[i]->getBounds().intersects(this->box_3Bounds)) {
+				this->dragon[i]->updateCollision(this->box_3Bounds);
 			}
-			else if (this->dragon[i]->getBounds().intersects(this->sbox4.getGlobalBounds())) {
-				this->dragon[i]->updateCollision();
+			if (this->dragon[i]->getBounds().intersects(this->box_4Bounds)) {
+				this->dragon[i]->updateCollision(this->box_4Bounds);
 			}
-			else this->dragon[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
+			this->dragon[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
 		}
 		else if (this->checkice == 1) {
 			this->dragon[i]->updated(this->player->getPos().x + 5, this->player->getPos().y + 13, 0);
@@ -491,19 +538,19 @@ void Game::updateskill()
 	}
 	//update
 	for (int i = 0; i < this->skills.size(); ++i) {
-		if (this->skills[i]->getBounds().intersects(this->sbox1.getGlobalBounds())) {
+		if (this->skills[i]->getBounds().intersects(this->box_1Bounds)) {
 			this->skills.erase(this->skills.begin() + i);
 			this->skillTimer += 1000.f;
 		}
-		else if (this->skills[i]->getBounds().intersects(this->sbox2.getGlobalBounds())) {
+		else if (this->skills[i]->getBounds().intersects(this->box_2Bounds)) {
 			this->skills.erase(this->skills.begin() + i);
 			this->skillTimer += 1000.f;
 		}
-		else if (this->skills[i]->getBounds().intersects(this->sbox3.getGlobalBounds())) {
+		else if (this->skills[i]->getBounds().intersects(this->box_3Bounds)) {
 			this->skills.erase(this->skills.begin() + i);
 			this->skillTimer += 1000.f;
 		}
-		else if (this->skills[i]->getBounds().intersects(this->sbox4.getGlobalBounds())) {
+		else if (this->skills[i]->getBounds().intersects(this->box_4Bounds)) {
 			this->skills.erase(this->skills.begin() + i);
 			this->skillTimer += 1000.f;
 		}
@@ -670,22 +717,22 @@ void Game::updateBullets()
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
 		}
-		else if (bullet->getBounds().intersects(this->sbox1.getGlobalBounds())) {
+		else if (bullet->getBounds().intersects(this->box_1Bounds)) {
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
 		}
-		else if (bullet->getBounds().intersects(this->sbox2.getGlobalBounds())) {
+		else if (bullet->getBounds().intersects(this->box_2Bounds)) {
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
 		}
-		else if (bullet->getBounds().intersects(this->sbox3.getGlobalBounds())) {
+		else if (bullet->getBounds().intersects(this->box_3Bounds)) {
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
 		}
-		else if (bullet->getBounds().intersects(this->sbox4.getGlobalBounds())) {
+		else if (bullet->getBounds().intersects(this->box_4Bounds)) {
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
@@ -719,22 +766,22 @@ void Game::updatedragonshooting()
 			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
 			--countered;
 		}
-		else if (shoot->getBounds().intersects(this->sbox1.getGlobalBounds())) {
+		else if (shoot->getBounds().intersects(this->box_1Bounds)) {
 			delete this->dragonshooting.at(countered);
 			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
 			--countered;
 		}
-		else if (shoot->getBounds().intersects(this->sbox2.getGlobalBounds())) {
+		else if (shoot->getBounds().intersects(this->box_2Bounds)) {
 			delete this->dragonshooting.at(countered);
 			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
 			--countered;
 		}
-		else if (shoot->getBounds().intersects(this->sbox3.getGlobalBounds())) {
+		else if (shoot->getBounds().intersects(this->box_3Bounds)) {
 			delete this->dragonshooting.at(countered);
 			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
 			--countered;
 		}
-		else if (shoot->getBounds().intersects(this->sbox4.getGlobalBounds())) {
+		else if (shoot->getBounds().intersects(this->box_4Bounds)) {
 			delete this->dragonshooting.at(countered);
 			this->dragonshooting.erase(this->dragonshooting.begin() + countered);
 			--countered;
@@ -895,10 +942,10 @@ void Game::renderGUI()
 	this->window->draw(this->playerHpBarBack);
 	this->window->draw(this->playerHpBar);
 
-	window->draw(this->sbox1);
-	window->draw(this->sbox2);
-	window->draw(this->sbox3);
-	window->draw(this->sbox4);
+	window->draw(this->box_1);
+	window->draw(this->box_2);
+	window->draw(this->box_3);
+	window->draw(this->box_4);
 
 	window->draw(this->firepicx);
 	window->draw(this->icepicx);

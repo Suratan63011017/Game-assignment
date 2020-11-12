@@ -72,14 +72,23 @@ private:
 	int keepshield = 0;
 	int canicepillar = 0;
 
+	int checkspawn;
+
 	sf::Texture tbox1;
-	sf::Sprite sbox1;
 	sf::Texture tbox2;
-	sf::Sprite sbox2;
 	sf::Texture tbox3;
-	sf::Sprite sbox3;
 	sf::Texture tbox4;
-	sf::Sprite sbox4;
+
+	sf::RectangleShape box_1;
+	sf::RectangleShape box_2;
+	sf::RectangleShape box_3;
+	sf::RectangleShape box_4;
+
+	sf::FloatRect box_1Bounds;
+	sf::FloatRect box_2Bounds;
+	sf::FloatRect box_3Bounds;
+	sf::FloatRect box_4Bounds;
+
 
 	sf::Texture firepics;
 	sf::Sprite firepicx;

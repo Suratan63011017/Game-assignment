@@ -17,6 +17,12 @@ private:
 	sf::RectangleShape dragonHpBar;
 	sf::RectangleShape dragonHpBarBack;
 
+	sf::RectangleShape hitbox;
+	sf::Vector2f velocity;
+	sf::FloatRect nextpos;
+	sf::RectangleShape nextbox;
+	sf::FloatRect dragonbounds;
+
 	int dircheck;
 
 	int hp;
@@ -62,7 +68,7 @@ public:
 	void updatemovement(int pos_x, int pos_y);
 	void updateAnimations(int pos_x, int pos_y);
 	void updated(int pos_x, int pos_y, int movementspeed);
-	void updateCollision();
+	void updateCollision(sf::FloatRect box);
 	void updateHpBar();
 	void render(sf::RenderTarget& target);
 };
