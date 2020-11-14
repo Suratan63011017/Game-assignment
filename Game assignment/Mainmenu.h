@@ -10,9 +10,12 @@ private:
 	sf::Text menu[MAX_NUMBER_OF_ITEMS];
 	sf::Texture BGTexture;
 	sf::Sprite BGSprite;
+	sf::Texture scoreTexture;
+	sf::Sprite scoresprite;
 	sf::RectangleShape button[MAX_NUMBER_OF_ITEMS];
-
-	int playstate;
+	sf::Texture buttonname;
+	sf::Sprite namebuttonsprite;
+	bool playstate = false;
 
 
 public:
@@ -20,7 +23,9 @@ public:
 	virtual ~Mainmenu();
 	int GetPressedItem() { return selectedITEMindex; };
 	void draw(sf::RenderWindow& window);
-	void getplay(const int play);
+	void drawscore(sf::RenderWindow& window);
+	void drawnamespace(sf::RenderWindow& window);
+	void getplay(bool play);
 	void Moveup();
 	void Movedown();
 	void buttoncheck(const int button);

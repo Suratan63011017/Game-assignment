@@ -56,7 +56,6 @@ void Player::initSprite()
 	nextbox.setFillColor(sf::Color::Transparent);
 	nextbox.setOutlineColor(sf::Color::Transparent);
 	nextbox.setOutlineThickness(1.f);
-
 }
 
 //include spawn point pics from files
@@ -124,6 +123,14 @@ const int& Player::getHp() const
 const int& Player::getHpMax() const
 {
 	return this->hpMax;
+}
+
+bool Player::getdie()
+{
+	if (this->hp == 0) {
+		return true;
+	}
+	else return false;
 }
 
 //setting player HP

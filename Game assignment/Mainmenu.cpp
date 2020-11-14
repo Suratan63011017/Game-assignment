@@ -5,6 +5,9 @@ Mainmenu::Mainmenu(float width, float height)
 	BGTexture.loadFromFile("Sprite/BGmenu.png");
 	BGSprite.setTexture(this->BGTexture);
 
+	scoreTexture.loadFromFile("Sprite/scoreBG.png");
+	scoresprite.setTexture(this->scoreTexture);
+
 	font.loadFromFile("Font/2005_iannnnnAMD.ttf");
 	menu[0].setFont(font);
 	menu[0].setFillColor(sf::Color::Red);
@@ -44,6 +47,10 @@ Mainmenu::Mainmenu(float width, float height)
 	button[3].setFillColor(sf::Color::Black);
 	button[3].setPosition(sf::Vector2f((width / 2) - 100.f, (height / (MAX_NUMBER_OF_ITEMS + 1) * 4) + 10.f));
 
+	buttonname.loadFromFile("Sprite/namespace.png");
+	namebuttonsprite.setTexture(this->buttonname);
+	namebuttonsprite.setPosition(sf::Vector2f((width / 2) - 250.f, (height / 2) - 150.f));
+
 	selectedITEMindex = 0;
 }
 
@@ -63,7 +70,17 @@ void Mainmenu::draw(sf::RenderWindow& window)
 	}
 }
 
-void Mainmenu::getplay(const int play)
+void Mainmenu::drawscore(sf::RenderWindow& window)
+{
+	window.draw(this->scoresprite);
+}
+
+void Mainmenu::drawnamespace(sf::RenderWindow& window)
+{
+	window.draw(namebuttonsprite);
+}
+
+void Mainmenu::getplay(bool play)
 {
 	this->playstate = play;
 }
@@ -119,8 +136,7 @@ const sf::FloatRect Mainmenu::getBounds_3() const
 
 void Mainmenu::update()
 {
-	if (playstate == 1) {
+	if (playstate) {
 		menu[0].setString("RESUME");
 	}
-	else if (playstate == 0) {}
 }

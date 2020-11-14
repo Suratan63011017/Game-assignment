@@ -2,7 +2,7 @@
 //start window
 void Game::initwindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Game", sf::Style::Close | sf::Style::Resize | sf::Style::Titlebar);
+	this->window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Escape", sf::Style::Close | sf::Style::Resize | sf::Style::Titlebar);
 	this->window->setFramerateLimit(144);
 	this->menu = new Mainmenu(this->window->getSize().x, window->getSize().y);
 }
@@ -66,20 +66,20 @@ void Game::initice()
 //GUI
 void Game::initGUI()
 {
-	this->font.loadFromFile("Font/sd cartoon 2.ttf");
-	this->pointText.setFont(this->font);
-	this->pointText.setCharacterSize(36);
+	this->bit8.loadFromFile("Font/2005_iannnnnAMD.ttf");
+
+	this->pointText.setFont(this->bit8);
+	this->pointText.setCharacterSize(60);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setString("Score : ");
 	this->pointText.setPosition(sf::Vector2f(1050.f, 10.f));
 
-	this->shadowpointtext.setFont(this->font);
-	this->shadowpointtext.setCharacterSize(36);
+	this->shadowpointtext.setFont(this->bit8);
+	this->shadowpointtext.setCharacterSize(60);
 	this->shadowpointtext.setFillColor(sf::Color::Black);
 	this->shadowpointtext.setString("Score : ");
 	this->shadowpointtext.setPosition(sf::Vector2f(1055.f, 15.f));
 
-	this->bit8.loadFromFile("Font/2005_iannnnnAMD.ttf");
 	this->FIRETEXT.setFont(this->bit8);
 	this->FIRETEXT.setCharacterSize(40);
 	this->FIRETEXT.setFillColor(sf::Color::White);
@@ -137,6 +137,7 @@ void Game::initSystems()
 	this->box_4.setSize(sf::Vector2f(300.f, 50.f));
 	this->box_4.setPosition(490.f, 520.f);
 	box_4Bounds = box_4.getGlobalBounds();
+
 }
 
 //Main starter functions
@@ -164,6 +165,7 @@ Game::~Game()
 	delete this->window;
 	delete this->bg;
 	delete this->player;
+	delete this->menu;
 	for (auto& i : this->textures) {
 		delete i.second;
 	}
@@ -202,77 +204,136 @@ Game::~Game()
 //run your game
 void Game::run()
 {
-	sf::Event e;
+	Textbox textbox1(100, sf::Color::White, true);
+	textbox1.setFont(this->bit8);
+	textbox1.setPosition({ 500.f,320.f });
+	textbox1.setlimit(true, 10);
 
+	this->fp = fopen("./score.txt", "r");
+	for (int i = 0; i < 5; i++) {
+		fscanf(fp, "%s", &temp);
+		name[i] = temp;
+		fscanf(fp, "%d", &score[i]);
+		userScore.push_back(make_pair(score[i], name[i]));
+	}
+
+	sf::Event e;
 	while (this->window->isOpen())
 	{
 		while (this->window->pollEvent(e))
 		{
 			switch (e.type)
 			{
-			case sf::Event::KeyReleased:
-				switch (e.key.code)
-				{
-				case sf::Keyboard::Up:
-					this->menu->Moveup();
-					break;
-				case sf::Keyboard::Down:
-					this->menu->Movedown();
-					break;
-				case sf::Keyboard::Enter:
-					switch (this->menu->GetPressedItem())
-					{
-					case 0:
-						gamestate = 1;
-						break;
-					case 1:
-
-					case 2:
-						this->window->close();
-						break;
-					}
-					break;
-				case sf::Keyboard::Escape:
-					this->menu->update();
-					gamestate = 0;
-					break;
-				}
-				break;
 			case sf::Event::Closed:
-				this->window->close();
-				break;
+				window->close();
+			case sf::Event::TextEntered:
+				if (playername) {
+					textbox1.typeOn(e);
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+					gamestate = 0;
+					checkname = false;
+				}
 			}
+
 		}
 		this->window->clear(); //for clear old frame
 		if (gamestate == 0) {
 			this->updateMousePositions();
+			this->menu->update();
 			this->menu->draw(*this->window);
+			if (checkname && !(playstatus)) {
+				this->menu->drawnamespace(*this->window);
+				textbox1.drawTo(*this->window);
+			}
 			if (this->menu->getBounds_0().contains(this->mousePosview)) {
 				this->menu->buttoncheck(0);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					gamestate = 1;
+					if (playstatus) {
+						gamestate = 1;
+					}
+					checkname = true;
+					playername = true;
 				}
 			}
-			if (this->menu->getBounds_1().contains(this->mousePosview)) {
+			else if (this->menu->getBounds_1().contains(this->mousePosview)) {
 				this->menu->buttoncheck(1);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					gamestate = 2;
+				}
 			}
-			if (this->menu->getBounds_2().contains(this->mousePosview)) {
+			else if (this->menu->getBounds_2().contains(this->mousePosview)) {
 				this->menu->buttoncheck(2);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					gamestate = 3;
+				}
 			}
-			if (this->menu->getBounds_3().contains(this->mousePosview)) {
+			else if (this->menu->getBounds_3().contains(this->mousePosview)) {
 				this->menu->buttoncheck(3);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					this->window->close();
 				}
 			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && checkname) {
+				playstatus = true;
+				checkname = false;
+				gamestate = 1;
+				this->menu->getplay(playstatus);
+				name[5] = textbox1.gettext();
+			}
 		}
 		else if (gamestate == 1) {
-			this->menu->getplay(1);
-			this->update();
-			this->render();
+			if (this->player->getHp() != 0) {
+				this->update();
+				this->render();
+				cangetnewscores = true;
+			}
+			else if (cangetnewscores) {
+				this->fp = fopen("./score.txt", "r");
+				score[5] = this->points;
+				userScore.push_back(make_pair(score[5], name[5]));
+				sort(userScore.begin(), userScore.end());
+				fclose(fp);
+				fopen("./score.txt", "w");
+				for (int i = 5; i >= 1; i--) {
+					strcpy(temp, userScore[i].second.c_str());
+					fprintf(fp, "%s %d\n", temp, userScore[i].first);
+				}
+				fclose(fp);
+				cangetnewscores = false;
+			}
+
+		}
+		else if (gamestate == 2) {
+			this->menu->drawscore(*this->window);
+			if (this->player->getHp() != 0) {
+				for (int i = 135; i <= 475; i += 85) {
+					showhighscore(950, i, to_string(userScore[(i - 135) / 85].first), *this->window, &bit8);
+					showhighscore(250, i, userScore[(i - 135) / 85].second, *this->window, &bit8);
+				}
+			}
+			else {
+				for (int i = 135; i <= 475; i += 85) {
+					showhighscore(950, i, to_string(userScore[5 - ((i - 135) / 85)].first), *this->window, &bit8);
+					showhighscore(250, i, userScore[5 - ((i - 135) / 85)].second, *this->window, &bit8);
+				}
+			}
+		}
+		else if (gamestate == 3) {
+
 		}
 		this->window->display(); //for update new frame
 	}
+}
+
+void Game::showhighscore(int x, int y, string word, sf::RenderWindow& window, sf::Font* font)
+{
+	sf::Text text;
+	text.setFont(*font);
+	text.setPosition(x, y);
+	text.setString(word);
+	text.setCharacterSize(120);
+	window.draw(text);
 }
 
 void Game::updateMousePositions()

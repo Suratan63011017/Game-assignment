@@ -80,6 +80,8 @@ public:
 	//Hp functions
 	const int& getHp() const;
 	const int& getHpMax() const;
+
+	bool getdie();
 	void setHp(const int hp);
 	void loseHp(const int value);
 

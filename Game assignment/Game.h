@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include"Player.h"
 #include"Background.h"
 #include<string>
@@ -13,6 +14,14 @@
 #include"Ghost.h"
 #include"Dragon.h"
 #include"Mainmenu.h"
+#include"Textbox.h"
+#include<utility>
+#include<algorithm>
+#include<string>
+#include<vector>
+#include<iostream>
+
+using namespace std;
 class Game
 {
 private:
@@ -21,10 +30,18 @@ private:
 	Mainmenu* menu;
 	sf::Vector2i mousePosWindow;
 	sf::Vector2f mousePosview;
+	bool checkname = false;
 
+	FILE* fp;
+	char temp[255];
+	int score[6];
+	string name[6];
+	vector<pair<int, string>>userScore;
 	int gamestate = 0;
+	bool playername = false;
+	bool playstatus = false;
+	bool cangetnewscores = false;
 
-	sf::Font font;
 	sf::Font bit8;
 	sf::Text pointText;
 	sf::Text shadowpointtext;
@@ -119,7 +136,7 @@ public:
 	//Update and render
 	void run();
 
-
+	void showhighscore(int x, int y, string word, sf::RenderWindow& window, sf::Font* font);
 	//update function
 	void updateMousePositions();
 	void updatePlayer();

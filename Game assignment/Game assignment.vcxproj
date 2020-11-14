@@ -46,6 +46,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Shield.h" />
     <ClInclude Include="Skill.h" />
+    <ClInclude Include="Textbox.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
