@@ -172,21 +172,25 @@ void Player::updatemovement()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
 		velocity.y += 2.f;
+		this->dircheck = 1;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_DOWN; //go down
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		velocity.x -= 2.f;
+		this->dircheck = 2;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_LEFT; //go left
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		velocity.x += 2.f;
+		this->dircheck = 3;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_RIGHT; //go right
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
 		velocity.y -= 2.f;
+		this->dircheck = 4;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_TOP; //go top
 	}
 	playerbounds = hitbox.getGlobalBounds();
@@ -221,7 +225,28 @@ void Player::updatemovement()
 //function for play next sprite
 void Player::updateAnimations()
 {
-	if (this->animState == PlAYER_ANIMATION_STATES::IDLE) {}
+	if (this->animState == PlAYER_ANIMATION_STATES::IDLE) {
+		if (this->dircheck == 1) {
+			this->currentFrame.top = 0.f;
+			this->currentFrame.left = 68.f;
+			this->playersprite.setTextureRect(this->currentFrame);
+		}
+		else if (this->dircheck == 2) {
+			this->currentFrame.top = 95.f;
+			this->currentFrame.left = 68.f;
+			this->playersprite.setTextureRect(this->currentFrame);
+		}
+		else if (this->dircheck == 3) {
+			this->currentFrame.top = 190.f;
+			this->currentFrame.left = 68.f;
+			this->playersprite.setTextureRect(this->currentFrame);
+		}
+		else if (this->dircheck == 4) {
+			this->currentFrame.top = 285.f;
+			this->currentFrame.left = 68.f;
+			this->playersprite.setTextureRect(this->currentFrame);
+		}
+	}
 	else if (this->animState == PlAYER_ANIMATION_STATES::MOVING_DOWN) {
 		if (this->animatetimer.getElapsedTime().asSeconds() >= 0.1f) {
 			this->currentFrame.top = 0.f;

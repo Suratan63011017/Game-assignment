@@ -245,6 +245,18 @@ void Dragon::updateCollision(sf::FloatRect box)
 		&& dragonbounds.left + dragonbounds.width>box.left
 		) {
 		velocity.y = 0.f;
+		if (this->dragonposition.x >= 0.f && dragonposition.x < 320.f) {
+			velocity.x = 1.f;
+		}
+		else if (this->dragonposition.x >= 320.f && dragonposition.x < 640.f) {
+			velocity.x = -1.f;
+		}
+		else if (this->dragonposition.x >= 640.f && dragonposition.x < 960.f) {
+			velocity.x = 1.f;
+		}
+		else if (this->dragonposition.x >= 960.f && dragonposition.x < 1280.f) {
+			velocity.x = -1.f;
+		}
 		hitbox.setPosition(dragonbounds.left, box.top - dragonbounds.height);
 		dragonposition.x = dragonbounds.left - 5;
 		dragonposition.y = box.top - dragonbounds.height - 5;
@@ -259,6 +271,18 @@ void Dragon::updateCollision(sf::FloatRect box)
 		&& dragonbounds.left + dragonbounds.width>box.left
 		) {
 		velocity.y = 0.f;
+		if (this->dragonposition.x >= 0.f && dragonposition.x < 320.f) {
+			velocity.x = 1.f;
+		}
+		else if (this->dragonposition.x >= 320.f && dragonposition.x < 640.f) {
+			velocity.x = -1.f;
+		}
+		else if (this->dragonposition.x >= 640.f && dragonposition.x < 960.f) {
+			velocity.x = 1.f;
+		}
+		else if (this->dragonposition.x >= 960.f && dragonposition.x < 1280.f) {
+			velocity.x = -1.f;
+		}
 		hitbox.setPosition(dragonbounds.left, box.top + box.height);
 		dragonposition.x = dragonbounds.left - 5;
 		dragonposition.y = box.top + box.height - 5;
@@ -272,6 +296,12 @@ void Dragon::updateCollision(sf::FloatRect box)
 		&& dragonbounds.top + dragonbounds.height>box.top
 		) {
 		velocity.x = 0.f;
+		if (this->dragonposition.y >= 0.f && dragonposition.y < 360.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->dragonposition.y >= 360.f && dragonposition.y < 720.f) {
+			velocity.y = 1.f;
+		}
 		hitbox.setPosition(box.left - dragonbounds.width, dragonbounds.top);
 		dragonposition.x = box.left - dragonbounds.width - 5;
 		dragonposition.y = dragonbounds.top - 5;
@@ -285,6 +315,12 @@ void Dragon::updateCollision(sf::FloatRect box)
 		&& dragonbounds.top + dragonbounds.height>box.top
 		) {
 		velocity.x = 0.f;
+		if (this->dragonposition.y >= 0.f && dragonposition.y < 360.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->dragonposition.y >= 360.f && dragonposition.y < 720.f) {
+			velocity.y = 1.f;
+		}
 		hitbox.setPosition(box.left + box.width, dragonbounds.top);
 		dragonposition.x = box.left + box.width - 5;
 		dragonposition.y = dragonbounds.top - 5;

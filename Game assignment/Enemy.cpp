@@ -178,6 +178,18 @@ void Enemy::updateCollision(sf::FloatRect box)
 		&& enemybounds.left + enemybounds.width>box.left
 		) {
 		velocity.y = 0.f;
+		if (this->enemyposition.x >= 0.f && enemyposition.x < 320.f) {
+			velocity.x = 1.f;
+		}
+		else if (this->enemyposition.x >= 320.f && enemyposition.x < 640.f) {
+			velocity.x = -1.f;
+		}
+		else if (this->enemyposition.x >= 640.f && enemyposition.x < 960.f) {
+			velocity.x = 1.f;
+		}
+		else if (this->enemyposition.x >= 960.f && enemyposition.x < 1280.f) {
+			velocity.x = -1.f;
+		}
 		hitbox.setPosition(enemybounds.left, box.top - enemybounds.height);
 		enemyposition.x = enemybounds.left - 13;
 		enemyposition.y = box.top - enemybounds.height - 20;
@@ -192,6 +204,18 @@ void Enemy::updateCollision(sf::FloatRect box)
 		&& enemybounds.left + enemybounds.width>box.left
 		) {
 		velocity.y = 0.f;
+		if (this->enemyposition.x >= 0.f && enemyposition.x < 320.f) {
+			velocity.x = 1.f;
+		}
+		else if (this->enemyposition.x >= 320.f && enemyposition.x < 640.f) {
+			velocity.x = -1.f;
+		}
+		else if (this->enemyposition.x >= 640.f && enemyposition.x < 960.f) {
+			velocity.x = 1.f;
+		}
+		else if (this->enemyposition.x >= 960.f && enemyposition.x < 1280.f) {
+			velocity.x = -1.f;
+		}
 		hitbox.setPosition(enemybounds.left, box.top + box.height);
 		enemyposition.x = enemybounds.left - 13;
 		enemyposition.y = box.top + box.height - 20;
@@ -205,6 +229,12 @@ void Enemy::updateCollision(sf::FloatRect box)
 		&& enemybounds.top + enemybounds.height>box.top
 		) {
 		velocity.x = 0.f;
+		if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f) {
+			velocity.y = 1.f;
+		}
 		hitbox.setPosition(box.left - enemybounds.width, enemybounds.top);
 		enemyposition.x = box.left - enemybounds.width - 13;
 		enemyposition.y = enemybounds.top - 20;
@@ -218,12 +248,23 @@ void Enemy::updateCollision(sf::FloatRect box)
 		&& enemybounds.top + enemybounds.height>box.top
 		) {
 		velocity.x = 0.f;
+		if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f) {
+			velocity.y = 1.f;
+		}
 		hitbox.setPosition(box.left + box.width, enemybounds.top);
 		enemyposition.x = box.left + box.width - 13;
 		enemyposition.y = enemybounds.top - 20;
 		enemysprite.setPosition(this->enemyposition);
 		EnemyHpBar.setPosition(this->enemyposition.x + 17, this->enemyposition.y);
 	}
+	hitbox.move(velocity);
+	this->enemysprite.move(this->velocity);
+	this->EnemyHpBar.move(this->velocity);
+	enemyposition.x += velocity.x;
+	enemyposition.y += velocity.y;
 }
 
 void Enemy::updateHpBar()

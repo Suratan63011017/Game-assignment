@@ -138,6 +138,21 @@ void Game::initSystems()
 	this->box_4.setPosition(490.f, 520.f);
 	box_4Bounds = box_4.getGlobalBounds();
 
+	//sound
+	this->shot.loadFromFile("Sound/Rim Shot.wav");
+	this->shots.setBuffer(this->shot);
+
+	this->enemydie.loadFromFile("Sound/enemy die.wav");
+	this->enemydies.setBuffer(this->enemydie);
+
+	this->ghostdie.loadFromFile("Sound/ghost die.wav");
+	this->ghostdies.setBuffer(this->ghostdie);
+
+	this->Fire_soundbuf.loadFromFile("Sound/Fireball.wav");
+	this->Fire_sound.setBuffer(this->Fire_soundbuf);
+
+	this->Freezer.loadFromFile("Sound/Freeze.wav");
+	this->Freezers.setBuffer(this->Freezer);
 }
 
 //Main starter functions
@@ -204,10 +219,10 @@ Game::~Game()
 //run your game
 void Game::run()
 {
-	Textbox textbox1(100, sf::Color::White, true);
-	textbox1.setFont(this->bit8);
-	textbox1.setPosition({ 500.f,320.f });
-	textbox1.setlimit(true, 10);
+	Textbox playernametextbox(100, sf::Color::White, true);
+	playernametextbox.setFont(this->bit8);
+	playernametextbox.setPosition({ 500.f,320.f });
+	playernametextbox.setlimit(true, 10);
 
 	this->fp = fopen("./score.txt", "r");
 	for (int i = 0; i < 5; i++) {
@@ -228,7 +243,7 @@ void Game::run()
 				window->close();
 			case sf::Event::TextEntered:
 				if (playername) {
-					textbox1.typeOn(e);
+					playernametextbox.typeOn(e);
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 					gamestate = 0;
@@ -238,13 +253,13 @@ void Game::run()
 
 		}
 		this->window->clear(); //for clear old frame
+		this->updateMousePositions();
 		if (gamestate == 0) {
-			this->updateMousePositions();
 			this->menu->update();
 			this->menu->draw(*this->window);
 			if (checkname && !(playstatus)) {
 				this->menu->drawnamespace(*this->window);
-				textbox1.drawTo(*this->window);
+				playernametextbox.drawTo(*this->window);
 			}
 			if (this->menu->getBounds_0().contains(this->mousePosview)) {
 				this->menu->buttoncheck(0);
@@ -279,7 +294,7 @@ void Game::run()
 				checkname = false;
 				gamestate = 1;
 				this->menu->getplay(playstatus);
-				name[5] = textbox1.gettext();
+				name[5] = playernametextbox.gettext();
 			}
 		}
 		else if (gamestate == 1) {
@@ -318,9 +333,30 @@ void Game::run()
 					showhighscore(250, i, userScore[5 - ((i - 135) / 85)].second, *this->window, &bit8);
 				}
 			}
+			if (this->menu->beforegetbounds().contains(this->mousePosview)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->nextpage.getElapsedTime().asSeconds() > 0.25f) {
+					this->gamestate = 0;
+					this->nextpage.restart();
+				}
+			}
 		}
 		else if (gamestate == 3) {
-
+			this->menu->howtoplay(*this->window);
+			if (this->menu->nextgetbounds().contains(this->mousePosview)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->nextpage.getElapsedTime().asSeconds() > 0.25f) {
+					this->menu->nextpages();
+					this->nextpage.restart();
+				}
+			}
+			else if (this->menu->beforegetbounds().contains(this->mousePosview)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->nextpage.getElapsedTime().asSeconds() > 0.25f) {
+					if (this->menu->getpages() == 0) {
+						this->gamestate = 0;
+					}
+					this->menu->beforepages();
+					this->nextpage.restart();
+				}
+			}
 		}
 		this->window->display(); //for update new frame
 	}
@@ -410,6 +446,7 @@ void Game::updateenemy()
 				this->enemies[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->enemies[i]->getHp() == 0) {
+					enemydies.play();
 					this->points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
@@ -422,6 +459,7 @@ void Game::updateenemy()
 			if (this->fire[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
 				this->enemies[i]->loseHp(1);
 				if (this->enemies[i]->getHp() == 0) {
+					enemydies.play();
 					this->points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
@@ -468,6 +506,7 @@ void Game::updateghost()
 				this->ghost[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->ghost[i]->getHp() == 0) {
+					ghostdies.play();
 					this->points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
 					ghost_removed = true;
@@ -480,6 +519,7 @@ void Game::updateghost()
 			if (this->fire[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
 				this->ghost[i]->loseHp(1);
 				if (this->ghost[i]->getHp() == 0) {
+					ghostdies.play();
 					this->points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
 					ghost_removed = true;
@@ -577,7 +617,7 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->type = 1 + rand() % 5;
+		this->type = 5 /*1 + rand() % 5*/;
 		if (this->type == 1) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
 		}
@@ -687,39 +727,48 @@ void Game::updateInput()
 	}
 	//triple balls
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_top_trip() && this->directioncheck == 1 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y, 1.f, -1.f, 5.f));
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y, -1.f, -1.f, 5.f));
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y, 1.f, -1.f, 5.f));
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y, -1.f, -1.f, 5.f));
+		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_left_trip() && this->directioncheck == 2 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, 1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, -1.f, 5.f));
+		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_right_trip() && this->directioncheck == 3 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, 1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, -1.f, 5.f));
+		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_down_trip() && this->directioncheck == 0 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y + 95, 1.f, 1.f, 5.f));
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y + 95, -1.f, 1.f, 5.f));
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y + 95, 1.f, 1.f, 5.f));
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y + 95, -1.f, 1.f, 5.f));
+		this->shots.play();
 	}
 	//normal shooting
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_top() && this->directioncheck == 1) {
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y, 0.f, -1.f, 5.f));
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y, 0.f, -1.f, 5.f));
+		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_left() && this->directioncheck == 2) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, 0.f, 5.f));
+		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_right() && this->directioncheck == 3) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, 0.f, 5.f));
+		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_down() && this->directioncheck == 0) {
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 25, this->player->getPos().y + 95, 0.f, 1.f, 5.f));
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y + 95, 0.f, 1.f, 5.f));
+		this->shots.play();
 	}
 	//fire ball
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 1 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireball.png");
 		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 0.f, -1.f, 5.f, 1, -1));
 		(this->canfireball)--;
+		this->Fire_sound.play();
 		this->firetime.restart();
 		this->bg->update(2);
 	}
@@ -727,6 +776,7 @@ void Game::updateInput()
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireball.png");
 		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 0.f, 1.f, 5.f, 1, 1));
 		(this->canfireball)--;
+		this->Fire_sound.play();
 		this->firetime.restart();
 		this->bg->update(2);
 	}
@@ -734,6 +784,7 @@ void Game::updateInput()
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireblass.png");
 		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 1.f, 0.f, 5.f, 1, 1));
 		(this->canfireball)--;
+		this->Fire_sound.play();
 		this->firetime.restart();
 		this->bg->update(2);
 	}
@@ -741,12 +792,14 @@ void Game::updateInput()
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireblass.png");
 		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, -1.f, 0.f, 5.f, -1, 1));
 		(this->canfireball)--;
+		this->Fire_sound.play();
 		this->firetime.restart();
 		this->bg->update(2);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && this->canicepillar > 0) {
 		this->checkice = 1;
 		(this->canicepillar)--;
+		this->Freezers.play();
 		this->icetime.restart();
 		this->bg->update(1);
 	}

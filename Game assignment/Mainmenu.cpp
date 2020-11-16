@@ -8,6 +8,15 @@ Mainmenu::Mainmenu(float width, float height)
 	scoreTexture.loadFromFile("Sprite/scoreBG.png");
 	scoresprite.setTexture(this->scoreTexture);
 
+	howtoplays[0].loadFromFile("Sprite/1.png");
+	howtoplays[1].loadFromFile("Sprite/2.png");
+	howtoplays[2].loadFromFile("Sprite/3.png");
+	howtoplays[3].loadFromFile("Sprite/4.png");
+	howtoplays[4].loadFromFile("Sprite/BGty.png");
+	for (int i = 0; i < 5; i++) {
+		howtoplaysprites[i].setTexture(howtoplays[i]);
+	}
+
 	font.loadFromFile("Font/2005_iannnnnAMD.ttf");
 	menu[0].setFont(font);
 	menu[0].setFillColor(sf::Color::Red);
@@ -51,6 +60,15 @@ Mainmenu::Mainmenu(float width, float height)
 	namebuttonsprite.setTexture(this->buttonname);
 	namebuttonsprite.setPosition(sf::Vector2f((width / 2) - 250.f, (height / 2) - 150.f));
 
+	nextbutton.loadFromFile("Sprite/Arrow.png");
+	nextbuttonsprite.setSize(sf::Vector2f(105.f, 75.f));
+	nextbuttonsprite.setTexture(&this->nextbutton);
+	nextbuttonsprite.setPosition(1150.f, 600.f);
+
+	beforebuttonsprite.setSize(sf::Vector2f(105.f, 75.f));
+	beforebuttonsprite.setScale(-1.f, 1.f);
+	beforebuttonsprite.setTexture(&this->nextbutton);
+	beforebuttonsprite.setPosition(130.f, 600.f);
 	selectedITEMindex = 0;
 }
 
@@ -73,6 +91,7 @@ void Mainmenu::draw(sf::RenderWindow& window)
 void Mainmenu::drawscore(sf::RenderWindow& window)
 {
 	window.draw(this->scoresprite);
+	window.draw(this->beforebuttonsprite);
 }
 
 void Mainmenu::drawnamespace(sf::RenderWindow& window)
@@ -134,9 +153,48 @@ const sf::FloatRect Mainmenu::getBounds_3() const
 	return this->button[3].getGlobalBounds();
 }
 
+const sf::FloatRect Mainmenu::nextgetbounds() const
+{
+	return this->nextbuttonsprite.getGlobalBounds();
+}
+
+const sf::FloatRect Mainmenu::beforegetbounds() const
+{
+	return this->beforebuttonsprite.getGlobalBounds();
+}
+
 void Mainmenu::update()
 {
 	if (playstate) {
 		menu[0].setString("RESUME");
 	}
+}
+
+void Mainmenu::howtoplay(sf::RenderWindow& window)
+{
+	window.draw(this->howtoplaysprites[this->pages]);
+	if (this->pages < 4) {
+		window.draw(this->nextbuttonsprite);
+	}
+	window.draw(this->beforebuttonsprite);
+}
+
+void Mainmenu::nextpages()
+{
+	if (this->pages < 4) {
+		(this->pages)++;
+	}
+}
+
+void Mainmenu::beforepages()
+{
+	if (this->pages > 0) {
+		(this->pages)--;
+	}
+	else this->pages = 0;
+}
+
+const int Mainmenu::getpages() const
+{
+	return this->pages;
 }

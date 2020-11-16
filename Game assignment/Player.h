@@ -46,6 +46,8 @@ private:
 	int hp;
 	int hpMax;
 
+	int dircheck = 1;
+
 	sf::Clock dirinput;
 	//Animation 
 	sf::Clock animatetimer; //to set animation time 

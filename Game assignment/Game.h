@@ -1,5 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
+#include<SFML/Audio.hpp>
 #include"Player.h"
 #include"Background.h"
 #include<string>
@@ -79,6 +80,7 @@ private:
 	sf::Clock shieldtime;
 	sf::Clock icetime;
 	sf::Clock inputcheck;
+	sf::Clock nextpage;
 	float skillTimer;
 	float skillTimerMax;
 	int type;
@@ -112,6 +114,18 @@ private:
 
 	sf::Texture icepics;
 	sf::Sprite icepicx;
+
+	sf::SoundBuffer shot;
+	sf::Sound shots;
+	sf::SoundBuffer enemydie;
+	sf::Sound enemydies;
+	sf::SoundBuffer ghostdie;
+	sf::Sound ghostdies;
+	sf::SoundBuffer Fire_soundbuf;
+	sf::Sound Fire_sound;
+	sf::SoundBuffer Freezer;
+	sf::Sound Freezers;
+
 
 	//Function
 	void initwindow();
