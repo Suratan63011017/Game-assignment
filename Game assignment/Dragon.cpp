@@ -327,6 +327,11 @@ void Dragon::updateCollision(sf::FloatRect box)
 		dragonsprite.setPosition(this->dragonposition);
 		dragonHpBar.setPosition(this->dragonposition.x + 10, this->dragonposition.y);
 	}
+	hitbox.move(velocity);
+	this->dragonsprite.move(this->velocity);
+	this->dragonHpBar.move(this->velocity);
+	dragonposition.x += velocity.x;
+	dragonposition.y += velocity.y;
 }
 
 void Dragon::updateHpBar()

@@ -153,6 +153,24 @@ void Game::initSystems()
 
 	this->Freezer.loadFromFile("Sound/Freeze.wav");
 	this->Freezers.setBuffer(this->Freezer);
+
+	this->dragondie.loadFromFile("Sound/dragondies.wav");
+	this->dragondies.setBuffer(this->dragondie);
+
+	this->shieldsoundbuf.loadFromFile("Sound/shield.wav");
+	this->shieldsound.setBuffer(this->shieldsoundbuf);
+
+	this->keepitem.loadFromFile("Sound/keepitem.wav");
+	this->keepitems.setBuffer(this->keepitem);
+
+	this->Click.loadFromFile("Sound/Click.wav");
+	this->clicks.setBuffer(this->Click);
+
+	this->switc.loadFromFile("Sound/switch.wav");
+	this->switcs.setBuffer(this->switc);
+
+	music.openFromFile("Sound/music1.ogg");
+	music.setVolume(30);
 }
 
 //Main starter functions
@@ -233,8 +251,11 @@ void Game::run()
 	}
 
 	sf::Event e;
+
+	music.play();
 	while (this->window->isOpen())
 	{
+
 		while (this->window->pollEvent(e))
 		{
 			switch (e.type)
@@ -262,8 +283,13 @@ void Game::run()
 				playernametextbox.drawTo(*this->window);
 			}
 			if (this->menu->getBounds_0().contains(this->mousePosview)) {
+				if (canswitch) {
+					this->switcs.play();
+					canswitch = false;
+				}
 				this->menu->buttoncheck(0);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					this->clicks.play();
 					if (playstatus) {
 						gamestate = 1;
 					}
@@ -272,22 +298,40 @@ void Game::run()
 				}
 			}
 			else if (this->menu->getBounds_1().contains(this->mousePosview)) {
+				if (canswitch) {
+					this->switcs.play();
+					canswitch = false;
+				}
 				this->menu->buttoncheck(1);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					this->clicks.play();
 					gamestate = 2;
 				}
 			}
 			else if (this->menu->getBounds_2().contains(this->mousePosview)) {
+				if (canswitch) {
+					this->switcs.play();
+					canswitch = false;
+				}
 				this->menu->buttoncheck(2);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					this->clicks.play();
 					gamestate = 3;
 				}
 			}
 			else if (this->menu->getBounds_3().contains(this->mousePosview)) {
+				if (canswitch) {
+					this->switcs.play();
+					canswitch = false;
+				}
 				this->menu->buttoncheck(3);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					this->clicks.play();
 					this->window->close();
 				}
+			}
+			else {
+				canswitch = true;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && checkname) {
 				playstatus = true;
@@ -335,6 +379,7 @@ void Game::run()
 			}
 			if (this->menu->beforegetbounds().contains(this->mousePosview)) {
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->nextpage.getElapsedTime().asSeconds() > 0.25f) {
+					this->clicks.play();
 					this->gamestate = 0;
 					this->nextpage.restart();
 				}
@@ -344,12 +389,14 @@ void Game::run()
 			this->menu->howtoplay(*this->window);
 			if (this->menu->nextgetbounds().contains(this->mousePosview)) {
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->nextpage.getElapsedTime().asSeconds() > 0.25f) {
+					this->clicks.play();
 					this->menu->nextpages();
 					this->nextpage.restart();
 				}
 			}
 			else if (this->menu->beforegetbounds().contains(this->mousePosview)) {
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->nextpage.getElapsedTime().asSeconds() > 0.25f) {
+					this->clicks.play();
 					if (this->menu->getpages() == 0) {
 						this->gamestate = 0;
 					}
@@ -556,15 +603,19 @@ void Game::updatedragon()
 		bool dragon_removed = false;
 		if (this->dragon[i]->canAttack_top() && this->dragon[i]->getdir() == 4) {
 			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x + 50, this->dragon[i]->getPos().y - 50, 0.f, -1.f, 2.f));
+			this->Fire_sound.play();
 		}
 		else if (this->dragon[i]->canAttack_left() && this->dragon[i]->getdir() == 2) {
 			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x - 20, this->dragon[i]->getPos().y + 20, -1.f, 0.f, 2.f));
+			this->Fire_sound.play();
 		}
 		else if (this->dragon[i]->canAttack_down() && this->dragon[i]->getdir() == 1) {
 			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x + 50, this->dragon[i]->getPos().y + 70, 0.f, 1.f, 2.f));
+			this->Fire_sound.play();
 		}
 		else if (this->dragon[i]->canAttack_right() && this->dragon[i]->getdir() == 3) {
 			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x + 70, this->dragon[i]->getPos().y + 20, 1.f, 0.f, 2.f));
+			this->Fire_sound.play();
 		}
 		if (this->checkice == 0) {
 			if (this->dragon[i]->getBounds().intersects(this->box_1Bounds)) {
@@ -591,6 +642,7 @@ void Game::updatedragon()
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->dragon[i]->getHp() == 0) {
 					this->points += 1000;
+					dragondies.play();
 					this->dragon.erase(this->dragon.begin() + i);
 					dragon_removed = true;
 					(this->countkill)++;
@@ -602,6 +654,7 @@ void Game::updatedragon()
 				this->dragon[i]->loseHp(1);
 				if (this->dragon[i]->getHp() == 0) {
 					this->points += 1000;
+					dragondies.play();
 					this->dragon.erase(this->dragon.begin() + i);
 					dragon_removed = true;
 					(this->countkill)++;
@@ -617,7 +670,7 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->type = 5 /*1 + rand() % 5*/;
+		this->type = 1 + rand() % 5;
 		if (this->type == 1) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
 		}
@@ -658,6 +711,7 @@ void Game::updateskill()
 		//1 skill
 		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 1) {
 			this->skills.erase(this->skills.begin() + i);
+			this->keepitems.play();
 			this->skilltime.restart();
 			if (this->skilltime.getElapsedTime().asSeconds() <= 15.f) {
 				this->player->doubattack(1);
@@ -668,16 +722,20 @@ void Game::updateskill()
 		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 2) {
 			(this->canfireball)++;
 			this->skills.erase(this->skills.begin() + i);
+			this->keepitems.play();
 		}
 		//3 skill
 		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 3) {
 			this->skills.erase(this->skills.begin() + i);
+			this->keepitems.play();
 			this->triptime.restart();
 			this->checktriple = 1;
 		}
 		//4 skill
 		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 4) {
 			this->skills.erase(this->skills.begin() + i);
+			this->keepitems.play();
+			this->shieldsound.play();
 			this->shieldtime.restart();
 			this->checkshield = 1;
 		}
@@ -685,6 +743,7 @@ void Game::updateskill()
 		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 5) {
 			(this->canicepillar)++;
 			this->skills.erase(this->skills.begin() + i);
+			this->keepitems.play();
 		}
 		//remove skilled 
 		if (this->skilltimecheck.getElapsedTime().asSeconds() > 5.f) {
@@ -696,11 +755,11 @@ void Game::updateshield()
 {
 	if (this->checkshield == 1)
 	{
-		this->shield.push_back(new Shield(this->player->getPos().x - 16, this->player->getPos().y - 5));
+		this->shield.push_back(new Shield(this->player->getPos().x - 25, this->player->getPos().y - 5));
 		checkshield = 0;
 	}
 	for (int i = 0; i < this->shield.size(); ++i) {
-		this->shield[i]->update(this->player->getPos().x - 16, this->player->getPos().y - 5);
+		this->shield[i]->update(this->player->getPos().x - 25, this->player->getPos().y - 5);
 		if (this->shieldtime.getElapsedTime().asSeconds() > 5.f) {
 			this->shield.erase(this->shield.begin() + i);
 			this->keepshield = 0;
@@ -796,11 +855,12 @@ void Game::updateInput()
 		this->firetime.restart();
 		this->bg->update(2);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && this->canicepillar > 0) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && this->canicepillar > 0 && this->icetypetime.getElapsedTime().asSeconds() >= 1.f) {
 		this->checkice = 1;
 		(this->canicepillar)--;
 		this->Freezers.play();
 		this->icetime.restart();
+		this->icetypetime.restart();
 		this->bg->update(1);
 	}
 }

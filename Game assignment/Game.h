@@ -79,6 +79,7 @@ private:
 	sf::Clock firetime;
 	sf::Clock shieldtime;
 	sf::Clock icetime;
+	sf::Clock icetypetime;
 	sf::Clock inputcheck;
 	sf::Clock nextpage;
 	float skillTimer;
@@ -90,8 +91,8 @@ private:
 	int checkice = 0;
 	int keepshield = 0;
 	int canicepillar = 0;
-
 	int checkspawn;
+	bool canswitch;
 
 	sf::Texture tbox1;
 	sf::Texture tbox2;
@@ -125,7 +126,17 @@ private:
 	sf::Sound Fire_sound;
 	sf::SoundBuffer Freezer;
 	sf::Sound Freezers;
-
+	sf::SoundBuffer dragondie;
+	sf::Sound dragondies;
+	sf::SoundBuffer shieldsoundbuf;
+	sf::Sound shieldsound;
+	sf::SoundBuffer keepitem;
+	sf::Sound keepitems;
+	sf::SoundBuffer Click;
+	sf::Sound clicks;
+	sf::SoundBuffer switc;
+	sf::Sound switcs;
+	sf::Music music;
 
 	//Function
 	void initwindow();
