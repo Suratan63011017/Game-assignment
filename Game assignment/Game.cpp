@@ -253,6 +253,7 @@ void Game::run()
 	sf::Event e;
 
 	music.play();
+	music.setLoop(true);
 	while (this->window->isOpen())
 	{
 
