@@ -1,5 +1,5 @@
-focis 1660
-foza 1435
-sd 325
-gdg 320
-sdfsf 315
+focus2 5
+focus 5
+testtt 0
+testt 0
+test1 0

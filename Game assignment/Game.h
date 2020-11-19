@@ -18,7 +18,6 @@
 #include"Textbox.h"
 #include<utility>
 #include<algorithm>
-#include<string>
 #include<vector>
 #include<iostream>
 
@@ -42,6 +41,7 @@ private:
 	bool playername = false;
 	bool playstatus = false;
 	bool cangetnewscores = false;
+	bool firstendgames = false;
 
 	sf::Font bit8;
 	sf::Text pointText;
@@ -51,6 +51,7 @@ private:
 	sf::RectangleShape playerHpBar;
 	sf::RectangleShape playerHpBarBack;
 	unsigned points;
+	unsigned pointkeep;
 	Player* player;
 	Background* bg;
 	std::map<std::string, sf::Texture*> textures;
@@ -82,6 +83,7 @@ private:
 	sf::Clock icetypetime;
 	sf::Clock inputcheck;
 	sf::Clock nextpage;
+	sf::Clock dietimes;
 	float skillTimer;
 	float skillTimerMax;
 	int type;

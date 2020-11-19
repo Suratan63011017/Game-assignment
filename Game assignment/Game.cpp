@@ -16,7 +16,7 @@ void Game::initplayer()
 void Game::initenemy()
 {
 	//this->enemy = new Enemy();
-	this->spawnTimerMax = 200.f;
+	this->spawnTimerMax = 1000.f;
 	this->spawnTimer = this->spawnTimerMax;
 }
 
@@ -111,7 +111,7 @@ void Game::initGUI()
 //System settings
 void Game::initSystems()
 {
-	this->points = 0;
+	points = 0;
 	//box1
 	this->tbox1.loadFromFile("Sprite/Box.png");
 	this->box_1.setTexture(&this->tbox1);
@@ -242,6 +242,8 @@ void Game::run()
 	playernametextbox.setPosition({ 500.f,320.f });
 	playernametextbox.setlimit(true, 10);
 
+	int j = 0;
+
 	this->fp = fopen("./score.txt", "r");
 	for (int i = 0; i < 5; i++) {
 		fscanf(fp, "%s", &temp);
@@ -253,7 +255,6 @@ void Game::run()
 	sf::Event e;
 
 	music.play();
-	music.setLoop(true);
 	while (this->window->isOpen())
 	{
 
@@ -348,34 +349,46 @@ void Game::run()
 				this->render();
 				cangetnewscores = true;
 			}
-			else if (cangetnewscores) {
+			else if (this->player->getHp() == 0 && cangetnewscores && dietimes.getElapsedTime().asSeconds() > 3.f) {
+				this->updateenemy();
+				this->updateghost();
+				this->updatedragon();
+
+				j++;
+				pointkeep = points;
 				this->fp = fopen("./score.txt", "r");
-				score[5] = this->points;
+				score[5] = pointkeep;
 				userScore.push_back(make_pair(score[5], name[5]));
 				sort(userScore.begin(), userScore.end());
 				fclose(fp);
 				fopen("./score.txt", "w");
-				for (int i = 5; i >= 1; i--) {
+				for (int i = 4 + j; i >= 0 + j; i--) {
 					strcpy(temp, userScore[i].second.c_str());
 					fprintf(fp, "%s %d\n", temp, userScore[i].first);
 				}
 				fclose(fp);
-				cangetnewscores = false;
-			}
 
+				this->player->setHp(100);
+				cangetnewscores = false;
+				this->gamestate = 0;
+				playstatus = false;
+				firstendgames = true;
+				checkname = false;
+				points = 0;
+			}
 		}
 		else if (gamestate == 2) {
 			this->menu->drawscore(*this->window);
-			if (this->player->getHp() != 0) {
+			if (firstendgames == false) {
 				for (int i = 135; i <= 475; i += 85) {
 					showhighscore(950, i, to_string(userScore[(i - 135) / 85].first), *this->window, &bit8);
-					showhighscore(250, i, userScore[(i - 135) / 85].second, *this->window, &bit8);
+					showhighscore(250, i, userScore[j + (i - 135) / 85].second, *this->window, &bit8);
 				}
 			}
-			else {
+			else if (firstendgames == true) {
 				for (int i = 135; i <= 475; i += 85) {
-					showhighscore(950, i, to_string(userScore[5 - ((i - 135) / 85)].first), *this->window, &bit8);
-					showhighscore(250, i, userScore[5 - ((i - 135) / 85)].second, *this->window, &bit8);
+					showhighscore(950, i, to_string(userScore[(4 + j) - ((i - 135) / 85)].first), *this->window, &bit8);
+					showhighscore(250, i, userScore[(4 + j) - ((i - 135) / 85)].second, *this->window, &bit8);
 				}
 			}
 			if (this->menu->beforegetbounds().contains(this->mousePosview)) {
@@ -495,7 +508,7 @@ void Game::updateenemy()
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->enemies[i]->getHp() == 0) {
 					enemydies.play();
-					this->points += 5;
+					points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
 					(this->countkill)++;
@@ -508,13 +521,19 @@ void Game::updateenemy()
 				this->enemies[i]->loseHp(1);
 				if (this->enemies[i]->getHp() == 0) {
 					enemydies.play();
-					this->points += 5;
+					points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
 					enemy_removed = true;
 					(this->countkill)++;
 					(this->countfordragon)++;
 				}
 			}
+		}
+		if (this->player->getHp() == 0) {
+			if (i == 0) {
+				this->enemies.erase(this->enemies.begin());
+			}
+			this->enemies.erase(this->enemies.begin() + i);
 		}
 	}
 }
@@ -555,7 +574,7 @@ void Game::updateghost()
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->ghost[i]->getHp() == 0) {
 					ghostdies.play();
-					this->points += 10;
+					points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
 					ghost_removed = true;
 					(this->countkill)++;
@@ -568,13 +587,19 @@ void Game::updateghost()
 				this->ghost[i]->loseHp(1);
 				if (this->ghost[i]->getHp() == 0) {
 					ghostdies.play();
-					this->points += 10;
+					points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
 					ghost_removed = true;
 					(this->countkill)++;
 					(this->countfordragon)++;
 				}
 			}
+		}
+		if (this->player->getHp() == 0) {
+			if (i == 0) {
+				this->ghost.erase(this->ghost.begin());
+			}
+			this->ghost.erase(this->ghost.begin() + i);
 		}
 	}
 }
@@ -642,7 +667,7 @@ void Game::updatedragon()
 				this->dragon[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->dragon[i]->getHp() == 0) {
-					this->points += 1000;
+					points += 1000;
 					dragondies.play();
 					this->dragon.erase(this->dragon.begin() + i);
 					dragon_removed = true;
@@ -654,13 +679,19 @@ void Game::updatedragon()
 			if (this->fire[k]->getBounds().intersects(this->dragon[i]->getBounds())) {
 				this->dragon[i]->loseHp(1);
 				if (this->dragon[i]->getHp() == 0) {
-					this->points += 1000;
+					points += 1000;
 					dragondies.play();
 					this->dragon.erase(this->dragon.begin() + i);
 					dragon_removed = true;
 					(this->countkill)++;
 				}
 			}
+		}
+		if (this->player->getHp() == 0) {
+			if (i == 0) {
+				this->dragon.erase(this->dragon.begin());
+			}
+			this->dragon.erase(this->dragon.begin() + i);
 		}
 	}
 }
@@ -1018,19 +1049,20 @@ void Game::updateice()
 //window updated  
 void Game::update()
 {
-	this->updatePlayer(); //for update player in window 
 	this->updateInput();
+	this->updateCollision();
 	this->updateBullets();
 	this->updateFireball();
 	this->updateice();
+	this->updatePlayer();
 	this->updateenemy();
 	this->updateghost();
 	this->updatedragon();
 	this->updatedragonshooting();
 	this->updateskill();
-	this->updateCollision();
 	this->updateshield();
 	this->updateGUI();
+
 }
 
 //update GUI
@@ -1041,7 +1073,7 @@ void Game::updateGUI()
 	std::stringstream icenumber;
 	std::stringstream firenumber;
 
-	ss << "Scores : " << this->points;
+	ss << "Scores : " << points;
 	this->shadowpointtext.setString(ss.str());
 	this->pointText.setString(ss.str());
 
@@ -1054,6 +1086,10 @@ void Game::updateGUI()
 	//hp of player
 	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
 	this->playerHpBar.setSize(sf::Vector2f(300.f * hpPercent, this->playerHpBar.getSize().y));
+
+	if (this->player->getHp() == 0) {
+		this->dietimes.restart();
+	}
 }
 
 //updated collision
