@@ -15,7 +15,7 @@ void Game::initplayer()
 
 void Game::initenemy()
 {
-	this->spawnTimerMax = 300.f;
+	this->spawnTimerMax = 100.f;
 	this->spawnTimer = this->spawnTimerMax;
 }
 
@@ -165,6 +165,9 @@ void Game::initSystems()
 	this->switc.loadFromFile("Sound/switch.wav");
 	this->switcs.setBuffer(this->switc);
 
+	this->dead.loadFromFile("Sound/maleyell.wav");
+	this->deads.setBuffer(this->dead);
+
 	music.openFromFile("Sound/music1.ogg");
 	music.setVolume(30);
 }
@@ -264,7 +267,7 @@ void Game::run()
 				if (playername) {
 					playernametextbox.typeOn(e);
 				}
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && this->dietimes.getElapsedTime().asSeconds() > 3.f) {
 					gamestate = 0;
 					checkname = false;
 				}
@@ -344,6 +347,14 @@ void Game::run()
 				this->update();
 				this->render();
 				cangetnewscores = true;
+				candiesound = true;
+			}
+			else if (this->player->getHp() == 0 && dietimes.getElapsedTime().asSeconds() <= 3.f) {
+				this->menu->drawdead(*this->window);
+				if (candiesound == true) {
+					deads.play();
+					candiesound = false;
+				}
 			}
 			else if (this->player->getHp() == 0 && cangetnewscores && dietimes.getElapsedTime().asSeconds() > 3.f) {
 				this->updateenemy();
@@ -458,7 +469,9 @@ void Game::updatePlayer()
 void Game::updateenemy()
 {
 	//spawn
-	this->spawnTimer += 0.5f;
+	if (this->checkice == 0) {
+		this->spawnTimer += 0.5f;
+	}
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
 		this->checkspawn = rand() % 4;
@@ -572,7 +585,7 @@ void Game::updateenemy()
 void Game::updateghost()
 {
 	//spawn
-	if (this->countkill % 5 == 0 && this->countkill != 0)
+	if (this->countkill % 5 == 0 && this->countkill != 0 && this->checkice == 0)
 	{
 		this->checkspawn = rand() % 4;
 		if (this->checkspawn == 0) {
@@ -643,7 +656,7 @@ void Game::updateghost()
 void Game::updatedragon()
 {
 	//spawn
-	if (this->countfordragon % 50 == 0 && this->countfordragon != 0)
+	if (this->countfordragon % 50 == 0 && this->countfordragon != 0 && this->checkice == 0)
 	{
 		this->checkspawn = rand() % 4;
 		if (this->checkspawn == 0) {
@@ -858,22 +871,26 @@ void Game::updateInput()
 		this->directioncheck = 3;
 	}
 	//triple balls
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_top_trip() && this->directioncheck == 1 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_top_trip()
+		&& this->directioncheck == 1 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y, 1.f, -1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y, -1.f, -1.f, 5.f));
 		this->shots.play();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_left_trip() && this->directioncheck == 2 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_left_trip() && this->directioncheck == 2
+		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, 1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, -1.f, 5.f));
 		this->shots.play();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_right_trip() && this->directioncheck == 3 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_right_trip() && this->directioncheck == 3
+		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, 1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, -1.f, 5.f));
 		this->shots.play();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_down_trip() && this->directioncheck == 0 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_down_trip() && this->directioncheck == 0
+		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y + 95, 1.f, 1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y + 95, -1.f, 1.f, 5.f));
 		this->shots.play();

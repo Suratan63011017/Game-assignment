@@ -95,6 +95,7 @@ private:
 	int canicepillar = 0;
 	int checkspawn;
 	bool canswitch;
+	bool candiesound = false;
 
 	sf::Texture tbox1;
 	sf::Texture tbox2;
@@ -138,6 +139,8 @@ private:
 	sf::Sound clicks;
 	sf::SoundBuffer switc;
 	sf::Sound switcs;
+	sf::SoundBuffer dead;
+	sf::Sound deads;
 	sf::Music music;
 
 	//Function

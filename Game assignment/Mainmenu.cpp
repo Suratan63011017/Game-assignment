@@ -8,6 +8,9 @@ Mainmenu::Mainmenu(float width, float height)
 	scoreTexture.loadFromFile("Sprite/scoreBG.png");
 	scoresprite.setTexture(this->scoreTexture);
 
+	Deadtexture.loadFromFile("Sprite/Dead.png");
+	Deadsprite.setTexture(this->Deadtexture);
+
 	howtoplays[0].loadFromFile("Sprite/1.png");
 	howtoplays[1].loadFromFile("Sprite/2.png");
 	howtoplays[2].loadFromFile("Sprite/3.png");
@@ -97,6 +100,11 @@ void Mainmenu::drawscore(sf::RenderWindow& window)
 void Mainmenu::drawnamespace(sf::RenderWindow& window)
 {
 	window.draw(namebuttonsprite);
+}
+
+void Mainmenu::drawdead(sf::RenderWindow& window)
+{
+	window.draw(Deadsprite);
 }
 
 void Mainmenu::getplay(bool play)

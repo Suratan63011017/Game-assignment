@@ -12,6 +12,8 @@ private:
 	sf::Sprite BGSprite;
 	sf::Texture scoreTexture;
 	sf::Sprite scoresprite;
+	sf::Texture Deadtexture;
+	sf::Sprite Deadsprite;
 	sf::Texture nextbutton;
 	sf::RectangleShape nextbuttonsprite;
 	sf::RectangleShape beforebuttonsprite;
@@ -30,6 +32,7 @@ public:
 	void draw(sf::RenderWindow& window);
 	void drawscore(sf::RenderWindow& window);
 	void drawnamespace(sf::RenderWindow& window);
+	void drawdead(sf::RenderWindow& window);
 	void getplay(bool play);
 	void Moveup();
 	void Movedown();

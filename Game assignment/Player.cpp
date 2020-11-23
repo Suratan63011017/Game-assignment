@@ -23,14 +23,12 @@ void Player::initVariables()
 	this->attackcooldown_right_trip = this->attackcooldownmax_right_trip;
 
 	//player hp
-	this->hpMax = 1000;
+	this->hpMax = 100;
 	this->hp = this->hpMax;
 
 	//random spawn
 	this->X = 606;
 	this->Y = 292;
-
-
 }
 
 //include picture from files

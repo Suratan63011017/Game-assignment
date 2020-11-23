@@ -121,51 +121,54 @@ void Enemy::updatemovement(int pos_x, int pos_y, int movementspeed)
 	nextbox.setPosition(nextpos.left, nextpos.top);
 }
 
-void Enemy::updateAnimations(int pos_x, int pos_y)
+void Enemy::updateAnimations(int pos_x, int pos_y, int cananimate)
 {
-	if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.x > pos_x && abs(enemyposition.x - pos_x) >= abs(enemyposition.y - pos_y)) { //moving left
-		this->currentFrame.top = 80.f;
-		this->currentFrame.left += 80.f;
-		if (this->currentFrame.left >= 240.f) {
-			this->currentFrame.left = 0;
+	if (cananimate == 0) {}
+	else {
+		if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.x > pos_x && abs(enemyposition.x - pos_x) >= abs(enemyposition.y - pos_y)) { //moving left
+			this->currentFrame.top = 80.f;
+			this->currentFrame.left += 80.f;
+			if (this->currentFrame.left >= 240.f) {
+				this->currentFrame.left = 0;
+			}
+			this->animatetimer.restart();
+			this->enemysprite.setTextureRect(this->currentFrame);
 		}
-		this->animatetimer.restart();
-		this->enemysprite.setTextureRect(this->currentFrame);
-	}
-	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.x < pos_x && abs(enemyposition.x - pos_x) >= abs(enemyposition.y - pos_y)) { //moving right
-		this->currentFrame.top = 160.f;
-		this->currentFrame.left += 80.f;
-		if (this->currentFrame.left >= 240.f) {
-			this->currentFrame.left = 0;
+		else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.x < pos_x && abs(enemyposition.x - pos_x) >= abs(enemyposition.y - pos_y)) { //moving right
+			this->currentFrame.top = 160.f;
+			this->currentFrame.left += 80.f;
+			if (this->currentFrame.left >= 240.f) {
+				this->currentFrame.left = 0;
+			}
+			this->animatetimer.restart();
+			this->enemysprite.setTextureRect(this->currentFrame);
 		}
-		this->animatetimer.restart();
-		this->enemysprite.setTextureRect(this->currentFrame);
-	}
-	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.y < pos_y && abs(enemyposition.x - pos_x) <= abs(enemyposition.y - pos_y)) { //moving down
-		this->currentFrame.top = 0.f;
-		this->currentFrame.left += 80.f;
-		if (this->currentFrame.left >= 240.f) {
-			this->currentFrame.left = 0;
+		else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.y < pos_y && abs(enemyposition.x - pos_x) <= abs(enemyposition.y - pos_y)) { //moving down
+			this->currentFrame.top = 0.f;
+			this->currentFrame.left += 80.f;
+			if (this->currentFrame.left >= 240.f) {
+				this->currentFrame.left = 0;
+			}
+			this->animatetimer.restart();
+			this->enemysprite.setTextureRect(this->currentFrame);
 		}
-		this->animatetimer.restart();
-		this->enemysprite.setTextureRect(this->currentFrame);
-	}
 
-	else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.y > pos_y && abs(enemyposition.x - pos_x) <= abs(enemyposition.y - pos_y)) { //moving top
-		this->currentFrame.top = 240.f;
-		this->currentFrame.left += 80.f;
-		if (this->currentFrame.left >= 240.f) {
-			this->currentFrame.left = 0;
+		else if (this->animatetimer.getElapsedTime().asSeconds() >= 0.05f && enemyposition.y > pos_y && abs(enemyposition.x - pos_x) <= abs(enemyposition.y - pos_y)) { //moving top
+			this->currentFrame.top = 240.f;
+			this->currentFrame.left += 80.f;
+			if (this->currentFrame.left >= 240.f) {
+				this->currentFrame.left = 0;
+			}
+			this->animatetimer.restart();
+			this->enemysprite.setTextureRect(this->currentFrame);
 		}
-		this->animatetimer.restart();
-		this->enemysprite.setTextureRect(this->currentFrame);
 	}
 }
 
 void Enemy::updated(int pos_x, int pos_y, int movementspeed)
 {
 	this->updatemovement(pos_x, pos_y, movementspeed);
-	this->updateAnimations(pos_x, pos_y);
+	this->updateAnimations(pos_x, pos_y, movementspeed);
 	this->updateHpBar();
 }
 
@@ -229,10 +232,28 @@ void Enemy::updateCollision(sf::FloatRect box)
 		&& enemybounds.top + enemybounds.height>box.top
 		) {
 		velocity.x = 0.f;
-		if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f) {
+		if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f && this->enemyposition.x >= 0 && this->enemyposition.x < 320.f) {
 			velocity.y = -1.f;
 		}
-		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f) {
+		else if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f && this->enemyposition.x >= 320 && this->enemyposition.x < 640.f) {
+			velocity.y = 1.f;
+		}
+		else if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f && this->enemyposition.x >= 640 && this->enemyposition.x < 960.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f && this->enemyposition.x >= 960 && this->enemyposition.x < 1280.f) {
+			velocity.y = 1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f && this->enemyposition.x >= 0 && this->enemyposition.x < 320.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f && this->enemyposition.x >= 320 && this->enemyposition.x < 640.f) {
+			velocity.y = 1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f && this->enemyposition.x >= 640 && this->enemyposition.x < 960.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f && this->enemyposition.x >= 960 && this->enemyposition.x < 1280.f) {
 			velocity.y = 1.f;
 		}
 		hitbox.setPosition(box.left - enemybounds.width, enemybounds.top);
@@ -248,10 +269,28 @@ void Enemy::updateCollision(sf::FloatRect box)
 		&& enemybounds.top + enemybounds.height>box.top
 		) {
 		velocity.x = 0.f;
-		if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f) {
+		if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f && this->enemyposition.x >= 0 && this->enemyposition.x < 320.f) {
 			velocity.y = -1.f;
 		}
-		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f) {
+		else if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f && this->enemyposition.x >= 320 && this->enemyposition.x < 640.f) {
+			velocity.y = 1.f;
+		}
+		else if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f && this->enemyposition.x >= 640 && this->enemyposition.x < 960.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->enemyposition.y >= 0.f && enemyposition.y < 360.f && this->enemyposition.x >= 960 && this->enemyposition.x < 1280.f) {
+			velocity.y = 1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f && this->enemyposition.x >= 0 && this->enemyposition.x < 320.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f && this->enemyposition.x >= 320 && this->enemyposition.x < 640.f) {
+			velocity.y = 1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f && this->enemyposition.x >= 640 && this->enemyposition.x < 960.f) {
+			velocity.y = -1.f;
+		}
+		else if (this->enemyposition.y >= 360.f && enemyposition.y < 720.f && this->enemyposition.x >= 960 && this->enemyposition.x < 1280.f) {
 			velocity.y = 1.f;
 		}
 		hitbox.setPosition(box.left + box.width, enemybounds.top);

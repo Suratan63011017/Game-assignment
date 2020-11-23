@@ -53,7 +53,7 @@ public:
 	void setslow(const float slow);
 
 	void updatemovement(int pos_x, int pos_y, int movementspeed);
-	void updateAnimations(int pos_x, int pos_y);
+	void updateAnimations(int pos_x, int pos_y, int cananimate);
 	void updated(int pos_x, int pos_y, int movementspeed);
 	void updateCollision(sf::FloatRect box);
 	void updateHpBar();
