@@ -20,6 +20,7 @@ void Game::initenemy()
 }
 
 void Game::initghost() {}
+
 void Game::initdragon() {}
 
 void Game::initskill()
@@ -520,26 +521,19 @@ void Game::updateenemy()
 					}
 				}
 				else {
-					if (this->enemies[i]->getBounds().intersects(this->box_1Bounds) ||
-						this->enemies[i]->getBounds().intersects(this->box_2Bounds) ||
-						this->enemies[i]->getBounds().intersects(this->box_3Bounds) ||
-						this->enemies[i]->getBounds().intersects(this->box_4Bounds)) {
-						if (this->enemies[i]->getBounds().intersects(this->box_1Bounds)) {
-							this->enemies[i]->updateCollision(this->box_1Bounds);
-						}
-						if (this->enemies[i]->getBounds().intersects(this->box_2Bounds)) {
-							this->enemies[i]->updateCollision(this->box_2Bounds);
-						}
-						if (this->enemies[i]->getBounds().intersects(this->box_3Bounds)) {
-							this->enemies[i]->updateCollision(this->box_3Bounds);
-						}
-						if (this->enemies[i]->getBounds().intersects(this->box_4Bounds)) {
-							this->enemies[i]->updateCollision(this->box_4Bounds);
-						}
+					if (this->enemies[i]->getBounds().intersects(this->box_1Bounds)) {
+						this->enemies[i]->updateCollision(this->box_1Bounds);
 					}
-					else {
-						this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
+					if (this->enemies[i]->getBounds().intersects(this->box_2Bounds)) {
+						this->enemies[i]->updateCollision(this->box_2Bounds);
 					}
+					if (this->enemies[i]->getBounds().intersects(this->box_3Bounds)) {
+						this->enemies[i]->updateCollision(this->box_3Bounds);
+					}
+					if (this->enemies[i]->getBounds().intersects(this->box_4Bounds)) {
+						this->enemies[i]->updateCollision(this->box_4Bounds);
+					}
+					this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
 				}
 			}
 		}
