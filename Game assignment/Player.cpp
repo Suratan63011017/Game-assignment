@@ -23,7 +23,7 @@ void Player::initVariables()
 	this->attackcooldown_right_trip = this->attackcooldownmax_right_trip;
 
 	//player hp
-	this->hpMax = 100;
+	this->hpMax = 1000;
 	this->hp = this->hpMax;
 
 	//random spawn
@@ -62,6 +62,8 @@ void Player::initSprite()
 void Player::initspawntexture()
 {
 	this->spawnpointtexture.loadFromFile("Sprite/Summoning ring.png");
+
+	this->Healtextures.loadFromFile("Sprite/Heals.png");
 }
 
 //settings sprites of spawnpoint 
@@ -71,6 +73,10 @@ void Player::initspawnsprite()
 	this->spawnpointsprite.setTextureRect(sf::IntRect(0, 0, 68, 68));
 	this->spawnpointsprite.setScale(1.f, 1.f);
 	this->spawnpointsprite.setPosition(sf::Vector2f(X, Y + 27));
+
+	this->Healsprite.setTexture(this->Healtextures);
+	this->Healsprite.setScale(0.6f, 0.6f);
+	this->Healsprite.setPosition(sf::Vector2f(X + 10, Y + 37));
 }
 
 //settings animation timer 
@@ -145,6 +151,14 @@ void Player::loseHp(const int value)
 	this->hp -= value;
 	if (this->hp < 0)
 		this->hp = 0;
+}
+
+void Player::plusHp(const int value)
+{
+	this->hp += value;
+	if (this->hp > this->hpMax) {
+		this->hp = hpMax;
+	}
 }
 
 void Player::doubattack(const int check)
@@ -384,6 +398,18 @@ void Player::updateAttack()
 		this->attackcooldown_down_trip += 0.5f;
 }
 
+void Player::updateHeals()
+{
+	if (this->Healtimes.getElapsedTime().asSeconds() >= 10.f) {
+		this->canheals = true;
+	}
+	if (this->playersprite.getGlobalBounds().intersects(this->Healsprite.getGlobalBounds()) && (this->canheals) == true) {
+		this->plusHp(20);
+		this->canheals = false;
+		this->Healtimes.restart();
+	}
+}
+
 void Player::updateCollision(sf::FloatRect box)
 {
 	//bottom collision
@@ -434,6 +460,7 @@ void Player::updated()
 	this->updatemovement();
 	this->updateAnimations();
 	this->updateAttack();
+	this->updateHeals();
 }
 
 //player render
@@ -442,5 +469,8 @@ void Player::render(sf::RenderTarget& target)
 	target.draw(this->hitbox);
 	target.draw(this->nextbox);
 	target.draw(this->spawnpointsprite);
+	if (canheals) {
+		target.draw(this->Healsprite);
+	}
 	target.draw(this->playersprite);
 }

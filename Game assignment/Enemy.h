@@ -2,12 +2,14 @@
 #define ENEMY_H
 
 #include"Player.h"
+
 class Enemy
 {
 private:
 	sf::Sprite enemysprite;
 	sf::Texture enemytexture;
 
+	sf::Clock Slowtimes;
 	sf::Clock animatetimer;
 	short animState;
 	sf::IntRect currentFrame;
@@ -26,6 +28,8 @@ private:
 
 	int hp;
 	int hpMax;
+
+	float slowvariables = 1;
 
 	void initenemyTexture();
 	void initenemySprite();
@@ -46,7 +50,9 @@ public:
 	void setHp(const int hp);
 	void loseHp(const int value);
 
-	void updatemovement(int pos_x, int pos_y);
+	void setslow(const float slow);
+
+	void updatemovement(int pos_x, int pos_y, int movementspeed);
 	void updateAnimations(int pos_x, int pos_y);
 	void updated(int pos_x, int pos_y, int movementspeed);
 	void updateCollision(sf::FloatRect box);

@@ -15,16 +15,12 @@ void Game::initplayer()
 
 void Game::initenemy()
 {
-	//this->enemy = new Enemy();
-	this->spawnTimerMax = 1000.f;
+	this->spawnTimerMax = 300.f;
 	this->spawnTimer = this->spawnTimerMax;
 }
 
-void Game::initghost() {
-}
-
-void Game::initdragon() {
-}
+void Game::initghost() {}
+void Game::initdragon() {}
 
 void Game::initskill()
 {
@@ -484,24 +480,54 @@ void Game::updateenemy()
 	for (int i = 0; i < this->enemies.size(); ++i) {
 		bool enemy_removed = false;
 		if (this->checkice == 0) {
-			if (this->enemies[i]->getBounds().intersects(this->box_1Bounds)) {
-				this->enemies[i]->updateCollision(this->box_1Bounds);
+			for (int j = 0; j < this->enemies.size(); ++j) {
+				if (i != j) {
+					if (this->player->getBounds().left > this->enemies[i]->getBounds().left &&
+						this->enemies[i]->getBounds().left > this->enemies[j]->getBounds().left &&
+						this->enemies[i]->getBounds().left - this->enemies[j]->getBounds().left <= 3.f) {
+						this->enemies[j]->setslow(0.8f);
+					}
+					else if (this->player->getBounds().left < this->enemies[i]->getBounds().left &&
+						this->enemies[i]->getBounds().left < this->enemies[j]->getBounds().left &&
+						this->enemies[j]->getBounds().left - this->enemies[i]->getBounds().left <= 3.f) {
+						this->enemies[j]->setslow(0.8f);
+					}
+					else if (this->player->getBounds().top < this->enemies[i]->getBounds().top &&
+						this->enemies[i]->getBounds().top < this->enemies[j]->getBounds().top &&
+						this->enemies[j]->getBounds().top - this->enemies[i]->getBounds().top <= 3.f) {
+						this->enemies[j]->setslow(0.8f);
+					}
+					else if (this->player->getBounds().top > this->enemies[i]->getBounds().top &&
+						this->enemies[i]->getBounds().top > this->enemies[j]->getBounds().top &&
+						this->enemies[i]->getBounds().top - this->enemies[j]->getBounds().top <= 3.f) {
+						this->enemies[j]->setslow(0.8f);
+					}
+					else {
+						this->enemies[j]->setslow(1.f);
+					}
+				}
+				else {
+					if (this->enemies[i]->getBounds().intersects(this->box_1Bounds)) {
+						this->enemies[i]->updateCollision(this->box_1Bounds);
+					}
+					if (this->enemies[i]->getBounds().intersects(this->box_2Bounds)) {
+						this->enemies[i]->updateCollision(this->box_2Bounds);
+					}
+					if (this->enemies[i]->getBounds().intersects(this->box_3Bounds)) {
+						this->enemies[i]->updateCollision(this->box_3Bounds);
+					}
+					if (this->enemies[i]->getBounds().intersects(this->box_4Bounds)) {
+						this->enemies[i]->updateCollision(this->box_4Bounds);
+					}
+					this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
+				}
 			}
-			if (this->enemies[i]->getBounds().intersects(this->box_2Bounds)) {
-				this->enemies[i]->updateCollision(this->box_2Bounds);
-			}
-			if (this->enemies[i]->getBounds().intersects(this->box_3Bounds)) {
-				this->enemies[i]->updateCollision(this->box_3Bounds);
-			}
-			if (this->enemies[i]->getBounds().intersects(this->box_4Bounds)) {
-				this->enemies[i]->updateCollision(this->box_4Bounds);
-			}
-			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
 		}
 		else if (this->checkice == 1) {
 			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
 			this->ices.push_back(new ice(this->icepillar["ICE"], this->enemies[i]->getPos().x + 10, this->enemies[i]->getPos().y + 20));
 		}
+
 		for (size_t k = 0; k < this->bullets.size() && !enemy_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
 				this->enemies[i]->loseHp(5);
@@ -530,10 +556,15 @@ void Game::updateenemy()
 			}
 		}
 		if (this->player->getHp() == 0) {
-			if (i == 0) {
+			if (enemies.size() == 1) {
 				this->enemies.erase(this->enemies.begin());
 			}
-			this->enemies.erase(this->enemies.begin() + i);
+			else {
+				if (i == 0) {
+					this->enemies.erase(this->enemies.begin());
+				}
+				this->enemies.erase(this->enemies.begin() + i);
+			}
 		}
 	}
 }
@@ -596,10 +627,15 @@ void Game::updateghost()
 			}
 		}
 		if (this->player->getHp() == 0) {
-			if (i == 0) {
+			if (ghost.size() == 1) {
 				this->ghost.erase(this->ghost.begin());
 			}
-			this->ghost.erase(this->ghost.begin() + i);
+			else {
+				if (i == 0) {
+					this->ghost.erase(this->ghost.begin());
+				}
+				this->ghost.erase(this->ghost.begin() + i);
+			}
 		}
 	}
 }
@@ -688,10 +724,15 @@ void Game::updatedragon()
 			}
 		}
 		if (this->player->getHp() == 0) {
-			if (i == 0) {
+			if (dragon.size() == 1) {
 				this->dragon.erase(this->dragon.begin());
 			}
-			this->dragon.erase(this->dragon.begin() + i);
+			else {
+				if (i == 0) {
+					this->dragon.erase(this->dragon.begin());
+				}
+				this->dragon.erase(this->dragon.begin() + i);
+			}
 		}
 	}
 }

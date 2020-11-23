@@ -88,21 +88,26 @@ void Enemy::loseHp(const int value)
 		this->hp = 0;
 }
 
-void Enemy::updatemovement(int pos_x, int pos_y)
+void Enemy::setslow(const float slow)
+{
+	this->slowvariables = slow;
+}
+
+void Enemy::updatemovement(int pos_x, int pos_y, int movementspeed)
 {
 	velocity.x = 0.f;
 	velocity.y = 0.f;
 	if (enemyposition.y <= pos_y && abs(enemyposition.x - pos_x) <= abs(enemyposition.y - pos_y)) { //down
-		velocity.y += 1.f;
+		velocity.y += (1.f * movementspeed * this->slowvariables);
 	}
 	else if (enemyposition.x >= pos_x && abs(enemyposition.x - pos_x) >= abs(enemyposition.y - pos_y)) { //left
-		velocity.x -= 1.f;
+		velocity.x -= (1.f * movementspeed * this->slowvariables);
 	}
 	else if (enemyposition.x <= pos_x && abs(enemyposition.x - pos_x) >= abs(enemyposition.y - pos_y)) { //right
-		velocity.x += 1.f;
+		velocity.x += (1.f * movementspeed * this->slowvariables);
 	}
 	else if (enemyposition.y >= pos_y && abs(enemyposition.x - pos_x) <= abs(enemyposition.y - pos_y)) { //top
-		velocity.y -= 1.f;
+		velocity.y -= (1.f * movementspeed * this->slowvariables);
 	}
 	enemybounds = hitbox.getGlobalBounds();
 	nextpos = enemybounds;
@@ -159,14 +164,9 @@ void Enemy::updateAnimations(int pos_x, int pos_y)
 
 void Enemy::updated(int pos_x, int pos_y, int movementspeed)
 {
-	if (movementspeed == 1) {
-		this->updatemovement(pos_x, pos_y);
-		this->updateAnimations(pos_x, pos_y);
-		this->updateHpBar();
-	}
-	else {
-		this->updateHpBar();
-	}
+	this->updatemovement(pos_x, pos_y, movementspeed);
+	this->updateAnimations(pos_x, pos_y);
+	this->updateHpBar();
 }
 
 void Enemy::updateCollision(sf::FloatRect box)

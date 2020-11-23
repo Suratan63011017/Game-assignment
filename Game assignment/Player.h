@@ -14,6 +14,9 @@ private:
 	sf::Sprite spawnpointsprite;
 	sf::Texture spawnpointtexture;
 
+	sf::Sprite Healsprite;
+	sf::Texture Healtextures;
+
 	sf::RectangleShape hitbox;
 	sf::Vector2f velocity;
 	sf::FloatRect nextpos;
@@ -48,11 +51,13 @@ private:
 
 	int dircheck = 1;
 
-	sf::Clock dirinput;
+	bool canheals = false;
+	sf::Clock Healtimes;
 	//Animation 
 	sf::Clock animatetimer; //to set animation time 
 	short animState;
 	sf::IntRect currentFrame; //for show next sprite
+
 
 	//Function
 	void initVariables();
@@ -64,6 +69,8 @@ private:
 	//spawnpoint texture and sprite function
 	void initspawntexture();
 	void initspawnsprite();
+
+
 
 	//player animation function
 	void initAnimations();
@@ -86,6 +93,7 @@ public:
 	bool getdie();
 	void setHp(const int hp);
 	void loseHp(const int value);
+	void plusHp(const int value);
 
 	void doubattack(const int check);
 
@@ -103,6 +111,7 @@ public:
 
 	//Player update and render
 	void updateAttack();
+	void updateHeals();
 	void updateCollision(sf::FloatRect box);
 	void updated();
 	void render(sf::RenderTarget& target);
