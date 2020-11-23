@@ -171,10 +171,15 @@ const sf::FloatRect Mainmenu::beforegetbounds() const
 	return this->beforebuttonsprite.getGlobalBounds();
 }
 
-void Mainmenu::update()
+void Mainmenu::update(float width, float height)
 {
 	if (playstate) {
 		menu[0].setString("RESUME");
+		menu[0].setPosition(sf::Vector2f((width / 2) - 30.f, height / (MAX_NUMBER_OF_ITEMS + 1) * 1));
+	}
+	else {
+		menu[0].setString("Play");
+		menu[0].setPosition(sf::Vector2f((width / 2) - 15.f, height / (MAX_NUMBER_OF_ITEMS + 1) * 1));
 	}
 }
 

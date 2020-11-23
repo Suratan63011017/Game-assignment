@@ -44,7 +44,7 @@ public:
 
 	const sf::FloatRect nextgetbounds() const;
 	const sf::FloatRect beforegetbounds() const;
-	void update();
+	void update(float width, float height);
 	void howtoplay(sf::RenderWindow& window);
 	void nextpages();
 	void beforepages();
