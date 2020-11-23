@@ -5,6 +5,8 @@ void Game::initwindow()
 	this->window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Escape", sf::Style::Close | sf::Style::Resize | sf::Style::Titlebar);
 	this->window->setFramerateLimit(144);
 	this->menu = new Mainmenu(this->window->getSize().x, window->getSize().y);
+	this->icon.loadFromFile("Sprite/icon.png");
+	window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 }
 
 //get new player
@@ -445,7 +447,6 @@ void Game::updateMousePositions()
 {
 	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
 	this->mousePosview = this->window->mapPixelToCoords(this->mousePosWindow);
-
 }
 
 //player updated

@@ -68,6 +68,7 @@ private:
 	std::vector<Skill*> skills;
 	std::vector<Shield*> shield;
 	std::vector<ice*> ices;
+
 	int directioncheck;
 	float spawnTimer;
 	float spawnTimerMax;
@@ -118,6 +119,8 @@ private:
 
 	sf::Texture icepics;
 	sf::Sprite icepicx;
+
+	sf::Image icon;
 
 	sf::SoundBuffer shot;
 	sf::Sound shots;
