@@ -1167,6 +1167,11 @@ void Game::updateCollision()
 			count += 2;
 		}
 	}
+	for (int i = 0; i < this->dragon.size(); ++i) {
+		if (this->player->getBounds().intersects(this->dragon[i]->getBounds())) {
+			count += 2;
+		}
+	}
 	if (this->skilltime.getElapsedTime().asSeconds() > 15.f) {
 		this->player->doubattack(0);
 		this->textures["BULLET"]->loadFromFile("Sprite/bullet.png");
