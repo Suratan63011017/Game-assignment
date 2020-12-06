@@ -31,6 +31,8 @@ void Game::initghost() {}
 
 void Game::initdragon() {}
 
+void Game::initblackdragon() {}
+
 void Game::initskill()
 {
 	this->skillTimerMax = 1000.f;
@@ -190,6 +192,7 @@ Game::Game()
 	this->initBulletTextures();
 	this->initfireball();
 	this->initdragon();
+	this->initblackdragon();
 	this->initdragonfire();
 	this->initice();
 	this->initGUI();
@@ -221,6 +224,9 @@ Game::~Game()
 		delete i;
 	}
 	for (auto* i : this->dragon) {
+		delete i;
+	}
+	for (auto* i : this->blackdragon) {
 		delete i;
 	}
 	for (auto* i : this->dragonshooting) {
@@ -782,6 +788,36 @@ void Game::updateghost()
 	}
 }
 
+void Game::updateblackdragon()
+{
+	//spawn
+	if (this->blackdragonspawn.getElapsedTime().asSeconds() >= 20.f)
+	{
+		this->blackdragon.push_back(new Blackdragoon(rand() % 1180, -100.f));
+		this->blackdragonspawn.restart();
+	}
+	//updated
+	for (int i = 0; i < this->blackdragon.size(); ++i) {
+		bool blackdragon_removed = false;
+		this->blackdragon[i]->updated();
+
+		if (blackdragon[i]->getBounds().left + blackdragon[i]->getBounds().width >= 1280.f) {
+			this->blackdragon.erase(this->blackdragon.begin() + i);
+		}
+		if (this->player->getHp() == 0) {
+			if (blackdragon.size() == 1) {
+				this->blackdragon.erase(this->blackdragon.begin());
+			}
+			else {
+				if (i == 0) {
+					this->blackdragon.erase(this->blackdragon.begin());
+				}
+				this->blackdragon.erase(this->blackdragon.begin() + i);
+			}
+		}
+	}
+}
+
 void Game::updatedragon()
 {
 	//spawn
@@ -1245,6 +1281,7 @@ void Game::update()
 	this->updateenemy();
 	this->updateghost();
 	this->updateguard();
+	this->updateblackdragon();
 	this->updatedragon();
 	this->updatedragonshooting();
 	this->updateskill();
@@ -1283,6 +1320,7 @@ void Game::updateGUI()
 		this->dietimes.restart();
 		this->gametimes.restart();
 		this->spawnTimerMax = 300.f;
+		this->blackdragonspawn.restart();
 	}
 }
 
@@ -1290,6 +1328,7 @@ void Game::updateGUI()
 void Game::updateCollision()
 {
 	int count = 0;
+	int blackdragonhits = 0;
 	float skillshield = 0.4;
 	for (int i = 0; i < this->enemies.size(); ++i) {
 		if (this->player->getBounds().intersects(this->enemies[i]->getBounds())) {
@@ -1304,6 +1343,11 @@ void Game::updateCollision()
 	for (int i = 0; i < this->guard.size(); ++i) {
 		if (this->player->getBounds().intersects(this->guard[i]->getBounds())) {
 			count += 2;
+		}
+	}
+	for (int i = 0; i < this->blackdragon.size(); ++i) {
+		if (this->player->getBounds().intersects(this->blackdragon[i]->getBounds())) {
+			blackdragonhits += 2;
 		}
 	}
 	for (int i = 0; i < this->dragon.size(); ++i) {
@@ -1331,7 +1375,19 @@ void Game::updateCollision()
 			this->clock.restart();
 		}
 	}
+
+	if (this->blackdragondamages.getElapsedTime().asSeconds() >= 0.25f) {
+		if (this->keepshield == 1) {
+			this->player->loseHp(5 * blackdragonhits * skillshield);
+			this->blackdragondamages.restart();
+		}
+		else {
+			this->player->loseHp(5 * blackdragonhits);
+			this->blackdragondamages.restart();
+		}
+	}
 	count = 0;
+	blackdragonhits = 0;
 }
 
 
@@ -1388,6 +1444,9 @@ void Game::render()
 	for (auto* guards : this->guard) {
 		guards->render(*this->window);
 	}
+	for (auto* blackdrgn : this->blackdragon) {
+		blackdrgn->render(*this->window);
+	}
 	for (auto* dragoon : this->dragon) {
 		dragoon->render(*this->window);
 	}
@@ -1406,3 +1465,4 @@ void Game::render()
 	}
 
 }
+

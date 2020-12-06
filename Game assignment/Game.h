@@ -17,6 +17,7 @@
 #include"Dragon.h"
 #include"Mainmenu.h"
 #include"Textbox.h"
+#include"Blackdragoon.h"
 #include<utility>
 #include<algorithm>
 #include<vector>
@@ -64,6 +65,7 @@ private:
 	std::vector<shielder*> guard;
 	std::vector<Dragon*> dragon;
 	std::vector<Ghost*> ghost;
+	std::vector<Blackdragoon*> blackdragon;
 	std::vector<Bullet*> bullets;
 	std::vector<Bullet*> dragonshooting;
 	std::vector<fireball*> fire;
@@ -90,6 +92,8 @@ private:
 	sf::Clock nextpage;
 	sf::Clock dietimes;
 	sf::Clock gametimes;
+	sf::Clock blackdragonspawn;
+	sf::Clock blackdragondamages;
 	float skillTimer;
 	float skillTimerMax;
 	int type;
@@ -158,6 +162,7 @@ private:
 	void initguard();
 	void initghost();
 	void initdragon();
+	void initblackdragon();
 	void initskill();
 	void initBackground();
 	void initBulletTextures();
@@ -182,7 +187,7 @@ public:
 	void updateenemy();
 	void updateguard();
 	void updateghost();
-
+	void updateblackdragon();
 	void updatedragon();
 	void updateskill();
 	void updateshield();
