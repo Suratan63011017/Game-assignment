@@ -273,6 +273,7 @@ void Game::run()
 	sf::Event e;
 
 	music.play();
+	music.setLoop(true);
 	while (this->window->isOpen())
 	{
 
@@ -397,6 +398,7 @@ void Game::run()
 				fclose(fp);
 
 				this->player->setHp(100);
+				this->player->resetposition();
 				cangetnewscores = false;
 				this->gamestate = 0;
 				playstatus = false;

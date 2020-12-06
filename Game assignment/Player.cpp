@@ -117,6 +117,12 @@ const sf::FloatRect Player::getBounds() const
 	return this->nextpos;
 }
 
+void Player::resetposition()
+{
+	this->playersprite.setPosition(sf::Vector2f(sf::Vector2f(X, Y)));
+	this->hitbox.setPosition(sf::Vector2f(X + 10, Y + 10));
+}
+
 //get HP of player
 const int& Player::getHp() const
 {

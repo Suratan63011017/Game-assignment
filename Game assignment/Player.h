@@ -86,6 +86,8 @@ public:
 	//get collision
 	const sf::FloatRect getBounds() const;
 
+	void resetposition();
+
 	//Hp functions
 	const int& getHp() const;
 	const int& getHpMax() const;
