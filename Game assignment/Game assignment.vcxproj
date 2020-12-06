@@ -31,6 +31,7 @@
     <ClCompile Include="Mainmenu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Shield.cpp" />
+    <ClCompile Include="shielder.cpp" />
     <ClCompile Include="Skill.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +46,7 @@
     <ClInclude Include="Mainmenu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Shield.h" />
+    <ClInclude Include="shielder.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="Textbox.h" />
   </ItemGroup>

@@ -11,6 +11,7 @@
 #include"Skill.h"
 #include"fireball.h"
 #include"Shield.h"
+#include"shielder.h"
 #include"ice.h"
 #include"Ghost.h"
 #include"Dragon.h"
@@ -60,6 +61,7 @@ private:
 	std::map<std::string, sf::Texture*> icepillar;
 	std::map<std::string, sf::Texture*> dragontext;
 	std::vector<Enemy*> enemies;
+	std::vector<shielder*> guard;
 	std::vector<Dragon*> dragon;
 	std::vector<Ghost*> ghost;
 	std::vector<Bullet*> bullets;
@@ -72,6 +74,8 @@ private:
 	int directioncheck;
 	float spawnTimer;
 	float spawnTimerMax;
+	float spawnguard;
+	float spawnguardmax;
 	int countkill = 0;
 	int countfordragon = 0;
 	sf::Clock clock;
@@ -85,6 +89,7 @@ private:
 	sf::Clock inputcheck;
 	sf::Clock nextpage;
 	sf::Clock dietimes;
+	sf::Clock gametimes;
 	float skillTimer;
 	float skillTimerMax;
 	int type;
@@ -150,6 +155,7 @@ private:
 	void initwindow();
 	void initplayer();
 	void initenemy();
+	void initguard();
 	void initghost();
 	void initdragon();
 	void initskill();
@@ -174,7 +180,9 @@ public:
 	void updateMousePositions();
 	void updatePlayer();
 	void updateenemy();
+	void updateguard();
 	void updateghost();
+
 	void updatedragon();
 	void updateskill();
 	void updateshield();

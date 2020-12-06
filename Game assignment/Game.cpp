@@ -17,8 +17,14 @@ void Game::initplayer()
 
 void Game::initenemy()
 {
-	this->spawnTimerMax = 100.f;
+	this->spawnTimerMax = 300.f;
 	this->spawnTimer = this->spawnTimerMax;
+}
+
+void Game::initguard()
+{
+	this->spawnguardmax = 1000.f;
+	this->spawnguard = 0;
 }
 
 void Game::initghost() {}
@@ -190,6 +196,7 @@ Game::Game()
 	this->initSystems();
 	this->initplayer();
 	this->initenemy();
+	this->initguard();
 	this->initghost();
 	this->initskill();
 }
@@ -220,6 +227,9 @@ Game::~Game()
 		delete i;
 	}
 	for (auto* i : this->ghost) {
+		delete i;
+	}
+	for (auto* i : this->guard) {
 		delete i;
 	}
 	for (auto* i : this->skills) {
@@ -363,6 +373,7 @@ void Game::run()
 				this->updateenemy();
 				this->updateghost();
 				this->updatedragon();
+				this->updateguard();
 
 				j++;
 				pointkeep = points;
@@ -579,6 +590,122 @@ void Game::updateenemy()
 					this->enemies.erase(this->enemies.begin());
 				}
 				this->enemies.erase(this->enemies.begin() + i);
+			}
+		}
+	}
+}
+
+void Game::updateguard()
+{
+	//spawn
+	if (this->checkice == 0) {
+		this->spawnguard += 0.5f;
+	}
+	if (this->spawnguard >= this->spawnguardmax)
+	{
+		this->checkspawn = rand() % 4;
+		if (this->checkspawn == 0) {
+			this->guard.push_back(new shielder(rand() % this->window->getSize().x, -100.f));
+		}
+		else if (this->checkspawn == 1) {
+			this->guard.push_back(new shielder(rand() % this->window->getSize().x, 820.f));
+		}
+		else if (this->checkspawn == 2) {
+			this->guard.push_back(new shielder(-100.f, rand() % this->window->getSize().y));
+		}
+		else if (this->checkspawn == 3) {
+			this->guard.push_back(new shielder(1380.f, rand() % this->window->getSize().y));
+		}
+		this->spawnguard = 0.f;
+	}
+	//updated
+	for (int i = 0; i < this->guard.size(); ++i) {
+		bool guard_removed = false;
+		if (this->checkice == 0) {
+			for (int j = 0; j < this->guard.size(); ++j) {
+				if (i != j) {
+					if (this->player->getBounds().left > this->guard[i]->getBounds().left &&
+						this->guard[i]->getBounds().left > this->guard[j]->getBounds().left &&
+						this->guard[i]->getBounds().left - this->guard[j]->getBounds().left <= 3.f) {
+						this->guard[j]->setslow(0.8f);
+					}
+					else if (this->player->getBounds().left < this->guard[i]->getBounds().left &&
+						this->guard[i]->getBounds().left < this->guard[j]->getBounds().left &&
+						this->guard[j]->getBounds().left - this->guard[i]->getBounds().left <= 3.f) {
+						this->guard[j]->setslow(0.8f);
+					}
+					else if (this->player->getBounds().top < this->guard[i]->getBounds().top &&
+						this->guard[i]->getBounds().top < this->guard[j]->getBounds().top &&
+						this->guard[j]->getBounds().top - this->guard[i]->getBounds().top <= 3.f) {
+						this->guard[j]->setslow(0.8f);
+					}
+					else if (this->player->getBounds().top > this->guard[i]->getBounds().top &&
+						this->guard[i]->getBounds().top > this->guard[j]->getBounds().top &&
+						this->guard[i]->getBounds().top - this->guard[j]->getBounds().top <= 3.f) {
+						this->guard[j]->setslow(0.8f);
+					}
+					else {
+						this->guard[j]->setslow(1.f);
+					}
+				}
+				else {
+					if (this->guard[i]->getBounds().intersects(this->box_1Bounds)) {
+						this->guard[i]->updateCollision(this->box_1Bounds);
+					}
+					if (this->guard[i]->getBounds().intersects(this->box_2Bounds)) {
+						this->guard[i]->updateCollision(this->box_2Bounds);
+					}
+					if (this->guard[i]->getBounds().intersects(this->box_3Bounds)) {
+						this->guard[i]->updateCollision(this->box_3Bounds);
+					}
+					if (this->guard[i]->getBounds().intersects(this->box_4Bounds)) {
+						this->guard[i]->updateCollision(this->box_4Bounds);
+					}
+					this->guard[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
+				}
+			}
+		}
+		else if (this->checkice == 1) {
+			this->guard[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
+			this->ices.push_back(new ice(this->icepillar["ICE"], this->guard[i]->getPos().x + 10, this->guard[i]->getPos().y + 20));
+		}
+
+		for (size_t k = 0; k < this->bullets.size() && !guard_removed; k++) {
+			if (this->bullets[k]->getBounds().intersects(this->guard[i]->getBounds())) {
+				this->guard[i]->loseHp(5);
+				this->bullets.erase(this->bullets.begin() + k);
+				if (this->guard[i]->getHp() == 0) {
+					//enemydies.play();
+					points += 5;
+					this->guard.erase(this->guard.begin() + i);
+					guard_removed = true;
+					(this->countkill)++;
+					(this->countfordragon)++;
+				}
+			}
+		}
+		for (size_t k = 0; k < this->fire.size() && !guard_removed; k++) {
+			if (this->fire[k]->getBounds().intersects(this->guard[i]->getBounds())) {
+				this->guard[i]->loseHp(1);
+				if (this->guard[i]->getHp() == 0) {
+					//enemydies.play();
+					points += 5;
+					this->guard.erase(this->guard.begin() + i);
+					guard_removed = true;
+					(this->countkill)++;
+					(this->countfordragon)++;
+				}
+			}
+		}
+		if (this->player->getHp() == 0) {
+			if (guard.size() == 1) {
+				this->guard.erase(this->guard.begin());
+			}
+			else {
+				if (i == 0) {
+					this->guard.erase(this->guard.begin());
+				}
+				this->guard.erase(this->guard.begin() + i);
 			}
 		}
 	}
@@ -1117,12 +1244,12 @@ void Game::update()
 	this->updatePlayer();
 	this->updateenemy();
 	this->updateghost();
+	this->updateguard();
 	this->updatedragon();
 	this->updatedragonshooting();
 	this->updateskill();
 	this->updateshield();
 	this->updateGUI();
-
 }
 
 //update GUI
@@ -1147,8 +1274,15 @@ void Game::updateGUI()
 	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
 	this->playerHpBar.setSize(sf::Vector2f(300.f * hpPercent, this->playerHpBar.getSize().y));
 
+	if (this->gametimes.getElapsedTime().asSeconds() >= 10.f) {
+		this->spawnTimerMax -= 5.f;
+		this->gametimes.restart();
+	}
+
 	if (this->player->getHp() == 0) {
 		this->dietimes.restart();
+		this->gametimes.restart();
+		this->spawnTimerMax = 300.f;
 	}
 }
 
@@ -1164,6 +1298,11 @@ void Game::updateCollision()
 	}
 	for (int i = 0; i < this->ghost.size(); ++i) {
 		if (this->player->getBounds().intersects(this->ghost[i]->getBounds())) {
+			count += 2;
+		}
+	}
+	for (int i = 0; i < this->guard.size(); ++i) {
+		if (this->player->getBounds().intersects(this->guard[i]->getBounds())) {
 			count += 2;
 		}
 	}
@@ -1194,6 +1333,7 @@ void Game::updateCollision()
 	}
 	count = 0;
 }
+
 
 //render BG
 void Game::renderBackground()
@@ -1244,6 +1384,9 @@ void Game::render()
 	}
 	for (auto* ghosts : this->ghost) {
 		ghosts->render(*this->window);
+	}
+	for (auto* guards : this->guard) {
+		guards->render(*this->window);
 	}
 	for (auto* dragoon : this->dragon) {
 		dragoon->render(*this->window);
