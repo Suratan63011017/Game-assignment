@@ -380,6 +380,7 @@ void Game::run()
 				this->updateghost();
 				this->updatedragon();
 				this->updateguard();
+				this->updateblackdragon();
 
 				j++;
 				pointkeep = points;
