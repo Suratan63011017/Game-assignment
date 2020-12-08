@@ -26,6 +26,8 @@ void Player::initVariables()
 	this->hpMax = 100;
 	this->hp = this->hpMax;
 
+	this->stamina = 100;
+
 	//random spawn
 	this->X = 606;
 	this->Y = 292;
@@ -62,6 +64,8 @@ void Player::initspawntexture()
 	this->spawnpointtexture.loadFromFile("Sprite/Summoning ring.png");
 
 	this->Healtextures.loadFromFile("Sprite/Heals.png");
+
+	this->scarecrowtexture.loadFromFile("Sprite/scarecrow.png");
 }
 
 //settings sprites of spawnpoint 
@@ -75,6 +79,9 @@ void Player::initspawnsprite()
 	this->Healsprite.setTexture(this->Healtextures);
 	this->Healsprite.setScale(0.6f, 0.6f);
 	this->Healsprite.setPosition(sf::Vector2f(X + 10, Y + 37));
+
+	this->scarecrows.setTexture(this->scarecrowtexture);
+	this->scarecrows.setScale(2.f, 2.f);
 }
 
 //settings animation timer 
@@ -135,6 +142,11 @@ const int& Player::getHpMax() const
 	return this->hpMax;
 }
 
+const int& Player::getstamina() const
+{
+	return this->stamina;
+}
+
 bool Player::getdie()
 {
 	if (this->hp == 0) {
@@ -147,6 +159,11 @@ bool Player::getdie()
 void Player::setHp(const int hp)
 {
 	this->hp = hp;
+}
+
+void Player::setstamina(const int mana)
+{
+	this->stamina = mana;
 }
 
 //lose Hp function
@@ -210,6 +227,24 @@ void Player::updatemovement()
 		velocity.y -= 2.f;
 		this->dircheck = 4;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_TOP; //go top
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F) && stamina == 100) {
+		this->playerpositions.x = this->playersprite.getPosition().x;
+		this->playerpositions.y = this->playersprite.getPosition().y;
+		this->crowtimes.restart();
+		if (dircheck == 1) {
+			velocity.y += 200.f;
+		}
+		if (dircheck == 2) {
+			velocity.x -= 200.f;
+		}
+		if (dircheck == 3) {
+			velocity.x += 200.f;
+		}
+		if (dircheck == 4) {
+			velocity.y -= 200.f;
+		}
+		stamina -= 100;
 	}
 	playerbounds = hitbox.getGlobalBounds();
 	nextpos = playerbounds;
@@ -414,6 +449,17 @@ void Player::updateHeals()
 	}
 }
 
+void Player::updatestamina()
+{
+	if (this->refreshmana.getElapsedTime().asSeconds() >= 0.1f) {
+		(this->stamina)++;
+		if (this->stamina >= 100) {
+			this->stamina = 100;
+		}
+		this->refreshmana.restart();
+	}
+}
+
 void Player::updateCollision(sf::FloatRect box)
 {
 	//bottom collision
@@ -463,6 +509,7 @@ void Player::updated()
 {
 	this->updatemovement();
 	this->updateAnimations();
+	this->updatestamina();
 	this->updateAttack();
 	this->updateHeals();
 }
@@ -477,4 +524,8 @@ void Player::render(sf::RenderTarget& target)
 		target.draw(this->Healsprite);
 	}
 	target.draw(this->playersprite);
+	if (this->crowtimes.getElapsedTime().asSeconds() <= 1.f) {
+		this->scarecrows.setPosition(this->playerpositions);
+		target.draw(this->scarecrows);
+	}
 }

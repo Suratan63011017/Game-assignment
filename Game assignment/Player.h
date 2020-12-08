@@ -17,11 +17,15 @@ private:
 	sf::Sprite Healsprite;
 	sf::Texture Healtextures;
 
+	sf::Sprite scarecrows;
+	sf::Texture scarecrowtexture;
+
 	sf::RectangleShape hitbox;
 	sf::Vector2f velocity;
 	sf::FloatRect nextpos;
 	sf::RectangleShape nextbox;
 	sf::FloatRect playerbounds;
+	sf::Vector2f playerpositions;
 
 	//Random spawnpoint
 	int X;
@@ -49,10 +53,14 @@ private:
 	int hp;
 	int hpMax;
 
+	int stamina;
+
 	int dircheck = 1;
 
 	bool canheals = false;
 	sf::Clock Healtimes;
+	sf::Clock refreshmana;
+	sf::Clock crowtimes;
 	//Animation 
 	sf::Clock animatetimer; //to set animation time 
 	short animState;
@@ -92,8 +100,11 @@ public:
 	const int& getHp() const;
 	const int& getHpMax() const;
 
+	const int& getstamina() const;
+
 	bool getdie();
 	void setHp(const int hp);
+	void setstamina(const int mana);
 	void loseHp(const int value);
 	void plusHp(const int value);
 
@@ -114,6 +125,7 @@ public:
 	//Player update and render
 	void updateAttack();
 	void updateHeals();
+	void updatestamina();
 	void updateCollision(sf::FloatRect box);
 	void updated();
 	void render(sf::RenderTarget& target);

@@ -51,8 +51,10 @@ private:
 	sf::Text shadowpointtext;
 	sf::Text FIRETEXT;
 	sf::Text ICETEXT;
+	sf::Text LIGHTTEXT;
 	sf::RectangleShape playerHpBar;
 	sf::RectangleShape playerHpBarBack;
+	sf::RectangleShape playerstamina;
 	unsigned points;
 	unsigned pointkeep;
 	Player* player;
@@ -135,6 +137,9 @@ private:
 
 	sf::Texture icepics;
 	sf::Sprite icepicx;
+
+	sf::Texture lightpics;
+	sf::Sprite lightpicx;
 
 	sf::Image icon;
 

@@ -90,28 +90,42 @@ void Game::initGUI()
 	this->FIRETEXT.setCharacterSize(40);
 	this->FIRETEXT.setFillColor(sf::Color::White);
 	this->FIRETEXT.setString("0");
-	this->FIRETEXT.setPosition(sf::Vector2f(1130.f, 570.f));
+	this->FIRETEXT.setPosition(sf::Vector2f(1060.f, 570.f));
 
 	this->ICETEXT.setFont(this->bit8);
 	this->ICETEXT.setCharacterSize(40);
 	this->ICETEXT.setFillColor(sf::Color::White);
 	this->ICETEXT.setString("0");
-	this->ICETEXT.setPosition(sf::Vector2f(1200.f, 570.f));
+	this->ICETEXT.setPosition(sf::Vector2f(1130.f, 570.f));
+
+	this->LIGHTTEXT.setFont(this->bit8);
+	this->LIGHTTEXT.setCharacterSize(40);
+	this->LIGHTTEXT.setFillColor(sf::Color::White);
+	this->LIGHTTEXT.setString("0");
+	this->LIGHTTEXT.setPosition(sf::Vector2f(1200.f, 570.f));
 
 	this->playerHpBar.setSize(sf::Vector2f(300.f, 25.f));
 	this->playerHpBar.setFillColor(sf::Color::Red);
 	this->playerHpBar.setPosition(sf::Vector2f(20.f, 20.f));
+
+	this->playerstamina.setSize(sf::Vector2f(300.f, 10.f));
+	this->playerstamina.setFillColor(sf::Color::Blue);
+	this->playerstamina.setPosition(sf::Vector2f(20.f, 60.f));
 
 	this->playerHpBarBack = this->playerHpBar;
 	this->playerHpBarBack.setFillColor(sf::Color(25, 25, 25, 200));
 
 	this->firepics.loadFromFile("Sprite/Firepics.png");
 	this->firepicx.setTexture(this->firepics);
-	this->firepicx.setPosition(sf::Vector2f(1110.f, 620.f));
+	this->firepicx.setPosition(sf::Vector2f(1040.f, 620.f));
 
 	this->icepics.loadFromFile("Sprite/icepics.png");
 	this->icepicx.setTexture(this->icepics);
-	this->icepicx.setPosition(sf::Vector2f(1180.f, 620.f));
+	this->icepicx.setPosition(sf::Vector2f(1110.f, 620.f));
+
+	this->lightpics.loadFromFile("Sprite/lighting pics.png");
+	this->lightpicx.setTexture(this->lightpics);
+	this->lightpicx.setPosition(sf::Vector2f(1180.f, 620.f));
 }
 
 void Game::initSystems()
@@ -399,6 +413,7 @@ void Game::run()
 				fclose(fp);
 
 				this->player->setHp(100);
+				this->player->setstamina(100);
 				this->player->resetposition();
 				cangetnewscores = false;
 				this->countfordragon = 0;
@@ -904,7 +919,7 @@ void Game::updateblackdragon()
 void Game::updatedragon()
 {
 	//spawn
-	if (this->countfordragon % 2 == 0 && this->countfordragon != 0 && this->checkice == 0)
+	if (this->countfordragon % 50 == 0 && this->countfordragon != 0 && this->checkice == 0)
 	{
 		this->checkspawn = rand() % 4;
 		if (this->checkspawn == 0) {
@@ -919,7 +934,7 @@ void Game::updatedragon()
 		else if (this->checkspawn == 3) {
 			this->dragon.push_back(new Dragon(1480.f, rand() % this->window->getSize().y));
 		}
-		(this->countfordragon) -= 2;
+		(this->countfordragon) -= 50;
 	}
 	//updated
 	for (int i = 0; i < this->dragon.size(); ++i) {
@@ -1016,7 +1031,7 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->type = 6/*1 + rand() % 6*/;
+		this->type = 1 + rand() % 6;
 		if (this->type == 1) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
 		}
@@ -1417,6 +1432,7 @@ void Game::updateGUI()
 	std::stringstream ss;
 	std::stringstream icenumber;
 	std::stringstream firenumber;
+	std::stringstream lightnumber;
 
 	ss << "Scores : " << points;
 	this->shadowpointtext.setString(ss.str());
@@ -1428,9 +1444,15 @@ void Game::updateGUI()
 	icenumber << this->canicepillar;
 	this->ICETEXT.setString(icenumber.str());
 
+	lightnumber << this->canspark;
+	this->LIGHTTEXT.setString(lightnumber.str());
+
 	//hp of player
 	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
 	this->playerHpBar.setSize(sf::Vector2f(300.f * hpPercent, this->playerHpBar.getSize().y));
+
+	float staminaPercent = static_cast<float>(this->player->getstamina()) / 100;
+	this->playerstamina.setSize(sf::Vector2f(300.f * staminaPercent, this->playerstamina.getSize().y));
 
 	if (this->gametimes.getElapsedTime().asSeconds() >= 10.f) {
 		this->spawnTimerMax -= 5.f;
@@ -1442,6 +1464,9 @@ void Game::updateGUI()
 		this->gametimes.restart();
 		this->spawnTimerMax = 300.f;
 		this->blackdragonspawn.restart();
+		this->canfireball = 0;
+		this->canicepillar = 0;
+		this->canspark = 0;
 	}
 }
 
@@ -1529,9 +1554,12 @@ void Game::renderGUI()
 
 	this->window->draw(this->FIRETEXT);
 	this->window->draw(this->ICETEXT);
+	this->window->draw(this->LIGHTTEXT);
 
 	this->window->draw(this->playerHpBarBack);
 	this->window->draw(this->playerHpBar);
+
+	this->window->draw(this->playerstamina);
 
 	window->draw(this->box_1);
 	window->draw(this->box_2);
@@ -1540,6 +1568,7 @@ void Game::renderGUI()
 
 	window->draw(this->firepicx);
 	window->draw(this->icepicx);
+	window->draw(this->lightpicx);
 }
 
 void Game::render()
