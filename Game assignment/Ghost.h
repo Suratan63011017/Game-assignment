@@ -26,6 +26,9 @@ private:
 	void initvariables();
 	void initAnimations();
 
+	bool ice = false;
+	bool spark = false;
+
 public:
 	Ghost(float pos_x, float pos_y);
 	virtual ~Ghost();
@@ -33,6 +36,12 @@ public:
 	const sf::Vector2f& getPos() const;
 
 	const sf::FloatRect getBounds() const;
+
+	void takespark(bool sparks);
+	const bool& getspark() const;
+
+	void takeice(bool ices);
+	const bool& getice() const;
 
 	const int& getHp() const;
 	const int& getHpMax() const;

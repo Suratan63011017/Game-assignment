@@ -29,6 +29,9 @@ private:
 	int hp;
 	int hpMax;
 
+	bool ice = false;
+	bool spark = false;
+
 	float slowvariables = 1;
 
 	void initenemyTexture();
@@ -43,6 +46,12 @@ public:
 	const sf::Vector2f& getPos() const;
 
 	const sf::FloatRect getBounds() const;
+
+	void takeice(bool ices);
+	const bool& getice() const;
+
+	void takespark(bool sparks);
+	const bool& getspark() const;
 
 	const int& getHp() const;
 	const int& getHpMax() const;

@@ -17,6 +17,7 @@
 #include"Dragon.h"
 #include"Mainmenu.h"
 #include"Textbox.h"
+#include"lighting.h"
 #include"Blackdragoon.h"
 #include<utility>
 #include<algorithm>
@@ -62,6 +63,7 @@ private:
 	std::map<std::string, sf::Texture*> icepillar;
 	std::map<std::string, sf::Texture*> dragontext;
 	std::vector<Enemy*> enemies;
+	std::vector<lighting*> spark;
 	std::vector<shielder*> guard;
 	std::vector<Dragon*> dragon;
 	std::vector<Ghost*> ghost;
@@ -92,6 +94,8 @@ private:
 	sf::Clock nextpage;
 	sf::Clock dietimes;
 	sf::Clock gametimes;
+	sf::Clock sparktimes;
+	sf::Clock startsparks;
 	sf::Clock blackdragonspawn;
 	sf::Clock blackdragondamages;
 	float skillTimer;
@@ -101,9 +105,12 @@ private:
 	int canfireball = 0;
 	int checkshield = 0;
 	int checkice = 0;
+	int checkspark = 0;
 	int keepshield = 0;
 	int canicepillar = 0;
+	int canspark = 0;
 	int checkspawn;
+	bool canlighting = false;
 	bool canswitch;
 	bool candiesound = false;
 
@@ -169,6 +176,7 @@ private:
 	void initfireball();
 	void initdragonfire();
 	void initice();
+	void initspark();
 	void initGUI();
 	void initSystems();
 
@@ -196,6 +204,7 @@ public:
 	void updatedragonshooting();
 	void updateFireball();
 	void updateice();
+	void updatespark();
 	void update();
 	void updateGUI();
 	void updateCollision();

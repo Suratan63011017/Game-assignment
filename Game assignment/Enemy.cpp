@@ -66,6 +66,26 @@ const sf::FloatRect Enemy::getBounds() const
 	return this->hitbox.getGlobalBounds();
 }
 
+void Enemy::takeice(bool ices)
+{
+	this->ice = ices;
+}
+
+const bool& Enemy::getice() const
+{
+	return this->ice;
+}
+
+void Enemy::takespark(bool sparks)
+{
+	this->spark = sparks;
+}
+
+const bool& Enemy::getspark() const
+{
+	return this->spark;
+}
+
 const int& Enemy::getHp() const
 {
 	return this->hp;

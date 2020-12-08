@@ -57,6 +57,26 @@ const sf::FloatRect Ghost::getBounds() const
 	return this->ghostsprite.getGlobalBounds();
 }
 
+void Ghost::takespark(bool sparks)
+{
+	this->spark = sparks;
+}
+
+const bool& Ghost::getspark() const
+{
+	return this->spark;
+}
+
+void Ghost::takeice(bool ices)
+{
+	this->ice = ices;
+}
+
+const bool& Ghost::getice() const
+{
+	return this->ice;
+}
+
 const int& Ghost::getHp() const
 {
 	return this->hp;

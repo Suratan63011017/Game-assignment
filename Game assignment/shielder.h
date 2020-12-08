@@ -40,6 +40,9 @@ private:
 	void initvariables();
 	void initAnimations();
 
+	bool ice;
+	bool spark;
+
 public:
 	shielder(float pos_x, float pos_y);
 	virtual ~shielder();
@@ -50,6 +53,12 @@ public:
 
 	const int& getHp() const;
 	const int& getHpMax() const;
+
+	void takeice(bool ices);
+	const bool& getice() const;
+
+	void takespark(bool sparks);
+	const bool& getspark() const;
 
 	void setHp(const int hp);
 	void loseHp(const int value);

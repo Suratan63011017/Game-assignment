@@ -2,4 +2,4 @@ dhf 1725
 Foxis 1505
 focud 1500
 focus 505
-562 395
+df 400

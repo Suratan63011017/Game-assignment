@@ -42,6 +42,9 @@ private:
 	float attackcooldown_right;
 	float attackcooldownmax_right;
 
+	bool ice = false;
+	bool spark = false;
+
 public:
 	Dragon(float pos_x, float pos_y);
 	virtual ~Dragon();
@@ -49,6 +52,12 @@ public:
 	const sf::Vector2f& getPos() const;
 
 	const sf::FloatRect getBounds() const;
+
+	void takeice(bool ices);
+	const bool& getice() const;
+
+	void takespark(bool sparks);
+	const bool& getspark() const;
 
 	const int& getHp() const;
 	const int& getHpMax() const;

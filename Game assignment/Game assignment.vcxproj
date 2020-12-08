@@ -28,6 +28,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="ice.cpp" />
+    <ClCompile Include="lighting.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mainmenu.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -45,6 +46,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="ice.h" />
+    <ClInclude Include="lighting.h" />
     <ClInclude Include="Mainmenu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Shield.h" />

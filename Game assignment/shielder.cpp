@@ -80,6 +80,26 @@ const int& shielder::getHpMax() const
 	return this->hpMax;
 }
 
+void shielder::takeice(bool ices)
+{
+	this->ice = ices;
+}
+
+const bool& shielder::getice() const
+{
+	return this->ice;
+}
+
+void shielder::takespark(bool sparks)
+{
+	this->spark = sparks;
+}
+
+const bool& shielder::getspark() const
+{
+	return this->spark;
+}
+
 void shielder::setHp(const int hp)
 {
 	this->hp = hp;

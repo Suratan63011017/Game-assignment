@@ -1,5 +1,5 @@
 #include "Game.h"
-//start window
+
 void Game::initwindow()
 {
 	this->window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Escape", sf::Style::Close | sf::Style::Resize | sf::Style::Titlebar);
@@ -9,7 +9,6 @@ void Game::initwindow()
 	window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 }
 
-//get new player
 void Game::initplayer()
 {
 	this->player = new Player();
@@ -18,13 +17,11 @@ void Game::initplayer()
 void Game::initenemy()
 {
 	this->spawnTimerMax = 300.f;
-	this->spawnTimer = this->spawnTimerMax;
 }
 
 void Game::initguard()
 {
 	this->spawnguardmax = 1000.f;
-	this->spawnguard = 0;
 }
 
 void Game::initghost() {}
@@ -40,13 +37,11 @@ void Game::initskill()
 	this->skillpics["SKILL"] = new sf::Texture();
 }
 
-//start BG
 void Game::initBackground()
 {
 	this->bg = new Background();
 }
 
-//start bullet
 void Game::initBulletTextures()
 {
 	this->textures["BULLET"] = new sf::Texture();
@@ -70,7 +65,11 @@ void Game::initice()
 	this->icepillar["ICE"]->loadFromFile("Sprite/ice.png");
 }
 
-//GUI
+void Game::initspark()
+{
+
+}
+
 void Game::initGUI()
 {
 	this->bit8.loadFromFile("Font/2005_iannnnnAMD.ttf");
@@ -115,7 +114,6 @@ void Game::initGUI()
 	this->icepicx.setPosition(sf::Vector2f(1180.f, 620.f));
 }
 
-//System settings
 void Game::initSystems()
 {
 	points = 0;
@@ -183,7 +181,6 @@ void Game::initSystems()
 	music.setVolume(30);
 }
 
-//Main starter functions
 Game::Game()
 {
 	this->initwindow();
@@ -195,6 +192,7 @@ Game::Game()
 	this->initblackdragon();
 	this->initdragonfire();
 	this->initice();
+	this->initspark();
 	this->initGUI();
 	this->initSystems();
 	this->initplayer();
@@ -204,7 +202,6 @@ Game::Game()
 	this->initskill();
 }
 
-//delete main function anythings 
 Game::~Game()
 {
 	delete this->window;
@@ -235,6 +232,9 @@ Game::~Game()
 	for (auto* i : this->ghost) {
 		delete i;
 	}
+	for (auto* i : this->spark) {
+		delete i;
+	}
 	for (auto* i : this->guard) {
 		delete i;
 	}
@@ -252,7 +252,6 @@ Game::~Game()
 	}
 }
 
-//run your game
 void Game::run()
 {
 	Textbox playernametextbox(100, sf::Color::White, true);
@@ -360,6 +359,8 @@ void Game::run()
 				checkname = false;
 				gamestate = 1;
 				name[5] = playernametextbox.gettext();
+				this->spawnTimer = 0;
+				this->spawnguard = 0;
 			}
 		}
 		else if (gamestate == 1) {
@@ -400,6 +401,8 @@ void Game::run()
 				this->player->setHp(100);
 				this->player->resetposition();
 				cangetnewscores = false;
+				this->countfordragon = 0;
+				this->countkill = 0;
 				this->gamestate = 0;
 				playstatus = false;
 				firstendgames = true;
@@ -469,7 +472,6 @@ void Game::updateMousePositions()
 	this->mousePosview = this->window->mapPixelToCoords(this->mousePosWindow);
 }
 
-//player updated
 void Game::updatePlayer()
 {
 	if (this->player->getBounds().intersects(this->box_1Bounds)) {
@@ -487,11 +489,10 @@ void Game::updatePlayer()
 	this->player->updated();
 }
 
-//enemy updated
 void Game::updateenemy()
 {
 	//spawn
-	if (this->checkice == 0) {
+	if (this->checkice == 0 && checkspark == 0) {
 		this->spawnTimer += 0.5f;
 	}
 	if (this->spawnTimer >= this->spawnTimerMax)
@@ -514,7 +515,7 @@ void Game::updateenemy()
 	//updated
 	for (int i = 0; i < this->enemies.size(); ++i) {
 		bool enemy_removed = false;
-		if (this->checkice == 0) {
+		if (this->checkice == 0 && checkspark == 0) {
 			for (int j = 0; j < this->enemies.size(); ++j) {
 				if (i != j) {
 					if (this->player->getBounds().left > this->enemies[i]->getBounds().left &&
@@ -554,19 +555,45 @@ void Game::updateenemy()
 					if (this->enemies[i]->getBounds().intersects(this->box_4Bounds)) {
 						this->enemies[i]->updateCollision(this->box_4Bounds);
 					}
+					this->enemies[i]->takespark(false);
+					this->enemies[i]->takeice(false);
 					this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
 				}
 			}
 		}
-		else if (this->checkice == 1) {
+
+		if (this->checkice == 1) {
 			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
-			this->ices.push_back(new ice(this->icepillar["ICE"], this->enemies[i]->getPos().x + 10, this->enemies[i]->getPos().y + 20));
+			if (this->enemies[i]->getice() == false) {
+				this->ices.push_back(new ice(this->icepillar["ICE"], this->enemies[i]->getPos().x + 10, this->enemies[i]->getPos().y + 20));
+				this->enemies[i]->takeice(true);
+			}
+		}
+		if (this->checkspark == 1) {
+			this->enemies[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
+			if (this->enemies[i]->getspark() == false) {
+				this->spark.push_back(new lighting(this->enemies[i]->getPos().x + 10, this->enemies[i]->getPos().y + 20));
+				this->enemies[i]->takespark(true);
+			}
 		}
 
 		for (size_t k = 0; k < this->bullets.size() && !enemy_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
 				this->enemies[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
+				if (this->enemies[i]->getHp() == 0) {
+					enemydies.play();
+					points += 5;
+					this->enemies.erase(this->enemies.begin() + i);
+					enemy_removed = true;
+					(this->countkill)++;
+					(this->countfordragon)++;
+				}
+			}
+		}
+		for (size_t k = 0; k < this->spark.size() && !enemy_removed; k++) {
+			if (this->spark[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
+				this->enemies[i]->loseHp(1);
 				if (this->enemies[i]->getHp() == 0) {
 					enemydies.play();
 					points += 5;
@@ -607,7 +634,7 @@ void Game::updateenemy()
 void Game::updateguard()
 {
 	//spawn
-	if (this->checkice == 0) {
+	if (this->checkice == 0 && checkspark == 0) {
 		this->spawnguard += 0.5f;
 	}
 	if (this->spawnguard >= this->spawnguardmax)
@@ -630,7 +657,7 @@ void Game::updateguard()
 	//updated
 	for (int i = 0; i < this->guard.size(); ++i) {
 		bool guard_removed = false;
-		if (this->checkice == 0) {
+		if (this->checkice == 0 && checkspark == 0) {
 			for (int j = 0; j < this->guard.size(); ++j) {
 				if (i != j) {
 					if (this->player->getBounds().left > this->guard[i]->getBounds().left &&
@@ -670,13 +697,25 @@ void Game::updateguard()
 					if (this->guard[i]->getBounds().intersects(this->box_4Bounds)) {
 						this->guard[i]->updateCollision(this->box_4Bounds);
 					}
+					this->guard[i]->takeice(false);
+					this->guard[i]->takespark(false);
 					this->guard[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
 				}
 			}
 		}
-		else if (this->checkice == 1) {
+		if (this->checkice == 1) {
 			this->guard[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
-			this->ices.push_back(new ice(this->icepillar["ICE"], this->guard[i]->getPos().x + 10, this->guard[i]->getPos().y + 20));
+			if (guard[i]->getice() == false) {
+				this->ices.push_back(new ice(this->icepillar["ICE"], this->guard[i]->getPos().x + 10, this->guard[i]->getPos().y + 20));
+				this->guard[i]->takeice(true);
+			}
+		}
+		if (this->checkspark == 1) {
+			this->guard[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
+			if (this->guard[i]->getspark() == false) {
+				this->spark.push_back(new lighting(this->guard[i]->getPos().x + 10, this->guard[i]->getPos().y + 20));
+				this->guard[i]->takespark(true);
+			}
 		}
 
 		for (size_t k = 0; k < this->bullets.size() && !guard_removed; k++) {
@@ -685,6 +724,20 @@ void Game::updateguard()
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->guard[i]->getHp() == 0) {
 					//enemydies.play();
+					points += 5;
+					this->guard.erase(this->guard.begin() + i);
+					guard_removed = true;
+					(this->countkill)++;
+					(this->countfordragon)++;
+				}
+			}
+		}
+		for (size_t k = 0; k < this->spark.size() && !guard_removed; k++) {
+			if (this->spark[k]->getBounds().intersects(this->guard[i]->getBounds())) {
+				if (this->guard[i]->getHp() > 10) {
+					this->guard[i]->loseHp(1);
+				}
+				if (this->guard[i]->getHp() == 0) {
 					points += 5;
 					this->guard.erase(this->guard.begin() + i);
 					guard_removed = true;
@@ -743,13 +796,26 @@ void Game::updateghost()
 	//updated
 	for (int i = 0; i < this->ghost.size(); ++i) {
 		bool ghost_removed = false;
-		if (this->checkice == 0) {
+		if (this->checkice == 0 && this->checkspark == 0) {
+			this->ghost[i]->takeice(false);
+			this->ghost[i]->takespark(false);
 			this->ghost[i]->updated(this->player->getPos().x + 3, this->player->getPos().y + 10, 1);
 		}
-		else if (this->checkice == 1) {
+		if (this->checkice == 1) {
 			this->ghost[i]->updated(this->player->getPos().x + 5, this->player->getPos().y + 13, 0);
-			this->ices.push_back(new ice(this->icepillar["ICE"], this->ghost[i]->getPos().x + 10, this->ghost[i]->getPos().y + 20));
+			if (this->ghost[i]->getice() == false) {
+				this->ices.push_back(new ice(this->icepillar["ICE"], this->ghost[i]->getPos().x + 10, this->ghost[i]->getPos().y + 20));
+				this->ghost[i]->takeice(true);
+			}
 		}
+		if (this->checkspark == 1) {
+			this->ghost[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 0);
+			if (this->ghost[i]->getspark() == false) {
+				this->spark.push_back(new lighting(this->ghost[i]->getPos().x + 10, this->ghost[i]->getPos().y + 20));
+				this->ghost[i]->takespark(true);
+			}
+		}
+
 		for (size_t k = 0; k < this->bullets.size() && !ghost_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
 				this->ghost[i]->loseHp(5);
@@ -764,6 +830,20 @@ void Game::updateghost()
 				}
 			}
 		}
+
+		for (size_t k = 0; k < this->spark.size() && !ghost_removed; k++) {
+			if (this->spark[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
+				this->ghost[i]->loseHp(1);
+				if (this->ghost[i]->getHp() == 0) {
+					points += 5;
+					this->ghost.erase(this->ghost.begin() + i);
+					ghost_removed = true;
+					(this->countkill)++;
+					(this->countfordragon)++;
+				}
+			}
+		}
+
 		for (size_t k = 0; k < this->fire.size() && !ghost_removed; k++) {
 			if (this->fire[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
 				this->ghost[i]->loseHp(1);
@@ -824,7 +904,7 @@ void Game::updateblackdragon()
 void Game::updatedragon()
 {
 	//spawn
-	if (this->countfordragon % 50 == 0 && this->countfordragon != 0 && this->checkice == 0)
+	if (this->countfordragon % 2 == 0 && this->countfordragon != 0 && this->checkice == 0)
 	{
 		this->checkspawn = rand() % 4;
 		if (this->checkspawn == 0) {
@@ -839,7 +919,7 @@ void Game::updatedragon()
 		else if (this->checkspawn == 3) {
 			this->dragon.push_back(new Dragon(1480.f, rand() % this->window->getSize().y));
 		}
-		(this->countfordragon) -= 50;
+		(this->countfordragon) -= 2;
 	}
 	//updated
 	for (int i = 0; i < this->dragon.size(); ++i) {
@@ -860,7 +940,7 @@ void Game::updatedragon()
 			this->dragonshooting.push_back(new Bullet(this->dragontext["DRAGON"], this->dragon[i]->getPos().x + 70, this->dragon[i]->getPos().y + 20, 1.f, 0.f, 2.f));
 			this->Fire_sound.play();
 		}
-		if (this->checkice == 0) {
+		if (this->checkice == 0 && this->checkspark == 0) {
 			if (this->dragon[i]->getBounds().intersects(this->box_1Bounds)) {
 				this->dragon[i]->updateCollision(this->box_1Bounds);
 			}
@@ -873,11 +953,23 @@ void Game::updatedragon()
 			if (this->dragon[i]->getBounds().intersects(this->box_4Bounds)) {
 				this->dragon[i]->updateCollision(this->box_4Bounds);
 			}
+			this->dragon[i]->takeice(false);
+			this->dragon[i]->takespark(false);
 			this->dragon[i]->updated(this->player->getPos().x - 8, this->player->getPos().y - 5, 1);
 		}
-		else if (this->checkice == 1) {
+		if (this->checkice == 1) {
 			this->dragon[i]->updated(this->player->getPos().x + 5, this->player->getPos().y + 13, 0);
-			this->ices.push_back(new ice(this->icepillar["ICE"], this->dragon[i]->getPos().x + 35, this->dragon[i]->getPos().y + 20));
+			if (this->dragon[i]->getice() == false) {
+				this->ices.push_back(new ice(this->icepillar["ICE"], this->dragon[i]->getPos().x + 35, this->dragon[i]->getPos().y + 20));
+				this->dragon[i]->takeice(true);
+			}
+		}
+		if (this->checkspark == 1) {
+			this->dragon[i]->updated(this->player->getPos().x + 5, this->player->getPos().y + 13, 0);
+			if (this->dragon[i]->getspark() == false) {
+				this->spark.push_back(new lighting(this->dragon[i]->getPos().x + 35, this->dragon[i]->getPos().y + 20));
+				this->dragon[i]->takespark(true);
+			}
 		}
 		for (size_t k = 0; k < this->bullets.size() && !dragon_removed; k++) {
 			if (this->bullets[k]->getBounds().intersects(this->dragon[i]->getBounds())) {
@@ -924,7 +1016,7 @@ void Game::updateskill()
 	this->skillTimer += 0.5f;
 	if (this->skillTimer >= this->skillTimerMax)
 	{
-		this->type = 1 + rand() % 5;
+		this->type = 6/*1 + rand() % 6*/;
 		if (this->type == 1) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/doub skill.png");
 		}
@@ -939,6 +1031,9 @@ void Game::updateskill()
 		}
 		else if (this->type == 5) {
 			this->skillpics["SKILL"]->loadFromFile("Sprite/ice skill.png");
+		}
+		else if (this->type == 6) {
+			this->skillpics["SKILL"]->loadFromFile("Sprite/spark skill.png");
 		}
 		this->skilltimecheck.restart();
 		this->skills.push_back(new Skill(this->skillpics["SKILL"], rand() % this->window->getSize().x - 40, rand() % this->window->getSize().y - 40));
@@ -999,12 +1094,19 @@ void Game::updateskill()
 			this->skills.erase(this->skills.begin() + i);
 			this->keepitems.play();
 		}
+		//6 skill 
+		else if (this->skills[i]->getBounds().intersects(this->player->getBounds()) && this->type == 6) {
+			(this->canspark)++;
+			this->skills.erase(this->skills.begin() + i);
+			this->keepitems.play();
+		}
 		//remove skilled 
 		if (this->skilltimecheck.getElapsedTime().asSeconds() > 5.f) {
 			this->skills.erase(this->skills.begin() + i);
 		}
 	}
 }
+
 void Game::updateshield()
 {
 	if (this->checkshield == 1)
@@ -1023,7 +1125,7 @@ void Game::updateshield()
 		}
 	}
 }
-//update input
+
 void Game::updateInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
@@ -1121,9 +1223,15 @@ void Game::updateInput()
 		this->icetypetime.restart();
 		this->bg->update(1);
 	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && this->canspark > 0 && this->sparktimes.getElapsedTime().asSeconds() >= 1.f) {
+		this->checkspark = 1;
+		(this->canspark)--;
+		this->canlighting = true;
+		this->sparktimes.restart();
+		this->startsparks.restart();
+	}
 }
 
-//update bullets
 void Game::updateBullets()
 {
 	unsigned counter = 0;
@@ -1272,7 +1380,17 @@ void Game::updateice()
 	}
 }
 
-//window updated  
+void Game::updatespark()
+{
+	for (int i = 0; i < this->spark.size(); ++i) {
+		this->spark[i]->update();
+		if (this->startsparks.getElapsedTime().asSeconds() > 2.f) {
+			this->spark.erase(this->spark.begin() + i);
+			checkspark = 0;
+		}
+	}
+}
+
 void Game::update()
 {
 	this->updateInput();
@@ -1280,6 +1398,7 @@ void Game::update()
 	this->updateBullets();
 	this->updateFireball();
 	this->updateice();
+	this->updatespark();
 	this->updatePlayer();
 	this->updateenemy();
 	this->updateghost();
@@ -1292,7 +1411,6 @@ void Game::update()
 	this->updateGUI();
 }
 
-//update GUI
 void Game::updateGUI()
 {
 	//scores
@@ -1327,7 +1445,6 @@ void Game::updateGUI()
 	}
 }
 
-//updated collision
 void Game::updateCollision()
 {
 	int count = 0;
@@ -1368,39 +1485,38 @@ void Game::updateCollision()
 	if (this->shieldtime.getElapsedTime().asSeconds() > 5.f) {
 		this->checkshield = 0;
 	}
-	if (this->clock.getElapsedTime().asSeconds() >= 1.f) {
-		if (this->keepshield == 1) {
-			this->player->loseHp(5 * count * skillshield);
-			this->clock.restart();
+	if (checkice == 0) {
+		if (this->clock.getElapsedTime().asSeconds() >= 1.f) {
+			if (this->keepshield == 1) {
+				this->player->loseHp(5 * count * skillshield);
+				this->clock.restart();
+			}
+			else {
+				this->player->loseHp(5 * count);
+				this->clock.restart();
+			}
 		}
-		else {
-			this->player->loseHp(5 * count);
-			this->clock.restart();
-		}
-	}
 
-	if (this->blackdragondamages.getElapsedTime().asSeconds() >= 0.25f) {
-		if (this->keepshield == 1) {
-			this->player->loseHp(5 * blackdragonhits * skillshield);
-			this->blackdragondamages.restart();
-		}
-		else {
-			this->player->loseHp(5 * blackdragonhits);
-			this->blackdragondamages.restart();
+		if (this->blackdragondamages.getElapsedTime().asSeconds() >= 0.25f) {
+			if (this->keepshield == 1) {
+				this->player->loseHp(5 * blackdragonhits * skillshield);
+				this->blackdragondamages.restart();
+			}
+			else {
+				this->player->loseHp(5 * blackdragonhits);
+				this->blackdragondamages.restart();
+			}
 		}
 	}
 	count = 0;
 	blackdragonhits = 0;
 }
 
-
-//render BG
 void Game::renderBackground()
 {
 	this->bg->render(*this->window);
 }
 
-//render player
 void Game::renderPlayer()
 {
 	this->player->render(*this->window);
@@ -1426,7 +1542,6 @@ void Game::renderGUI()
 	window->draw(this->icepicx);
 }
 
-//render window
 void Game::render()
 {
 
@@ -1453,6 +1568,9 @@ void Game::render()
 	for (auto* dragoon : this->dragon) {
 		dragoon->render(*this->window);
 	}
+	for (auto* sparks : this->spark) {
+		sparks->render(*this->window);
+	}
 	for (auto* dragonic : this->dragonshooting) {
 		dragonic->render(this->window);
 	}
@@ -1468,4 +1586,3 @@ void Game::render()
 	}
 
 }
-

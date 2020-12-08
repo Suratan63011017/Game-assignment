@@ -75,6 +75,26 @@ const sf::FloatRect Dragon::getBounds() const
 	return this->hitbox.getGlobalBounds();
 }
 
+void Dragon::takeice(bool ices)
+{
+	this->ice = ices;
+}
+
+const bool& Dragon::getice() const
+{
+	return this->ice;
+}
+
+void Dragon::takespark(bool sparks)
+{
+	this->spark = sparks;
+}
+
+const bool& Dragon::getspark() const
+{
+	return this->spark;
+}
+
 const int& Dragon::getHp() const
 {
 	return this->hp;
