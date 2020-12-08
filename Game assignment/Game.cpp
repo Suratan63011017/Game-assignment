@@ -924,7 +924,7 @@ void Game::updateblackdragon()
 void Game::updatewizard()
 {
 	//spawn
-	if (this->wizardspawn.getElapsedTime().asSeconds() >= 10.f)
+	if (this->wizardspawn.getElapsedTime().asSeconds() >= 30.f)
 	{
 		this->Wizard.push_back(new wizard(1380, rand() % 620));
 		this->wizardspawn.restart();

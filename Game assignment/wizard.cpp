@@ -13,9 +13,9 @@ void wizard::initwizardTexture()
 void wizard::initwizardSprite()
 {
 	this->wizardsprite.setTexture(this->wizardtexture);
-	this->currentFrame = sf::IntRect(0, 0, 512, 512);
+	this->currentFrame = sf::IntRect(0, 0, 128, 128);
 	this->wizardsprite.setTextureRect(sf::IntRect(this->currentFrame));
-	this->wizardsprite.setScale(0.3f, 0.3f);
+	this->wizardsprite.setScale(1.f, 1.f);
 }
 
 void wizard::initAnimations()
@@ -54,8 +54,8 @@ void wizard::updateAnimations()
 {
 	if (this->animatetimer.getElapsedTime().asSeconds() >= 0.1f) {
 		this->currentFrame.top = 0.f;
-		this->currentFrame.left += 512.f;
-		if (this->currentFrame.left >= 1536.f) {
+		this->currentFrame.left += 128.f;
+		if (this->currentFrame.left >= 384.f) {
 			this->currentFrame.left = 0;
 		}
 		this->animatetimer.restart();
