@@ -23,6 +23,7 @@
 #include<algorithm>
 #include<vector>
 #include<iostream>
+#include"wizard.h"
 
 using namespace std;
 class Game
@@ -70,6 +71,7 @@ private:
 	std::vector<Dragon*> dragon;
 	std::vector<Ghost*> ghost;
 	std::vector<Blackdragoon*> blackdragon;
+	std::vector<wizard*> Wizard;
 	std::vector<Bullet*> bullets;
 	std::vector<Bullet*> dragonshooting;
 	std::vector<fireball*> fire;
@@ -99,6 +101,7 @@ private:
 	sf::Clock sparktimes;
 	sf::Clock startsparks;
 	sf::Clock blackdragonspawn;
+	sf::Clock wizardspawn;
 	sf::Clock blackdragondamages;
 	float skillTimer;
 	float skillTimerMax;
@@ -175,6 +178,7 @@ private:
 	void initghost();
 	void initdragon();
 	void initblackdragon();
+	void initwizard();
 	void initskill();
 	void initBackground();
 	void initBulletTextures();
@@ -201,6 +205,7 @@ public:
 	void updateguard();
 	void updateghost();
 	void updateblackdragon();
+	void updatewizard();
 	void updatedragon();
 	void updateskill();
 	void updateshield();

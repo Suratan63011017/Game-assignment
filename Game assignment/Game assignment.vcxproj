@@ -35,6 +35,7 @@
     <ClCompile Include="Shield.cpp" />
     <ClCompile Include="shielder.cpp" />
     <ClCompile Include="Skill.cpp" />
+    <ClCompile Include="wizard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Background.h" />
@@ -53,6 +54,7 @@
     <ClInclude Include="shielder.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="Textbox.h" />
+    <ClInclude Include="wizard.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -30,6 +30,8 @@ void Game::initdragon() {}
 
 void Game::initblackdragon() {}
 
+void Game::initwizard() {}
+
 void Game::initskill()
 {
 	this->skillTimerMax = 1000.f;
@@ -204,6 +206,7 @@ Game::Game()
 	this->initfireball();
 	this->initdragon();
 	this->initblackdragon();
+	this->initwizard();
 	this->initdragonfire();
 	this->initice();
 	this->initspark();
@@ -238,6 +241,9 @@ Game::~Game()
 		delete i;
 	}
 	for (auto* i : this->blackdragon) {
+		delete i;
+	}
+	for (auto* i : this->Wizard) {
 		delete i;
 	}
 	for (auto* i : this->dragonshooting) {
@@ -896,10 +902,9 @@ void Game::updateblackdragon()
 	}
 	//updated
 	for (int i = 0; i < this->blackdragon.size(); ++i) {
-		bool blackdragon_removed = false;
 		this->blackdragon[i]->updated();
 
-		if (blackdragon[i]->getBounds().left + blackdragon[i]->getBounds().width >= 1280.f) {
+		if (blackdragon[i]->getBounds().top + blackdragon[i]->getBounds().height >= 720.f) {
 			this->blackdragon.erase(this->blackdragon.begin() + i);
 		}
 		if (this->player->getHp() == 0) {
@@ -911,6 +916,35 @@ void Game::updateblackdragon()
 					this->blackdragon.erase(this->blackdragon.begin());
 				}
 				this->blackdragon.erase(this->blackdragon.begin() + i);
+			}
+		}
+	}
+}
+
+void Game::updatewizard()
+{
+	//spawn
+	if (this->wizardspawn.getElapsedTime().asSeconds() >= 10.f)
+	{
+		this->Wizard.push_back(new wizard(1380, rand() % 620));
+		this->wizardspawn.restart();
+	}
+	//updated
+	for (int i = 0; i < this->Wizard.size(); ++i) {
+		this->Wizard[i]->updated();
+
+		if (Wizard[i]->getBounds().left <= -100.f) {
+			this->Wizard.erase(this->Wizard.begin() + i);
+		}
+		if (this->player->getHp() == 0) {
+			if (Wizard.size() == 1) {
+				this->Wizard.erase(this->Wizard.begin());
+			}
+			else {
+				if (i == 0) {
+					this->Wizard.erase(this->Wizard.begin());
+				}
+				this->Wizard.erase(this->Wizard.begin() + i);
 			}
 		}
 	}
@@ -1419,6 +1453,7 @@ void Game::update()
 	this->updateghost();
 	this->updateguard();
 	this->updateblackdragon();
+	this->updatewizard();
 	this->updatedragon();
 	this->updatedragonshooting();
 	this->updateskill();
@@ -1593,6 +1628,9 @@ void Game::render()
 	}
 	for (auto* blackdrgn : this->blackdragon) {
 		blackdrgn->render(*this->window);
+	}
+	for (auto* wizards : this->Wizard) {
+		wizards->render(*this->window);
 	}
 	for (auto* dragoon : this->dragon) {
 		dragoon->render(*this->window);
