@@ -36,6 +36,9 @@ void Player::initVariables()
 
 	this->flash.loadFromFile("Sound/flash.wav");
 	this->flashs.setBuffer(this->flash);
+
+	this->Heal.loadFromFile("Sound/heal.wav");
+	this->Heals.setBuffer(this->Heal);
 }
 
 //include picture from files
@@ -459,6 +462,7 @@ void Player::updateHeals()
 		this->canheals = true;
 	}
 	if (this->playersprite.getGlobalBounds().intersects(this->Healsprite.getGlobalBounds()) && (this->canheals) == true) {
+		this->Heals.play();
 		this->plusHp(20);
 		this->canheals = false;
 		this->Healtimes.restart();

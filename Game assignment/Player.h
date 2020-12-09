@@ -27,6 +27,9 @@ private:
 	sf::SoundBuffer flash;
 	sf::Sound flashs;
 
+	sf::SoundBuffer Heal;
+	sf::Sound Heals;
+
 	sf::RectangleShape hitbox;
 	sf::Vector2f velocity;
 	sf::FloatRect nextpos;
