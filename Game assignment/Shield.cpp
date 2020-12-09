@@ -26,22 +26,7 @@ Shield::~Shield()
 
 void Shield::updatemovement(float pos_x, float pos_y)
 {
-	if (shieldposit.y <= pos_y) { //down
-		this->sprite.move(0.f, 2.f);
-		this->shieldposit.y += 2.f;
-	}
-	if (shieldposit.x >= pos_x) { //left
-		this->sprite.move(-2.f, 0.f);
-		this->shieldposit.x -= 2.f;
-	}
-	if (shieldposit.x <= pos_x) { //right
-		this->sprite.move(2.f, 0.f);
-		this->shieldposit.x += 2.f;
-	}
-	if (shieldposit.y >= pos_y) { //top
-		this->sprite.move(0.f, -2.f);
-		this->shieldposit.y -= 2.f;
-	}
+	this->sprite.setPosition(pos_x, pos_y);
 }
 
 void Shield::update(float pos_x, float pos_y)

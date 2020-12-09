@@ -20,13 +20,16 @@ private:
 	sf::Sprite scarecrows;
 	sf::Texture scarecrowtexture;
 
+	sf::Sprite stuns;
+	sf::Texture stunt;
+
 	sf::RectangleShape hitbox;
 	sf::Vector2f velocity;
 	sf::FloatRect nextpos;
 	sf::RectangleShape nextbox;
 	sf::FloatRect playerbounds;
 	sf::Vector2f playerpositions;
-
+	float acc;
 	//Random spawnpoint
 	int X;
 	int Y;
@@ -107,7 +110,7 @@ public:
 	void setstamina(const int mana);
 	void loseHp(const int value);
 	void plusHp(const int value);
-
+	void get(float accs);
 	void doubattack(const int check);
 
 	//Movement Update

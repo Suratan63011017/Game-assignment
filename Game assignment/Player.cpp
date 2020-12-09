@@ -31,6 +31,8 @@ void Player::initVariables()
 	//random spawn
 	this->X = 606;
 	this->Y = 292;
+
+	float acc = 1.0;
 }
 
 //include picture from files
@@ -66,6 +68,8 @@ void Player::initspawntexture()
 	this->Healtextures.loadFromFile("Sprite/Heals.png");
 
 	this->scarecrowtexture.loadFromFile("Sprite/scarecrow.png");
+
+	this->stunt.loadFromFile("Sprite/cyclone.png");
 }
 
 //settings sprites of spawnpoint 
@@ -82,6 +86,9 @@ void Player::initspawnsprite()
 
 	this->scarecrows.setTexture(this->scarecrowtexture);
 	this->scarecrows.setScale(2.f, 2.f);
+
+	this->stuns.setTexture(this->stunt);
+	this->stuns.setScale(1.f, 1.f);
 }
 
 //settings animation timer 
@@ -182,6 +189,11 @@ void Player::plusHp(const int value)
 	}
 }
 
+void Player::get(float accs)
+{
+	this->acc = accs;
+}
+
 void Player::doubattack(const int check)
 {
 	if (check == 1) {
@@ -206,25 +218,25 @@ void Player::updatemovement()
 	this->animState = PlAYER_ANIMATION_STATES::IDLE; //not walk
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		velocity.y += 2.f;
+		velocity.y += 2.f * acc;
 		this->dircheck = 1;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_DOWN; //go down
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		velocity.x -= 2.f;
+		velocity.x -= 2.f * acc;
 		this->dircheck = 2;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_LEFT; //go left
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		velocity.x += 2.f;
+		velocity.x += 2.f * acc;
 		this->dircheck = 3;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_RIGHT; //go right
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		velocity.y -= 2.f;
+		velocity.y -= 2.f * acc;
 		this->dircheck = 4;
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_TOP; //go top
 	}
@@ -527,5 +539,9 @@ void Player::render(sf::RenderTarget& target)
 	if (this->crowtimes.getElapsedTime().asSeconds() <= 1.f) {
 		this->scarecrows.setPosition(this->playerpositions);
 		target.draw(this->scarecrows);
+	}
+	if (this->acc == 0) {
+		this->stuns.setPosition(this->hitbox.getPosition().x, this->hitbox.getPosition().y - 40);
+		target.draw(this->stuns);
 	}
 }

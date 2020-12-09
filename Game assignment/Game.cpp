@@ -507,6 +507,15 @@ void Game::updatePlayer()
 	if (this->player->getBounds().intersects(this->box_4Bounds)) {
 		this->player->updateCollision(this->box_4Bounds);
 	}
+	if (checkstun == false && checkslow == false) {
+		this->player->get(1.0);
+	}
+	else if (checkstun == true) {
+		this->player->get(0);
+	}
+	else if (checkslow == true) {
+		this->player->get(0.5);
+	}
 	this->player->updated();
 }
 
@@ -1191,48 +1200,52 @@ void Game::updateInput()
 	}
 	//triple balls
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_top_trip()
-		&& this->directioncheck == 1 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
+		&& this->directioncheck == 1 && this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f
+		&& this->checkstun == false) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y, 1.f, -1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y, -1.f, -1.f, 5.f));
 		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_left_trip() && this->directioncheck == 2
-		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
+		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f
+		&& this->checkstun == false) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, 1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, -1.f, 5.f));
 		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_right_trip() && this->directioncheck == 3
-		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
+		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f
+		&& this->checkstun == false) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, 1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, -1.f, 5.f));
 		this->shots.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_down_trip() && this->directioncheck == 0
-		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f) {
+		&& this->checktriple == 1 && this->triptime.getElapsedTime().asSeconds() <= 15.f
+		&& this->checkstun == false) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y + 95, 1.f, 1.f, 5.f));
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y + 95, -1.f, 1.f, 5.f));
 		this->shots.play();
 	}
 	//normal shooting
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_top() && this->directioncheck == 1) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_top() && this->directioncheck == 1 && this->checkstun == false) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y, 0.f, -1.f, 5.f));
 		this->shots.play();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_left() && this->directioncheck == 2) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_left() && this->directioncheck == 2 && this->checkstun == false) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y + 28, -1.f, 0.f, 5.f));
 		this->shots.play();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_right() && this->directioncheck == 3) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_right() && this->directioncheck == 3 && this->checkstun == false) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 68, this->player->getPos().y + 28, 1.f, 0.f, 5.f));
 		this->shots.play();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_down() && this->directioncheck == 0) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && this->player->canAttack_down() && this->directioncheck == 0 && this->checkstun == false) {
 		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x + 15, this->player->getPos().y + 95, 0.f, 1.f, 5.f));
 		this->shots.play();
 	}
 	//fire ball
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 1 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 1 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f && this->checkstun == false) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireball.png");
 		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 0.f, -1.f, 5.f, 1, -1));
 		(this->canfireball)--;
@@ -1240,7 +1253,7 @@ void Game::updateInput()
 		this->firetime.restart();
 		this->bg->update(2);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 0 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 0 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f && this->checkstun == false) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireball.png");
 		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 0.f, 1.f, 5.f, 1, 1));
 		(this->canfireball)--;
@@ -1248,7 +1261,7 @@ void Game::updateInput()
 		this->firetime.restart();
 		this->bg->update(2);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 3 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 3 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f && this->checkstun == false) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireblass.png");
 		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, 1.f, 0.f, 5.f, 1, 1));
 		(this->canfireball)--;
@@ -1256,7 +1269,7 @@ void Game::updateInput()
 		this->firetime.restart();
 		this->bg->update(2);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 2 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && this->directioncheck == 2 && this->canfireball > 0 && this->firetime.getElapsedTime().asSeconds() >= 1.f && this->checkstun == false) {
 		this->fireballs["FIREBALL"]->loadFromFile("Sprite/fireblass.png");
 		this->fire.push_back(new fireball(this->fireballs["FIREBALL"], this->player->getPos().x, this->player->getPos().y, -1.f, 0.f, 5.f, -1, 1));
 		(this->canfireball)--;
@@ -1264,7 +1277,7 @@ void Game::updateInput()
 		this->firetime.restart();
 		this->bg->update(2);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && this->canicepillar > 0 && this->icetypetime.getElapsedTime().asSeconds() >= 1.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && this->canicepillar > 0 && this->icetypetime.getElapsedTime().asSeconds() >= 1.f && this->checkstun == false) {
 		this->checkice = 1;
 		(this->canicepillar)--;
 		this->Freezers.play();
@@ -1272,7 +1285,7 @@ void Game::updateInput()
 		this->icetypetime.restart();
 		this->bg->update(1);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && this->canspark > 0 && this->sparktimes.getElapsedTime().asSeconds() >= 1.f) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && this->canspark > 0 && this->sparktimes.getElapsedTime().asSeconds() >= 1.f && this->checkstun == false) {
 		this->checkspark = 1;
 		(this->canspark)--;
 		this->canlighting = true;
@@ -1493,6 +1506,12 @@ void Game::updateGUI()
 		this->spawnTimerMax -= 5.f;
 		this->gametimes.restart();
 	}
+	if (this->stuntimes.getElapsedTime().asSeconds() >= 2.f) {
+		this->checkstun = false;
+	}
+	if (this->slowtimes.getElapsedTime().asSeconds() >= 5.f) {
+		this->checkslow = false;
+	}
 
 	if (this->player->getHp() == 0) {
 		this->dietimes.restart();
@@ -1528,6 +1547,21 @@ void Game::updateCollision()
 	for (int i = 0; i < this->blackdragon.size(); ++i) {
 		if (this->player->getBounds().intersects(this->blackdragon[i]->getBounds())) {
 			blackdragonhits += 2;
+		}
+	}
+	for (int i = 0; i < this->Wizard.size(); ++i) {
+		if (this->player->getBounds().intersects(this->Wizard[i]->getBounds())) {
+			if (Wizard[i]->gettype() == 1) {
+				this->checkstun = true;
+				this->stuntimes.restart();
+			}
+			else if (Wizard[i]->gettype() == 2) {
+				this->player->loseHp(1);
+			}
+			else if (Wizard[i]->gettype() == 3) {
+				this->checkslow = true;
+				this->slowtimes.restart();
+			}
 		}
 	}
 	for (int i = 0; i < this->dragon.size(); ++i) {
@@ -1610,6 +1644,7 @@ void Game::render()
 {
 
 	this->renderBackground(); //for made background
+	this->renderGUI();
 	for (auto* Shield : this->shield) {
 		Shield->render(this->window);
 	}
@@ -1644,7 +1679,6 @@ void Game::render()
 	for (auto* Skill : this->skills) {
 		Skill->render(this->window);
 	}
-	this->renderGUI();
 	for (auto* fireball : this->fire) {
 		fireball->render(this->window);
 	}

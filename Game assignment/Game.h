@@ -103,6 +103,8 @@ private:
 	sf::Clock blackdragonspawn;
 	sf::Clock wizardspawn;
 	sf::Clock blackdragondamages;
+	sf::Clock stuntimes;
+	sf::Clock slowtimes;
 	float skillTimer;
 	float skillTimerMax;
 	int type;
@@ -118,6 +120,8 @@ private:
 	bool canlighting = false;
 	bool canswitch;
 	bool candiesound = false;
+	bool checkstun = false;
+	bool checkslow = false;
 
 	sf::Texture tbox1;
 	sf::Texture tbox2;
