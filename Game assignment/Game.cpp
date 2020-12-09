@@ -307,7 +307,6 @@ void Game::run()
 	music.setLoop(true);
 	while (this->window->isOpen())
 	{
-		std::cout << this->enemies.size() << endl;
 		while (this->window->pollEvent(e))
 		{
 			switch (e.type)
