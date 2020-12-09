@@ -166,6 +166,9 @@ void Game::initSystems()
 	this->enemydie.loadFromFile("Sound/enemy die.wav");
 	this->enemydies.setBuffer(this->enemydie);
 
+	this->guarddie.loadFromFile("Sound/guarddies.wav");
+	this->guarddies.setBuffer(this->guarddie);
+
 	this->ghostdie.loadFromFile("Sound/ghost die.wav");
 	this->ghostdies.setBuffer(this->ghostdie);
 
@@ -175,8 +178,14 @@ void Game::initSystems()
 	this->Freezer.loadFromFile("Sound/Freeze.wav");
 	this->Freezers.setBuffer(this->Freezer);
 
+	this->thunder.loadFromFile("Sound/lighting.wav");
+	this->thunders.setBuffer(this->thunder);
+
 	this->dragondie.loadFromFile("Sound/dragondies.wav");
 	this->dragondies.setBuffer(this->dragondie);
+
+	this->bdrgn.loadFromFile("Sound/blackdragon.wav");
+	this->bdrgns.setBuffer(this->bdrgn);
 
 	this->shieldsoundbuf.loadFromFile("Sound/shield.wav");
 	this->shieldsound.setBuffer(this->shieldsoundbuf);
@@ -186,6 +195,9 @@ void Game::initSystems()
 
 	this->Click.loadFromFile("Sound/Click.wav");
 	this->clicks.setBuffer(this->Click);
+
+	this->witch.loadFromFile("Sound/witch.wav");
+	this->witchs.setBuffer(this->witch);
 
 	this->switc.loadFromFile("Sound/switch.wav");
 	this->switcs.setBuffer(this->switc);
@@ -753,8 +765,8 @@ void Game::updateguard()
 				this->guard[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->guard[i]->getHp() == 0) {
-					//enemydies.play();
-					points += 5;
+					guarddies.play();
+					points += 10;
 					this->guard.erase(this->guard.begin() + i);
 					guard_removed = true;
 					(this->countkill)++;
@@ -768,7 +780,8 @@ void Game::updateguard()
 					this->guard[i]->loseHp(1);
 				}
 				if (this->guard[i]->getHp() == 0) {
-					points += 5;
+					guarddies.play();
+					points += 10;
 					this->guard.erase(this->guard.begin() + i);
 					guard_removed = true;
 					(this->countkill)++;
@@ -780,8 +793,8 @@ void Game::updateguard()
 			if (this->fire[k]->getBounds().intersects(this->guard[i]->getBounds())) {
 				this->guard[i]->loseHp(1);
 				if (this->guard[i]->getHp() == 0) {
-					//enemydies.play();
-					points += 5;
+					guarddies.play();
+					points += 10;
 					this->guard.erase(this->guard.begin() + i);
 					guard_removed = true;
 					(this->countkill)++;
@@ -865,7 +878,8 @@ void Game::updateghost()
 			if (this->spark[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
 				this->ghost[i]->loseHp(1);
 				if (this->ghost[i]->getHp() == 0) {
-					points += 5;
+					ghostdies.play();
+					points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
 					ghost_removed = true;
 					(this->countkill)++;
@@ -907,6 +921,7 @@ void Game::updateblackdragon()
 	if (this->blackdragonspawn.getElapsedTime().asSeconds() >= 20.f)
 	{
 		this->blackdragon.push_back(new Blackdragoon(rand() % 1180, -100.f));
+		this->bdrgns.play();
 		this->blackdragonspawn.restart();
 	}
 	//updated
@@ -935,6 +950,7 @@ void Game::updatewizard()
 	//spawn
 	if (this->wizardspawn.getElapsedTime().asSeconds() >= 30.f)
 	{
+		this->witchs.play();
 		this->Wizard.push_back(new wizard(1380, rand() % 620));
 		this->wizardspawn.restart();
 	}
@@ -1286,6 +1302,7 @@ void Game::updateInput()
 		this->bg->update(1);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && this->canspark > 0 && this->sparktimes.getElapsedTime().asSeconds() >= 1.f && this->checkstun == false) {
+		this->thunders.play();
 		this->checkspark = 1;
 		(this->canspark)--;
 		this->canlighting = true;

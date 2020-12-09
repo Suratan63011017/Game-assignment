@@ -33,6 +33,9 @@ void Player::initVariables()
 	this->Y = 292;
 
 	float acc = 1.0;
+
+	this->flash.loadFromFile("Sound/flash.wav");
+	this->flashs.setBuffer(this->flash);
 }
 
 //include picture from files
@@ -241,6 +244,7 @@ void Player::updatemovement()
 		this->animState = PlAYER_ANIMATION_STATES::MOVING_TOP; //go top
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F) && stamina == 100) {
+		this->flashs.play();
 		this->playerpositions.x = this->playersprite.getPosition().x;
 		this->playerpositions.y = this->playersprite.getPosition().y;
 		this->crowtimes.restart();

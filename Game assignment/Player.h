@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 enum PlAYER_ANIMATION_STATES { IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_TOP, MOVING_DOWN }; //for check player direction 
 class Player
@@ -22,6 +23,9 @@ private:
 
 	sf::Sprite stuns;
 	sf::Texture stunt;
+
+	sf::SoundBuffer flash;
+	sf::Sound flashs;
 
 	sf::RectangleShape hitbox;
 	sf::Vector2f velocity;

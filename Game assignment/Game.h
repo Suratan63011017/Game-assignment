@@ -152,6 +152,8 @@ private:
 
 	sf::SoundBuffer shot;
 	sf::Sound shots;
+	sf::SoundBuffer guarddie;
+	sf::Sound guarddies;
 	sf::SoundBuffer enemydie;
 	sf::Sound enemydies;
 	sf::SoundBuffer ghostdie;
@@ -166,6 +168,12 @@ private:
 	sf::Sound shieldsound;
 	sf::SoundBuffer keepitem;
 	sf::Sound keepitems;
+	sf::SoundBuffer thunder;
+	sf::Sound thunders;
+	sf::SoundBuffer bdrgn;
+	sf::Sound bdrgns;
+	sf::SoundBuffer witch;
+	sf::Sound witchs;
 	sf::SoundBuffer Click;
 	sf::Sound clicks;
 	sf::SoundBuffer switc;

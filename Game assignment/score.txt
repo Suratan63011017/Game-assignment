@@ -1,5 +1,5 @@
 dhf 1725
+f 1710
 Foxis 1505
 focud 1500
-focus 505
-df 400
+ff 520
