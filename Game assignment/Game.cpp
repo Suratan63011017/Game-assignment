@@ -307,7 +307,7 @@ void Game::run()
 	music.setLoop(true);
 	while (this->window->isOpen())
 	{
-
+		std::cout << this->enemies.size() << endl;
 		while (this->window->pollEvent(e))
 		{
 			switch (e.type)
@@ -410,12 +410,24 @@ void Game::run()
 				}
 			}
 			else if (this->player->getHp() == 0 && cangetnewscores && dietimes.getElapsedTime().asSeconds() > 3.f) {
-				this->updateenemy();
-				this->updateghost();
-				this->updatedragon();
-				this->updateguard();
-				this->updateblackdragon();
-
+				while (enemies.size() != 0) {
+					this->updateenemy();
+				}
+				while (ghost.size() != 0) {
+					this->updateghost();
+				}
+				while (dragon.size() != 0) {
+					this->updatedragon();
+				}
+				while (guard.size() != 0) {
+					this->updateguard();
+				}
+				while (blackdragon.size() != 0) {
+					this->updateblackdragon();
+				}
+				while (Wizard.size() != 0) {
+					this->updatewizard();
+				}
 				j++;
 				pointkeep = points;
 				this->fp = fopen("./score.txt", "r");
