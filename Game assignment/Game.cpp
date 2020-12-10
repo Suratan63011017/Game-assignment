@@ -1532,6 +1532,36 @@ void Game::updatesoul()
 	}
 }
 
+void Game::updateplayerGUI()
+{
+	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
+	this->playerHpBar.setSize(sf::Vector2f(300.f * hpPercent, this->playerHpBar.getSize().y));
+
+	float staminaPercent = static_cast<float>(this->player->getstamina()) / 100;
+	this->playerstamina.setSize(sf::Vector2f(300.f * staminaPercent, this->playerstamina.getSize().y));
+
+	if (this->gametimes.getElapsedTime().asSeconds() >= 10.f) {
+		this->spawnTimerMax -= 5.f;
+		this->gametimes.restart();
+	}
+	if (this->stuntimes.getElapsedTime().asSeconds() >= 2.f) {
+		this->checkstun = false;
+	}
+	if (this->slowtimes.getElapsedTime().asSeconds() >= 5.f) {
+		this->checkslow = false;
+	}
+
+	if (this->player->getHp() == 0) {
+		this->dietimes.restart();
+		this->gametimes.restart();
+		this->spawnTimerMax = 300.f;
+		this->blackdragonspawn.restart();
+		this->canfireball = 0;
+		this->canicepillar = 0;
+		this->canspark = 0;
+	}
+}
+
 void Game::updateice()
 {
 	for (int i = 0; i < this->ices.size(); ++i) {
@@ -1574,6 +1604,7 @@ void Game::update()
 	this->updateshield();
 	this->updatesoul();
 	this->updateGUI();
+	this->updateplayerGUI();
 }
 
 void Game::updateGUI()
@@ -1596,34 +1627,6 @@ void Game::updateGUI()
 
 	lightnumber << this->canspark;
 	this->LIGHTTEXT.setString(lightnumber.str());
-
-	//hp of player
-	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
-	this->playerHpBar.setSize(sf::Vector2f(300.f * hpPercent, this->playerHpBar.getSize().y));
-
-	float staminaPercent = static_cast<float>(this->player->getstamina()) / 100;
-	this->playerstamina.setSize(sf::Vector2f(300.f * staminaPercent, this->playerstamina.getSize().y));
-
-	if (this->gametimes.getElapsedTime().asSeconds() >= 10.f) {
-		this->spawnTimerMax -= 5.f;
-		this->gametimes.restart();
-	}
-	if (this->stuntimes.getElapsedTime().asSeconds() >= 2.f) {
-		this->checkstun = false;
-	}
-	if (this->slowtimes.getElapsedTime().asSeconds() >= 5.f) {
-		this->checkslow = false;
-	}
-
-	if (this->player->getHp() == 0) {
-		this->dietimes.restart();
-		this->gametimes.restart();
-		this->spawnTimerMax = 300.f;
-		this->blackdragonspawn.restart();
-		this->canfireball = 0;
-		this->canicepillar = 0;
-		this->canspark = 0;
-	}
 }
 
 void Game::updateCollision()

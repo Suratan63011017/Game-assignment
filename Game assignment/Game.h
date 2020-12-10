@@ -236,6 +236,7 @@ public:
 	void updatedragonshooting();
 	void updateFireball();
 	void updatesoul();
+	void updateplayerGUI();
 	void updateeasteregg();
 	void updateice();
 	void updatespark();
