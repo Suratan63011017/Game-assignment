@@ -191,7 +191,7 @@ private:
 	sf::Sound deads;
 	sf::Music music;
 
-	//Function
+	//Function();
 	void initwindow();
 	void initplayer();
 	void initenemy();
