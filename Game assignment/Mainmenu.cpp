@@ -73,6 +73,10 @@ Mainmenu::Mainmenu(float width, float height)
 	beforebuttonsprite.setTexture(&this->nextbutton);
 	beforebuttonsprite.setPosition(130.f, 600.f);
 	selectedITEMindex = 0;
+
+	hitbox.setSize(sf::Vector2f(100.f, 100.f));
+	hitbox.setFillColor(sf::Color::Transparent);
+	hitbox.setPosition(sf::Vector2f(400.f, 170.f));
 }
 
 Mainmenu::~Mainmenu()
@@ -105,6 +109,11 @@ void Mainmenu::drawnamespace(sf::RenderWindow& window)
 void Mainmenu::drawdead(sf::RenderWindow& window)
 {
 	window.draw(Deadsprite);
+}
+
+void Mainmenu::drawblass(sf::RenderWindow& window)
+{
+	window.draw(this->hitbox);
 }
 
 void Mainmenu::getplay(bool play)
@@ -159,6 +168,11 @@ const sf::FloatRect Mainmenu::getBounds_2() const
 const sf::FloatRect Mainmenu::getBounds_3() const
 {
 	return this->button[3].getGlobalBounds();
+}
+
+const sf::FloatRect Mainmenu::dragon() const
+{
+	return this->hitbox.getGlobalBounds();
 }
 
 const sf::FloatRect Mainmenu::nextgetbounds() const

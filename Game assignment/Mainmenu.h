@@ -15,15 +15,22 @@ private:
 	sf::Texture Deadtexture;
 	sf::Sprite Deadsprite;
 	sf::Texture nextbutton;
+	sf::Sprite fireball;
+	sf::Texture fireballtexture;
 	sf::RectangleShape nextbuttonsprite;
 	sf::RectangleShape beforebuttonsprite;
 	sf::RectangleShape button[MAX_NUMBER_OF_ITEMS];
+	sf::RectangleShape hitbox;
 	sf::Texture buttonname;
 	sf::Sprite namebuttonsprite;
 	sf::Texture howtoplays[5];
 	sf::Sprite howtoplaysprites[5];
 	bool playstate = false;
 	int pages = 0;
+
+	sf::Clock animatetimer;
+	short animState;
+	sf::IntRect currentFrame;
 
 public:
 	Mainmenu(float width, float height);
@@ -33,6 +40,7 @@ public:
 	void drawscore(sf::RenderWindow& window);
 	void drawnamespace(sf::RenderWindow& window);
 	void drawdead(sf::RenderWindow& window);
+	void drawblass(sf::RenderWindow& window);
 	void getplay(bool play);
 	void Moveup();
 	void Movedown();
@@ -41,7 +49,7 @@ public:
 	const sf::FloatRect getBounds_1() const;
 	const sf::FloatRect getBounds_2() const;
 	const sf::FloatRect getBounds_3() const;
-
+	const sf::FloatRect dragon() const;
 	const sf::FloatRect nextgetbounds() const;
 	const sf::FloatRect beforegetbounds() const;
 	void update(float width, float height);

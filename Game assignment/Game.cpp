@@ -53,6 +53,8 @@ void Game::initBulletTextures()
 void Game::initfireball()
 {
 	this->fireballs["FIREBALL"] = new sf::Texture();
+	this->easters_egg["EASTER"] = new sf::Texture();
+	this->easters_egg["EASTER"]->loadFromFile("Sprite/firedragon.png");
 }
 
 void Game::initdragonfire()
@@ -67,10 +69,7 @@ void Game::initice()
 	this->icepillar["ICE"]->loadFromFile("Sprite/ice.png");
 }
 
-void Game::initspark()
-{
-
-}
+void Game::initspark() {}
 
 void Game::initGUI()
 {
@@ -108,11 +107,11 @@ void Game::initGUI()
 
 	this->playerHpBar.setSize(sf::Vector2f(300.f, 25.f));
 	this->playerHpBar.setFillColor(sf::Color::Red);
-	this->playerHpBar.setPosition(sf::Vector2f(20.f, 20.f));
+	this->playerHpBar.setPosition(sf::Vector2f(130.f, 20.f));
 
 	this->playerstamina.setSize(sf::Vector2f(300.f, 10.f));
 	this->playerstamina.setFillColor(sf::Color::Blue);
-	this->playerstamina.setPosition(sf::Vector2f(20.f, 60.f));
+	this->playerstamina.setPosition(sf::Vector2f(130.f, 60.f));
 
 	this->playerHpBarBack = this->playerHpBar;
 	this->playerHpBarBack.setFillColor(sf::Color(25, 25, 25, 200));
@@ -128,6 +127,11 @@ void Game::initGUI()
 	this->lightpics.loadFromFile("Sprite/lighting pics.png");
 	this->lightpicx.setTexture(this->lightpics);
 	this->lightpicx.setPosition(sf::Vector2f(1180.f, 620.f));
+
+	this->profile.loadFromFile("Sprite/warrior.png");
+	this->profiles.setTexture(this->profile);
+	this->profiles.setScale(0.2f, 0.2f);
+	this->profiles.setPosition(0.f, 0.f);
 }
 
 void Game::initSystems()
@@ -330,6 +334,15 @@ void Game::run()
 			this->menu->getplay(playstatus);
 			this->menu->update(this->window->getSize().x, window->getSize().y);
 			this->menu->draw(*this->window);
+			this->menu->drawblass(*this->window);
+			if (this->menu->dragon().contains(this->mousePosview)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && eastereggtimes.getElapsedTime().asSeconds() >= 0.1f) {
+					this->easter_egg.push_back(new fireball(this->easters_egg["EASTER"], 400, 170, 1.f, 0.f, 5.f, 1, 1));
+					this->Fire_sound.play();
+					this->eastereggtimes.restart();
+				}
+			}
+			this->updateeasteregg();
 			if (checkname && !(playstatus)) {
 				this->menu->drawnamespace(*this->window);
 				playernametextbox.drawTo(*this->window);
@@ -1458,7 +1471,22 @@ void Game::updateFireball()
 		++counters;
 	}
 }
-
+void Game::updateeasteregg()
+{
+	unsigned counters = 0;
+	for (auto* fireball : this->easter_egg) {
+		fireball->update();
+		if (fireball->getBounds().left + fireball->getBounds().width > 1380.f) {
+			delete this->easter_egg.at(counters);
+			this->easter_egg.erase(this->easter_egg.begin() + counters);
+			--counters;
+		}
+		++counters;
+	}
+	for (auto* fireball : this->easter_egg) {
+		fireball->render(this->window);
+	}
+}
 void Game::updateice()
 {
 	for (int i = 0; i < this->ices.size(); ++i) {
@@ -1656,6 +1684,8 @@ void Game::renderGUI()
 	this->window->draw(this->playerHpBarBack);
 	this->window->draw(this->playerHpBar);
 
+	this->window->draw(this->profiles);
+
 	this->window->draw(this->playerstamina);
 
 	window->draw(this->box_1);
@@ -1670,7 +1700,6 @@ void Game::renderGUI()
 
 void Game::render()
 {
-
 	this->renderBackground(); //for made background
 	this->renderGUI();
 	for (auto* Shield : this->shield) {

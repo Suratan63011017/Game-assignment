@@ -63,6 +63,7 @@ private:
 	std::map<std::string, sf::Texture*> textures;
 	std::map<std::string, sf::Texture*> skillpics;
 	std::map<std::string, sf::Texture*> fireballs;
+	std::map<std::string, sf::Texture*> easters_egg;
 	std::map<std::string, sf::Texture*> icepillar;
 	std::map<std::string, sf::Texture*> dragontext;
 	std::vector<Enemy*> enemies;
@@ -75,6 +76,7 @@ private:
 	std::vector<Bullet*> bullets;
 	std::vector<Bullet*> dragonshooting;
 	std::vector<fireball*> fire;
+	std::vector<fireball*> easter_egg;
 	std::vector<Skill*> skills;
 	std::vector<Shield*> shield;
 	std::vector<ice*> ices;
@@ -105,6 +107,7 @@ private:
 	sf::Clock blackdragondamages;
 	sf::Clock stuntimes;
 	sf::Clock slowtimes;
+	sf::Clock eastereggtimes;
 	float skillTimer;
 	float skillTimerMax;
 	int type;
@@ -149,6 +152,9 @@ private:
 	sf::Sprite lightpicx;
 
 	sf::Image icon;
+
+	sf::Texture profile;
+	sf::Sprite profiles;
 
 	sf::SoundBuffer shot;
 	sf::Sound shots;
@@ -225,6 +231,7 @@ public:
 	void updateBullets();
 	void updatedragonshooting();
 	void updateFireball();
+	void updateeasteregg();
 	void updateice();
 	void updatespark();
 	void update();
