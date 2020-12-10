@@ -24,6 +24,7 @@
 #include<vector>
 #include<iostream>
 #include"wizard.h"
+#include"die.h"
 
 using namespace std;
 class Game
@@ -66,6 +67,7 @@ private:
 	std::map<std::string, sf::Texture*> easters_egg;
 	std::map<std::string, sf::Texture*> icepillar;
 	std::map<std::string, sf::Texture*> dragontext;
+	std::map<std::string, sf::Texture*> soultext;
 	std::vector<Enemy*> enemies;
 	std::vector<lighting*> spark;
 	std::vector<shielder*> guard;
@@ -80,6 +82,7 @@ private:
 	std::vector<Skill*> skills;
 	std::vector<Shield*> shield;
 	std::vector<ice*> ices;
+	std::vector<die*> soul;
 
 	int directioncheck;
 	float spawnTimer;
@@ -201,6 +204,7 @@ private:
 	void initBackground();
 	void initBulletTextures();
 	void initfireball();
+	void initsoul();
 	void initdragonfire();
 	void initice();
 	void initspark();
@@ -231,6 +235,7 @@ public:
 	void updateBullets();
 	void updatedragonshooting();
 	void updateFireball();
+	void updatesoul();
 	void updateeasteregg();
 	void updateice();
 	void updatespark();

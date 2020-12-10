@@ -57,6 +57,11 @@ void Game::initfireball()
 	this->easters_egg["EASTER"]->loadFromFile("Sprite/firedragon.png");
 }
 
+void Game::initsoul() {
+	this->soultext["DIE"] = new sf::Texture();
+	this->soultext["DIE"]->loadFromFile("Sprite/die.png");
+}
+
 void Game::initdragonfire()
 {
 	this->dragontext["DRAGON"] = new sf::Texture();
@@ -217,6 +222,7 @@ Game::Game()
 {
 	this->initwindow();
 	this->initBackground();
+	this->initsoul();
 	this->directioncheck = 0;
 	this->initBulletTextures();
 	this->initfireball();
@@ -247,6 +253,12 @@ Game::~Game()
 	for (auto& i : this->dragontext) {
 		delete i.second;
 	}
+	for (auto& i : this->easters_egg) {
+		delete i.second;
+	}
+	for (auto& i : this->soultext) {
+		delete i.second;
+	}
 	for (auto* i : this->bullets) {
 		delete i;
 	}
@@ -268,7 +280,13 @@ Game::~Game()
 	for (auto* i : this->ghost) {
 		delete i;
 	}
+	for (auto* i : this->soul) {
+		delete i;
+	}
 	for (auto* i : this->spark) {
+		delete i;
+	}
+	for (auto* i : this->easter_egg) {
 		delete i;
 	}
 	for (auto* i : this->guard) {
@@ -648,6 +666,7 @@ void Game::updateenemy()
 				this->enemies[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->enemies[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->enemies[i]->getPos().x + 10, this->enemies[i]->getPos().y + 20));
 					enemydies.play();
 					points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
@@ -661,6 +680,7 @@ void Game::updateenemy()
 			if (this->spark[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
 				this->enemies[i]->loseHp(1);
 				if (this->enemies[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->enemies[i]->getPos().x + 10, this->enemies[i]->getPos().y + 20));
 					enemydies.play();
 					points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
@@ -674,6 +694,7 @@ void Game::updateenemy()
 			if (this->fire[k]->getBounds().intersects(this->enemies[i]->getBounds())) {
 				this->enemies[i]->loseHp(1);
 				if (this->enemies[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->enemies[i]->getPos().x + 10, this->enemies[i]->getPos().y + 20));
 					enemydies.play();
 					points += 5;
 					this->enemies.erase(this->enemies.begin() + i);
@@ -789,6 +810,7 @@ void Game::updateguard()
 				this->guard[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->guard[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->guard[i]->getPos().x + 10, this->guard[i]->getPos().y + 20));
 					guarddies.play();
 					points += 10;
 					this->guard.erase(this->guard.begin() + i);
@@ -800,10 +822,11 @@ void Game::updateguard()
 		}
 		for (size_t k = 0; k < this->spark.size() && !guard_removed; k++) {
 			if (this->spark[k]->getBounds().intersects(this->guard[i]->getBounds())) {
-				if (this->guard[i]->getHp() > 10) {
+				if (this->guard[i]->getHp() >= 10) {
 					this->guard[i]->loseHp(1);
 				}
 				if (this->guard[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->guard[i]->getPos().x + 10, this->guard[i]->getPos().y + 20));
 					guarddies.play();
 					points += 10;
 					this->guard.erase(this->guard.begin() + i);
@@ -817,6 +840,7 @@ void Game::updateguard()
 			if (this->fire[k]->getBounds().intersects(this->guard[i]->getBounds())) {
 				this->guard[i]->loseHp(1);
 				if (this->guard[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->guard[i]->getPos().x + 10, this->guard[i]->getPos().y + 20));
 					guarddies.play();
 					points += 10;
 					this->guard.erase(this->guard.begin() + i);
@@ -888,6 +912,7 @@ void Game::updateghost()
 				this->ghost[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->ghost[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->ghost[i]->getPos().x + 10, this->ghost[i]->getPos().y + 20));
 					ghostdies.play();
 					points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
@@ -902,6 +927,7 @@ void Game::updateghost()
 			if (this->spark[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
 				this->ghost[i]->loseHp(1);
 				if (this->ghost[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->ghost[i]->getPos().x + 10, this->ghost[i]->getPos().y + 20));
 					ghostdies.play();
 					points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
@@ -916,6 +942,7 @@ void Game::updateghost()
 			if (this->fire[k]->getBounds().intersects(this->ghost[i]->getBounds())) {
 				this->ghost[i]->loseHp(1);
 				if (this->ghost[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->ghost[i]->getPos().x + 10, this->ghost[i]->getPos().y + 20));
 					ghostdies.play();
 					points += 10;
 					this->ghost.erase(this->ghost.begin() + i);
@@ -1074,6 +1101,7 @@ void Game::updatedragon()
 				this->dragon[i]->loseHp(5);
 				this->bullets.erase(this->bullets.begin() + k);
 				if (this->dragon[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->dragon[i]->getPos().x + 35, this->dragon[i]->getPos().y + 20));
 					points += 1000;
 					dragondies.play();
 					this->dragon.erase(this->dragon.begin() + i);
@@ -1086,6 +1114,7 @@ void Game::updatedragon()
 			if (this->fire[k]->getBounds().intersects(this->dragon[i]->getBounds())) {
 				this->dragon[i]->loseHp(1);
 				if (this->dragon[i]->getHp() == 0) {
+					this->soul.push_back(new die(this->soultext["DIE"], this->dragon[i]->getPos().x + 35, this->dragon[i]->getPos().y + 20));
 					points += 1000;
 					dragondies.play();
 					this->dragon.erase(this->dragon.begin() + i);
@@ -1471,6 +1500,7 @@ void Game::updateFireball()
 		++counters;
 	}
 }
+
 void Game::updateeasteregg()
 {
 	unsigned counters = 0;
@@ -1487,6 +1517,21 @@ void Game::updateeasteregg()
 		fireball->render(this->window);
 	}
 }
+
+void Game::updatesoul()
+{
+	unsigned counters = 0;
+	for (auto* souls : this->soul) {
+		souls->update();
+		if (souls->returndelete() == true) {
+			delete this->soul.at(counters);
+			this->soul.erase(this->soul.begin() + counters);
+			--counters;
+		}
+		++counters;
+	}
+}
+
 void Game::updateice()
 {
 	for (int i = 0; i < this->ices.size(); ++i) {
@@ -1527,6 +1572,7 @@ void Game::update()
 	this->updatedragonshooting();
 	this->updateskill();
 	this->updateshield();
+	this->updatesoul();
 	this->updateGUI();
 }
 
@@ -1732,6 +1778,9 @@ void Game::render()
 	}
 	for (auto* dragonic : this->dragonshooting) {
 		dragonic->render(this->window);
+	}
+	for (auto* souls : this->soul) {
+		souls->render(this->window);
 	}
 	for (auto* Skill : this->skills) {
 		Skill->render(this->window);

@@ -1,9 +1,9 @@
 #include "fireball.h"
 
-fireball::fireball(sf::Texture* texture, float pos_x, float pos_y, float dir_X, float dir_Y, float movement_speed,int x,int y)
+fireball::fireball(sf::Texture* texture, float pos_x, float pos_y, float dir_X, float dir_Y, float movement_speed, int x, int y)
 {
 	this->shape.setTexture(*texture);
-	this->shape.setScale(2.0f*x, 2.0f*y);
+	this->shape.setScale(2.0f * x, 2.0f * y);
 	this->shape.setPosition(pos_x, pos_y);
 	this->direction.x = dir_X;
 	this->direction.y = dir_Y;
