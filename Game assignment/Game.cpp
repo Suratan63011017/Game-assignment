@@ -1633,7 +1633,7 @@ void Game::updateCollision()
 {
 	int count = 0;
 	int blackdragonhits = 0;
-	float skillshield = 0.4;
+	float skillshield = 0.2;
 	for (int i = 0; i < this->enemies.size(); ++i) {
 		if (this->player->getBounds().intersects(this->enemies[i]->getBounds())) {
 			count++;
