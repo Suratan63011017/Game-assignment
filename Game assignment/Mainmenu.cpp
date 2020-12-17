@@ -189,11 +189,11 @@ void Mainmenu::update(float width, float height)
 {
 	if (playstate) {
 		menu[0].setString("RESUME");
-		menu[0].setPosition(sf::Vector2f((width / 2) - 30.f, height / (MAX_NUMBER_OF_ITEMS + 1) * 1));
+		menu[0].setPosition(sf::Vector2f(610.f, 145.f));
 	}
 	else {
 		menu[0].setString("Play");
-		menu[0].setPosition(sf::Vector2f((width / 2) - 15.f, height / (MAX_NUMBER_OF_ITEMS + 1) * 1));
+		menu[0].setPosition(sf::Vector2f(625.f, 145.f));
 	}
 }
 
